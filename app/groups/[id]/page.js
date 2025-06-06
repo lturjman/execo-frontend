@@ -1,50 +1,41 @@
 import Image from "next/image";
-import Button from "app/components/Button";
+import Button from "@/components/Button";
+import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/24/solid";
 
 export default function GroupPage() {
   return (
     <div className="p-4 space-y-6 bg-gray-200 min-h-screen">
-      {/* Header du groupe */}
-      <header className="w-full bg-white rounded-2xl shadow-lg overflow-hidden relative pb-6">
-        <Image
-          src="/images/groupImg.png"
-          alt="Image de groupe"
-          width={200}
-          height={100}
-          className="object-cover w-full h-full"
-        />
-        <button className="absolute top-4 left-4 rounded-full w-8 h-8 flex items-center justify-center bg-purple-400">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-5 text-white"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-            />
-          </svg>
-        </button>
-        <h1 className="text-center text-xl font-semibold p-4">Nom du Groupe</h1>
-        <div className=" flex justify-center">
-          <Button text="Gérer les membres" />
+      <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden relative ">
+        <div>
+          <Image
+            src="/images/groupImg.png"
+            alt="Image de groupe"
+            width={200}
+            height={100}
+            className="object-cover w-full h-full"
+          />
+
+          <Button rounded="true" className="absolute">
+            <ArrowLeftIcon className="size-5 text-white" />
+          </Button>
         </div>
-      </header>
+
+        <div className="p-4 space-y-2">
+          <h1 className="text-center text-xl font-semibold">Nom du Groupe</h1>
+          <Button>Gérer les membres</Button>
+        </div>
+      </div>
 
       {/* Liste des dettes */}
       <section className="space-y-2">
-        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-6 flex justify-center space-x-2">
+        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2">
           <span className="font-semibold">Laura</span>
           <span>doit</span>
           <span className="font-semibold">2,38€</span>
           <span>à</span>
           <span className="font-semibold">Sherpa</span>
         </div>
-        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-6 flex justify-center space-x-2">
+        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2">
           <span className="font-semibold">Lucas</span>
           <span>doit</span>
           <span className="font-semibold">11,05€</span>
@@ -55,9 +46,7 @@ export default function GroupPage() {
 
       {/* Ajouter une dépense */}
       <section className="flex justify-center">
-        <button className="w-full bg-purple-400 text-white font-semibold py-2 rounded-full">
-          Ajouter une dépense
-        </button>
+        <Button>Ajouter une dépense</Button>
       </section>
 
       {/* Tableau des dépenses */}
@@ -76,20 +65,7 @@ export default function GroupPage() {
               <td>Laura</td>
               <td>
                 <button>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5 text-purple-400"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-                    />
-                  </svg>
+                  <PencilIcon className="size-5 text-purple-400" />
                 </button>
               </td>
             </tr>
@@ -98,20 +74,7 @@ export default function GroupPage() {
               <td>Lucas</td>
               <td>
                 <button>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5 text-purple-400"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-                    />
-                  </svg>
+                  <PencilIcon className="size-5 text-purple-400" />
                 </button>
               </td>
             </tr>
@@ -120,20 +83,7 @@ export default function GroupPage() {
               <td>Sherpa</td>
               <td>
                 <button>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="size-5 text-purple-400"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-                    />
-                  </svg>
+                  <PencilIcon className="size-5 text-purple-400" />
                 </button>
               </td>
             </tr>
