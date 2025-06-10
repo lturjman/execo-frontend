@@ -1,12 +1,23 @@
 import Image from "next/image";
 import Button from "@/components/Button";
-import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowLeftIcon,
+  PencilIcon,
+  Cog8ToothIcon,
+  UsersIcon,
+} from "@heroicons/react/24/solid";
+
+import CreateMember from "@/components/CreateMember";
+import UpdateMember from "@/components/UpdateMember";
+import RemoveMember from "@/components/RemoveMember";
+import GroupParameters from "@/components/GroupParameters";
+import MembersList from "@/components/MembersList";
 
 export default function GroupPage() {
   return (
     <div className="p-4 space-y-6 bg-gray-200 min-h-screen">
-      <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden relative ">
-        <div>
+      <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden ">
+        <div className="relative">
           <Image
             src="/images/groupImg.png"
             alt="Image de groupe"
@@ -21,8 +32,15 @@ export default function GroupPage() {
         </div>
 
         <div className="p-4 space-y-2">
-          <h1 className="text-center text-xl font-semibold">Nom du Groupe</h1>
-          <Button>Gérer les membres</Button>
+          <div className="flex gap-2 ">
+            <h1 className="text-xl font-semibold grow">Nom du Groupe</h1>
+            <Button rounded="true" className="">
+              <UsersIcon className="size-5 text-white" />
+            </Button>
+            <Button rounded="true" className="">
+              <Cog8ToothIcon className="size-5 text-white" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -90,6 +108,12 @@ export default function GroupPage() {
           </tbody>
         </table>
       </section>
+
+      <CreateMember></CreateMember>
+      <UpdateMember></UpdateMember>
+      <RemoveMember></RemoveMember>
+      <GroupParameters></GroupParameters>
+      <MembersList></MembersList>
     </div>
   );
 }

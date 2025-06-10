@@ -1,8 +1,9 @@
 import Image from "next/image";
+import CreateGroup from "@/components/CreateGroup";
 
 export default function Home() {
   return (
-    <div className="p-4">
+    <div className="p-4 space-y-6 bg-gray-50 min-h-screen">
       {/* Logo Execo */}
       <div className="mb-4">
         <Image
@@ -68,6 +69,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <CreateGroup></CreateGroup>
 
       {/* Bouton flottant */}
       <div className="fixed bottom-6 right-6">
