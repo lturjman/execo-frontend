@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Button from "./Button";
 
 export default function GroupCard({ group }) {
   return (
@@ -20,9 +21,7 @@ export default function GroupCard({ group }) {
 
       {/* Bouton */}
       <div className="px-4 pb-4">
-        <button className="w-full bg-purple-400 text-white font-semibold py-2 rounded-full">
-          voir le groupe
-        </button>
+        <Button href={`/groups/${group._id}`}>voir le groupe</Button>
       </div>
     </div>
   );

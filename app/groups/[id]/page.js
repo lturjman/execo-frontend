@@ -43,7 +43,7 @@ export default function GroupPage({ params }) {
             className="object-cover w-full h-full"
           />
 
-          <Button rounded="true" className="absolute">
+          <Button href="/groups" rounded="true" className="absolute">
             <ArrowLeftIcon className="size-5 text-white" />
           </Button>
         </div>
