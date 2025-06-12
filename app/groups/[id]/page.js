@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Button from "@/components/Button";
 import {
@@ -12,8 +13,24 @@ import UpdateMember from "@/components/UpdateMember";
 import RemoveMember from "@/components/RemoveMember";
 import GroupParameters from "@/components/GroupParameters";
 import MembersList from "@/components/MembersList";
+import { useState, useEffect, use } from "react";
 
-export default function GroupPage() {
+export default function GroupPage({ params }) {
+  const { id } = use(params);
+  const [group, setGroup] = useState({});
+
+  const fetchGroup = () => {
+    fetch(`http://localhost:3000/groups/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setGroup(data.data);
+      });
+  };
+
+  useEffect(() => {
+    fetchGroup();
+  }, []);
+
   return (
     <div className="p-4 space-y-6 bg-gray-200 min-h-screen">
       <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden ">
@@ -33,7 +50,7 @@ export default function GroupPage() {
 
         <div className="p-4 space-y-2">
           <div className="flex gap-2 ">
-            <h1 className="text-xl font-semibold grow">Nom du Groupe</h1>
+            <h1 className="text-xl font-semibold grow">{group.name}</h1>
             <Button rounded="true" className="">
               <UsersIcon className="size-5 text-white" />
             </Button>
@@ -112,7 +129,10 @@ export default function GroupPage() {
       <CreateMember></CreateMember>
       <UpdateMember></UpdateMember>
       <RemoveMember></RemoveMember>
-      <GroupParameters></GroupParameters>
+      <GroupParameters
+        groupId={group._id}
+        onGroupUpdated={fetchGroup}
+      ></GroupParameters>
       <MembersList></MembersList>
     </div>
   );

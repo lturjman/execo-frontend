@@ -3,7 +3,7 @@
 import Button from "@/components/Button";
 import { useState } from "react";
 
-export default function RemoveMember({}) {
+export default function RemoveMember() {
   return (
     <div>
       <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4">
@@ -16,10 +16,7 @@ export default function RemoveMember({}) {
           seront reréparties entre les autres membres du groupe
         </div>
         <div>
-          <Button
-            onClick={() => alert("Supprimé !")}
-            className="my-4 bg-red-400"
-          >
+          <Button onClick={() => alert("Supprimé")} className="my-4 bg-red-400">
             Oui, Supprimer
           </Button>
 
