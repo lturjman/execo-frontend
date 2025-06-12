@@ -1,20 +1,29 @@
 "use client";
 
-import Button from "@/components/Button";
-import { useState } from "react";
+import RemoveGroup from "./RemoveGroup";
+import { CloseButton } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
-export default function GroupParameters({ groupId, onGroupUpdated }) {
-  const [group, setGroup] = useState({
-    name: "",
-  });
+import Button from "@/components/Button";
+import { useState, useEffect } from "react";
+
+export default function GroupParameters({ onGroupUpdated, onClose, group }) {
+  const [editableGroup, setEditableGroup] = useState({ ...group });
+  let [displayRemoveGroup, setDisplayRemoveGroup] = useState(false);
+
+  useEffect(() => {
+    if (group) {
+      setEditableGroup({ ...group });
+    }
+  }, [group]);
 
   const handleUpdateGroup = async () => {
-    const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
+    const response = await fetch(`http://localhost:3000/groups/${group._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ group }),
+      body: JSON.stringify({ group: editableGroup }),
     });
 
     if (!response.ok) {
@@ -22,42 +31,50 @@ export default function GroupParameters({ groupId, onGroupUpdated }) {
     }
 
     const data = await response.json();
-    console.log("Réponse du serveur :", data);
-
-    if (onGroupUpdated) {
-      onGroupUpdated();
-    }
+    if (onGroupUpdated) onGroupUpdated();
+    if (onClose) onClose();
   };
 
-  return (
-    <div>
-      <div className="relative">
-        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4">
-          <h2 className="font-bold mb-4">Paramètres du groupe</h2>
-          <input
-            type="text"
-            className="w-full p-2 rounded bg-gray-100"
-            placeholder="Nom du groupe"
-            value={group.name}
-            onChange={(e) => setGroup({ ...group, name: e.target.value })}
-          />
-          <Button onClick={handleUpdateGroup} className="my-4">
-            Valider les modifications
-          </Button>
+  if (displayRemoveGroup)
+    return (
+      <RemoveGroup
+        group={group}
+        onClose={() => setDisplayRemoveGroup(false)}
+      ></RemoveGroup>
+    );
 
-          <hr className="my-2"></hr>
-          <label className="block mb-2 font-bold"> Supprimer le groupe :</label>
-          <div>
-            Attention, le groupe sera supprimé définitivement et toutes les
-            dépenses seront perdues.
-          </div>
-          <Button
-            onClick={() => alert("Le groupe a été surrpimé !")}
-            className="my-4 bg-red-400"
-          >
-            Supprimer le groupe
-          </Button>
-        </div>
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
+        <CloseButton as={Button} rounded={true}>
+          <XMarkIcon className="size-6" />
+        </CloseButton>
+      </div>
+      <input
+        type="text"
+        className="w-full p-2 rounded bg-gray-100"
+        placeholder="Nom du groupe"
+        value={editableGroup.name}
+        onChange={(e) =>
+          setEditableGroup({ ...editableGroup, name: e.target.value })
+        }
+      />
+      <Button onClick={handleUpdateGroup}>Valider les modifications</Button>
+
+      <hr className="my-6 border-gray-400"></hr>
+      <h2 className="block font-bold text-xl"> Supprimer le groupe :</h2>
+      <div>
+        Attention, le groupe sera supprimé définitivement et toutes les dépenses
+        seront perdues.
+      </div>
+      <div>
+        <Button
+          onClick={() => setDisplayRemoveGroup(true)}
+          className=" bg-red-400"
+        >
+          Supprimer le groupe
+        </Button>
       </div>
     </div>
   );

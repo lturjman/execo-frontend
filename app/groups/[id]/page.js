@@ -1,4 +1,12 @@
 "use client";
+
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
+
 import Image from "next/image";
 import Button from "@/components/Button";
 import {
@@ -18,6 +26,7 @@ import { useState, useEffect, use } from "react";
 export default function GroupPage({ params }) {
   const { id } = use(params);
   const [group, setGroup] = useState({});
+  let [isOpen, setIsOpen] = useState(false);
 
   const fetchGroup = () => {
     fetch(`http://localhost:3000/groups/${id}`)
@@ -54,9 +63,32 @@ export default function GroupPage({ params }) {
             <Button rounded="true" className="">
               <UsersIcon className="size-5 text-white" />
             </Button>
-            <Button rounded="true" className="">
-              <Cog8ToothIcon className="size-5 text-white" />
-            </Button>
+            <div>
+              <Button
+                rounded="true"
+                className=""
+                onClick={() => setIsOpen(true)}
+              >
+                <Cog8ToothIcon className="size-5 text-white" />
+              </Button>
+              <Dialog
+                open={isOpen}
+                onClose={() => setIsOpen(false)}
+                transition
+                className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-300 ease-out data-closed:opacity-0"
+              >
+                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <div className="fixed p-4 w-full flex justify-center">
+                  <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+                    <GroupParameters
+                      group={group}
+                      onGroupUpdated={fetchGroup}
+                      onClose={() => setIsOpen(false)}
+                    ></GroupParameters>
+                  </DialogPanel>
+                </div>
+              </Dialog>
+            </div>
           </div>
         </div>
       </div>
@@ -129,10 +161,6 @@ export default function GroupPage({ params }) {
       <CreateMember></CreateMember>
       <UpdateMember></UpdateMember>
       <RemoveMember></RemoveMember>
-      <GroupParameters
-        groupId={group._id}
-        onGroupUpdated={fetchGroup}
-      ></GroupParameters>
       <MembersList></MembersList>
     </div>
   );

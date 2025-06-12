@@ -1,45 +1,39 @@
 "use client";
 
 import Button from "@/components/Button";
+import { useRouter } from "next/navigation";
 
-export default function RemoveGroup({ groupId }) {
+export default function RemoveGroup({ group, onClose }) {
+  const router = useRouter();
+
   const handleRemoveGroup = async () => {
-    const response = await fetch(`http://localhost:3000/groups/${groupId}`, {
+    const response = await fetch(`http://localhost:3000/groups/${group._id}`, {
       method: "DELETE",
     });
 
     if (!response.ok) {
       throw new Error("Erreur lors de la suppression du groupe");
     }
-
-    const data = await response.json();
-    alert("Groupe supprimé avec succès !");
-    console.log("Réponse du serveur :", data);
+    router.push("/groups");
   };
 
   return (
-    <div>
-      <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4">
-        <label className="block mb-2 font-bold">
-          {" "}
-          Êtes vous sûr de vouloir supprimer le groupe ?
-        </label>
-        <div>
-          Pour rappel, cette action est irréversible et toutes les dépenses
-          seront perdues
-        </div>
-        <div>
-          <Button onClick={handleRemoveGroup} className="my-4 bg-red-400">
-            Oui, Supprimer
-          </Button>
+    <div className="space-y-4">
+      <h2 className="block font-bold text-xl">
+        Êtes vous sûr de vouloir supprimer le groupe ?
+      </h2>
+      <div>
+        Pour rappel, cette action est irréversible et toutes les dépenses seront
+        perdues
+      </div>
+      <div className="flex gap-4 ">
+        <Button onClick={handleRemoveGroup} className=" bg-red-400">
+          Oui, Supprimer
+        </Button>
 
-          <Button
-            onClick={() => alert("Annulé !")}
-            className="my-4 bg-gray-400"
-          >
-            Non, Annuler
-          </Button>
-        </div>
+        <Button className="bg-gray-400" onClick={onClose}>
+          Non, Annuler
+        </Button>
       </div>
     </div>
   );

@@ -1,9 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import Button from "@/components/Button";
 import { useState } from "react";
 
-export default function CreateGroup({ onGroupCreated }) {
+export default function CreateGroup({}) {
+  const router = useRouter();
   const [group, setGroup] = useState({
     name: "",
   });
@@ -21,29 +24,23 @@ export default function CreateGroup({ onGroupCreated }) {
       throw new Error("Erreur lors de la création du groupe");
     }
 
-    const data = await response.json();
-    console.log("Réponse du serveur :", data);
-
-    if (onGroupCreated) {
-      onGroupCreated();
-    }
+    const responseBody = await response.json();
+    const createdGroup = responseBody.data;
+    router.push(`/groups/${createdGroup._id}`);
   };
 
   return (
-    <div className="relative">
-      <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4">
-        <h2 className="text-xl font-bold mb-4">Nouveau Groupe</h2>
-        <input
-          type="text"
-          className="w-full p-2 mb-4 rounded bg-gray-100"
-          placeholder="Nom du groupe"
-          value={group.name}
-          onChange={(e) => setGroup({ ...group, name: e.target.value })}
-        />
-        <Button onClick={handleCreateGroup} className="my-4">
-          Créer le groupe
-        </Button>
-      </div>
+    <div>
+      <input
+        type="text"
+        className="w-full p-2 mb-4 rounded bg-gray-100"
+        placeholder="Nom du groupe"
+        value={group.name}
+        onChange={(e) => setGroup({ ...group, name: e.target.value })}
+      />
+      <Button onClick={handleCreateGroup} className="my-4">
+        Créer le groupe
+      </Button>
     </div>
   );
 }
