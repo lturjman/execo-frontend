@@ -26,7 +26,10 @@ import { useState, useEffect, use } from "react";
 export default function GroupPage({ params }) {
   const { id } = use(params);
   const [group, setGroup] = useState({});
-  let [isOpen, setIsOpen] = useState(false);
+  let [groupIsOpen, setGroupIsOpen] = useState(false);
+
+  const [member, setMember] = useState({});
+  let [memberIsOpen, setMemberIsOpen] = useState(false);
 
   const fetchGroup = () => {
     fetch(`http://localhost:3000/groups/${id}`)
@@ -51,7 +54,7 @@ export default function GroupPage({ params }) {
             height={100}
             className="object-cover w-full h-full"
           />
-
+          {/* Retour */}
           <Button href="/groups" rounded="true" className="absolute">
             <ArrowLeftIcon className="size-5 text-white" />
           </Button>
@@ -60,20 +63,45 @@ export default function GroupPage({ params }) {
         <div className="p-4 space-y-2">
           <div className="flex gap-2 ">
             <h1 className="text-xl font-semibold grow">{group.name}</h1>
-            <Button rounded="true" className="">
-              <UsersIcon className="size-5 text-white" />
-            </Button>
+
+            {/* Member parameters */}
+            <div>
+              <Button rounded="true" className="">
+                <UsersIcon
+                  onClick={() => setMemberIsOpen(true)}
+                  className="size-5 text-white"
+                />
+              </Button>
+              <Dialog
+                open={memberIsOpen}
+                onClose={() => setMemberIsOpen(false)}
+                transition
+                className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-300 ease-out data-closed:opacity-0"
+              >
+                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <div className="fixed p-4 w-full flex justify-center">
+                  <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+                    <MembersList
+                      groupId={group._id}
+                      onClose={() => setMemberIsOpen(false)}
+                    ></MembersList>
+                  </DialogPanel>
+                </div>
+              </Dialog>
+            </div>
+
+            {/* Group parameters */}
             <div>
               <Button
                 rounded="true"
                 className=""
-                onClick={() => setIsOpen(true)}
+                onClick={() => setGroupIsOpen(true)}
               >
                 <Cog8ToothIcon className="size-5 text-white" />
               </Button>
               <Dialog
-                open={isOpen}
-                onClose={() => setIsOpen(false)}
+                open={groupIsOpen}
+                onClose={() => setGroupIsOpen(false)}
                 transition
                 className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-300 ease-out data-closed:opacity-0"
               >
@@ -83,7 +111,7 @@ export default function GroupPage({ params }) {
                     <GroupParameters
                       group={group}
                       onGroupUpdated={fetchGroup}
-                      onClose={() => setIsOpen(false)}
+                      onClose={() => setGroupIsOpen(false)}
                     ></GroupParameters>
                   </DialogPanel>
                 </div>
@@ -157,11 +185,6 @@ export default function GroupPage({ params }) {
           </tbody>
         </table>
       </section>
-
-      <CreateMember></CreateMember>
-      <UpdateMember></UpdateMember>
-      <RemoveMember></RemoveMember>
-      <MembersList></MembersList>
     </div>
   );
 }
