@@ -8,10 +8,7 @@ import UpdateMember from "./UpdateMember";
 import { CloseButton } from "@headlessui/react";
 
 export default function MembersList({ groupId }) {
-  const [members, setMembers] = useState([
-    { name: "Laura", monthlyRevenue: 1200, monthlyCharges: 100, share: 40 },
-    { name: "Lucas", monthlyRevenue: 4000, monthlyCharges: 800, share: 60 },
-  ]);
+  const [members, setMembers] = useState([]);
 
   let [displayAddMember, setDisplayAddMember] = useState(false);
   let [editMember, setEditMember] = useState();

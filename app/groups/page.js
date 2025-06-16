@@ -11,7 +11,8 @@ import Image from "next/image";
 import CreateGroup from "@/components/CreateGroup";
 import GroupCard from "@/components/GroupCard";
 import { useEffect, useState } from "react";
-import { PlusIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { CloseButton } from "@headlessui/react";
 
 export default function Home() {
   const [groups, setGroups] = useState([]);
@@ -61,12 +62,18 @@ export default function Home() {
           transition
           className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-300 ease-out data-closed:opacity-0"
         >
-          <DialogBackdrop className="fixed inset-0 bg-black/30" />{" "}
+          <DialogBackdrop className="fixed inset-0 bg-black/30 " />{" "}
           <div className="fixed p-4 w-full flex justify-center">
-            <DialogPanel className=" bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4 max-w-md w-full">
-              <DialogTitle className="text-xl font-bold mb-4">
-                Nouveau Groupe
-              </DialogTitle>
+            <DialogPanel className=" bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4 max-w-md w-full space-y-4">
+              <div className="flex justify-between items-center">
+                <DialogTitle className="block font-bold text-xl">
+                  Nouveau Groupe
+                </DialogTitle>
+                <CloseButton as={Button} rounded={true} className="bg-gray-400">
+                  <XMarkIcon className="size-6" />
+                </CloseButton>
+              </div>
+
               <CreateGroup
                 onGroupCreated={fetchGroups}
                 onClose={() => setIsOpen(false)}

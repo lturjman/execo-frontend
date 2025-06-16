@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
 import Image from "next/image";
 import Button from "@/components/Button";
@@ -16,9 +11,6 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/solid";
 
-import CreateMember from "@/components/CreateMember";
-import UpdateMember from "@/components/UpdateMember";
-import RemoveMember from "@/components/RemoveMember";
 import GroupParameters from "@/components/GroupParameters";
 import MembersList from "@/components/MembersList";
 import { useState, useEffect, use } from "react";
@@ -28,7 +20,6 @@ export default function GroupPage({ params }) {
   const [group, setGroup] = useState({});
   let [groupIsOpen, setGroupIsOpen] = useState(false);
 
-  const [member, setMember] = useState({});
   let [memberIsOpen, setMemberIsOpen] = useState(false);
 
   const fetchGroup = () => {
