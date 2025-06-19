@@ -45,15 +45,19 @@ export default function CreateMember({ groupId }) {
         </CloseButton>
       </div>
       <div>
+        <label htmlFor="name">Nom du membre</label>
         <input
           type="text"
+          name="name"
           className="w-full p-2 mb-4 rounded bg-gray-100"
           placeholder="Nom"
           onChange={(e) => setMember({ ...member, name: e.target.value })}
         />
 
+        <label htmlFor="monthlyRevenue">Revenus mensuels</label>
         <input
           type="number"
+          name="monthlyRevenue"
           className="w-full p-2 mb-4 rounded bg-gray-100"
           placeholder="Revenus"
           onChange={(e) =>
@@ -61,8 +65,10 @@ export default function CreateMember({ groupId }) {
           }
         />
 
+        <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
         <input
           type="number"
+          name="monthlyCharges"
           className="w-full p-2 mb-4 rounded bg-gray-100"
           placeholder="Charges personnelles fixes"
           onChange={(e) =>

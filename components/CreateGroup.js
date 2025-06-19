@@ -31,8 +31,10 @@ export default function CreateGroup({}) {
 
   return (
     <div>
+      <label htmlFor="name">Nom du groupe</label>
       <input
         type="text"
+        name="name"
         className="w-full p-2 mb-4 rounded bg-gray-100"
         placeholder="Nom du groupe"
         value={group.name}

@@ -54,8 +54,10 @@ export default function UpdateMember({ member, groupId, onClose }) {
         </CloseButton>
       </div>
       <div>
+        <label htmlFor="name">Nom du membre</label>
         <input
           type="text"
+          name="name"
           className="w-full p-2 mb-4 rounded bg-gray-100"
           placeholder="Nom"
           value={editableMember.name}
@@ -64,8 +66,10 @@ export default function UpdateMember({ member, groupId, onClose }) {
           }
         />
 
+        <label htmlFor="monthlyRevenue">Revenus mensuels</label>
         <input
           type="number"
+          name="monthlyRevenue"
           className="w-full p-2 mb-4 rounded bg-gray-100"
           placeholder="Revenus"
           value={editableMember.monthlyRevenue}
@@ -77,6 +81,7 @@ export default function UpdateMember({ member, groupId, onClose }) {
           }
         />
 
+        <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
         <input
           type="number"
           className="w-full p-2 mb-4 rounded bg-gray-100"
