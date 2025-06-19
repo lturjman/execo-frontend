@@ -2,31 +2,24 @@
 
 import { useRouter } from "next/navigation";
 
+import { useDispatch } from "react-redux";
+import { createGroup } from "../lib/store/slices/groups";
+
 import Button from "@/components/Button";
 import { useState } from "react";
 
 export default function CreateGroup({}) {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [group, setGroup] = useState({
     name: "",
   });
 
   const handleCreateGroup = async () => {
-    const response = await fetch("http://localhost:3000/groups", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ group }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Erreur lors de la création du groupe");
+    const action = await dispatch(createGroup(group));
+    if (createGroup.fulfilled.match(action)) {
+      router.push(`/groups/${action.payload._id}`);
     }
-
-    const responseBody = await response.json();
-    const createdGroup = responseBody.data;
-    router.push(`/groups/${createdGroup._id}`);
   };
 
   return (
