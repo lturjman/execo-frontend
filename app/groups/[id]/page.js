@@ -4,6 +4,8 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
 import Image from "next/image";
 import Button from "@/components/Button";
+import CreateExpense from "@/components/CreateExpense";
+import UpdateExpense from "@/components/UpdateExpense";
 import {
   ArrowLeftIcon,
   PencilIcon,
@@ -18,9 +20,13 @@ import { useState, useEffect, use } from "react";
 export default function GroupPage({ params }) {
   const { id } = use(params);
   const [group, setGroup] = useState({});
-  let [groupIsOpen, setGroupIsOpen] = useState(false);
+  const [expenses, setExpenses] = useState([]);
 
+  const [expenseToEdit, setExpenseToEdit] = useState(null);
+
+  let [groupIsOpen, setGroupIsOpen] = useState(false);
   let [memberIsOpen, setMemberIsOpen] = useState(false);
+  let [expenseIsOpen, setExpenseIsOpen] = useState(false);
 
   const fetchGroup = () => {
     fetch(`http://localhost:3000/groups/${id}`)
@@ -30,8 +36,15 @@ export default function GroupPage({ params }) {
       });
   };
 
+  const fetchExpenses = () => {
+    fetch(`http://localhost:3000/groups/${id}/expenses`)
+      .then((res) => res.json())
+      .then(({ data }) => setExpenses(data));
+  };
+
   useEffect(() => {
     fetchGroup();
+    fetchExpenses();
   }, []);
 
   return (
@@ -69,7 +82,7 @@ export default function GroupPage({ params }) {
                 transition
                 className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-300 ease-out data-closed:opacity-0"
               >
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <DialogBackdrop className="fixed inset-0 " />
                 <div className="fixed p-4 w-full flex justify-center">
                   <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
                     <MembersList
@@ -96,7 +109,7 @@ export default function GroupPage({ params }) {
                 transition
                 className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-300 ease-out data-closed:opacity-0"
               >
-                <DialogBackdrop className="fixed inset-0 bg-black/30" />
+                <DialogBackdrop className="fixed inset-0" />
                 <div className="fixed p-4 w-full flex justify-center">
                   <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
                     <GroupParameters
@@ -130,49 +143,72 @@ export default function GroupPage({ params }) {
         </div>
       </section>
 
-      {/* Ajouter une dépense */}
-      <section className="flex justify-center">
-        <Button>Ajouter une dépense</Button>
-      </section>
+      <div>
+        <Button className="" onClick={() => setExpenseIsOpen(true)}>
+          Ajouter une dépense
+        </Button>
+        <Dialog
+          open={expenseIsOpen}
+          onClose={() => setExpenseIsOpen(false)}
+          transition
+          className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 transition duration-300 ease-out data-closed:opacity-0"
+        >
+          <DialogBackdrop className="fixed inset-0 " />
+          <div className="fixed p-4 w-full flex justify-center">
+            <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+              <CreateExpense
+                groupId={group._id}
+                onClose={() => setExpenseIsOpen(false)}
+                onExpenseCreated={fetchExpenses}
+              ></CreateExpense>
+            </DialogPanel>
+          </div>
+        </Dialog>
+      </div>
 
       {/* Tableau des dépenses */}
       <section className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-6">
         <table className="w-full text-left">
           <thead>
             <tr>
-              <th className="py-1">Dépenses</th>
-              <th className="py-1">Membres</th>
+              <th className="py-2 pr-4">Intitulé</th>
+              <th className="py-2 pr-4">Dépenses</th>
+              <th className="py-2 pr-4">Membres</th>
               <th></th>
             </tr>
           </thead>
           <tbody className="divide-y">
-            <tr>
-              <td className="py-2">15,68€</td>
-              <td>Laura</td>
-              <td>
-                <button>
-                  <PencilIcon className="size-5 text-purple-400" />
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2">22,10€</td>
-              <td>Lucas</td>
-              <td>
-                <button>
-                  <PencilIcon className="size-5 text-purple-400" />
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td className="py-2">7,32€</td>
-              <td>Sherpa</td>
-              <td>
-                <button>
-                  <PencilIcon className="size-5 text-purple-400" />
-                </button>
-              </td>
-            </tr>
+            {expenses.map((expense) => (
+              <tr key={expense._id}>
+                <td className="py-2">{expense.name}</td>
+                <td className="py-2">{expense.amount.toFixed(2)}€</td>
+                <td>{expense.member?.name}</td>
+                <td>
+                  <div>
+                    <button onClick={() => setExpenseToEdit(expense)}>
+                      <PencilIcon className="size-5 text-purple-400" />
+                    </button>
+                    <Dialog
+                      open={expenseToEdit === expense}
+                      onClose={() => setExpenseToEdit(null)}
+                      transition
+                      className="fixed inset-0 flex w-screen items-center bg-black/30 justify-center p-4 transition duration-300 ease-out data-closed:opacity-0"
+                    >
+                      <DialogBackdrop className="fixed inset-0 " />
+                      <div className="fixed p-4 w-full flex justify-center">
+                        <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+                          <UpdateExpense
+                            expense={expense}
+                            onClose={() => setExpenseToEdit(null)}
+                            onExpenseUpdated={fetchExpenses}
+                          ></UpdateExpense>
+                        </DialogPanel>
+                      </div>
+                    </Dialog>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </section>
