@@ -11,7 +11,7 @@ export default function RemoveGroup({ group, onClose }) {
 
   const dispatch = useDispatch();
 
-  const handleDelete = async () => {
+  const handleDeleteGroup = async () => {
     await dispatch(deleteGroup(group._id));
     router.push("/groups");
   };
@@ -26,7 +26,7 @@ export default function RemoveGroup({ group, onClose }) {
         perdues
       </div>
       <div className="flex gap-4 ">
-        <Button onClick={handleDelete} className=" bg-red-400">
+        <Button onClick={handleDeleteGroup} className=" bg-red-400">
           Oui, Supprimer
         </Button>
 
