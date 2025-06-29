@@ -3,20 +3,15 @@
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
+import { useDispatch } from "react-redux";
+import { deleteExpense } from "../lib/store/slices/expenses";
+
 export default function RemoveExpense({ onClose, expense }) {
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const handleRemoveExpense = async () => {
-    const response = await fetch(
-      `http://localhost:3000/groups/${expense.group}/expenses/${expense._id}`,
-      {
-        method: "DELETE",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Erreur lors de la suppression de la dépense");
-    }
+  const handleDeleteExpense = async () => {
+    await dispatch(deleteExpense({ groupId: expense.group, expense }));
     router.push(`/groups/${expense.group}`);
   };
 
@@ -31,7 +26,7 @@ export default function RemoveExpense({ onClose, expense }) {
         seront reréparties entre les autres membres du groupe
       </div>
       <div>
-        <Button onClick={handleRemoveExpense} className="my-4 bg-red-400">
+        <Button onClick={handleDeleteExpense} className="my-4 bg-red-400">
           Oui, Supprimer
         </Button>
 

@@ -3,21 +3,22 @@
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
+import { useDispatch } from "react-redux";
+import { deleteMember } from "../lib/store/slices/members";
+
 export default function RemoveMember({ onClose, groupId, member }) {
   const router = useRouter();
 
-  const handleRemoveMember = async () => {
-    const response = await fetch(
-      `http://localhost:3000/groups/${groupId}/members/${member._id}`,
-      {
-        method: "DELETE",
-      }
-    );
+  const dispatch = useDispatch();
 
-    if (!response.ok) {
-      throw new Error("Erreur lors de la suppression du membre");
+  const handleDeleteMember = async () => {
+    const action = await dispatch(deleteMember({ groupId, member }));
+    if (deleteMember.fulfilled.match(action)) {
+      onClose();
+    } else {
+      console.error("Échec suppression :", action.error);
+      alert("Erreur lors de la suppression");
     }
-    router.push(`/groups/${groupId}`);
   };
 
   return (
@@ -31,7 +32,7 @@ export default function RemoveMember({ onClose, groupId, member }) {
         seront reréparties entre les autres membres du groupe
       </div>
       <div>
-        <Button onClick={handleRemoveMember} className="my-4 bg-red-400">
+        <Button onClick={handleDeleteMember} className="my-4 bg-red-400">
           Oui, Supprimer
         </Button>
 

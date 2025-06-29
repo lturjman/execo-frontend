@@ -7,32 +7,24 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
 
-export default function GroupParameters({ onGroupUpdated, onClose, group }) {
-  const [editableGroup, setEditableGroup] = useState({ ...group });
+import { useDispatch } from "react-redux";
+import { updateGroup } from "../lib/store/slices/groups";
+
+export default function GroupParameters({ onClose, group }) {
+  const dispatch = useDispatch();
+
+  const [editableGroup, setEditableGroup] = useState(group);
   let [displayRemoveGroup, setDisplayRemoveGroup] = useState(false);
 
   useEffect(() => {
-    if (group) {
-      setEditableGroup({ ...group });
-    }
+    setEditableGroup(group);
   }, [group]);
 
   const handleUpdateGroup = async () => {
-    const response = await fetch(`http://localhost:3000/groups/${group._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ group: editableGroup }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Erreur lors de la modification du groupe");
+    const action = await dispatch(updateGroup(editableGroup));
+    if (updateGroup.fulfilled.match(action)) {
+      if (onClose) onClose();
     }
-
-    const data = await response.json();
-    if (onGroupUpdated) onGroupUpdated();
-    if (onClose) onClose();
   };
 
   if (displayRemoveGroup)

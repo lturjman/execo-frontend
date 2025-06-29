@@ -6,52 +6,42 @@ import { CloseButton } from "@headlessui/react";
 import RemoveExpense from "./RemoveExpense";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
+import { useDispatch, useSelector } from "react-redux";
+import { updateExpense } from "../lib/store/slices/expenses";
+import { fetchMembers } from "../lib/store/slices/members";
+
 export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
+  const dispatch = useDispatch();
+
   const [editableExpense, setEditableExpense] = useState({ ...expense });
   let [displayRemoveExpense, setDisplayRemoveExpense] = useState(false);
-  const [members, setMembers] = useState([]);
+  const members = useSelector((state) => state.members.items);
 
   useEffect(() => {
-    const fetchMembers = async () => {
-      const response = await fetch(
-        `http://localhost:3000/groups/${expense.group}/members`
-      );
-      if (!response.ok)
-        throw new Error("Erreur lors du chargement des membres");
-      const data = await response.json();
-      setMembers(data.data);
-    };
-
-    fetchMembers();
-  }, [expense.group]);
+    if (expense.group) {
+      dispatch(fetchMembers({ groupId: expense.group }));
+    }
+  }, [dispatch, expense.group]);
 
   useEffect(() => {
     if (expense) {
-      setEditableExpense({ ...expense, member: expense.member._id });
+      setEditableExpense({
+        ...expense,
+        member: expense.member?._id || expense.member,
+      });
     }
   }, [expense]);
 
   const handleUpdateExpense = async () => {
-    const response = await fetch(
-      `http://localhost:3000/groups/${expense.group}/expenses/${expense._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ expense: editableExpense }),
-      }
+    const action = await dispatch(
+      updateExpense({ groupId: expense.group, expense: editableExpense })
     );
-
-    if (!response.ok) {
-      throw new Error("Erreur lors de la modification de la dépense");
+    if (updateExpense.fulfilled.match(action)) {
+      if (onExpenseUpdated) onExpenseUpdated();
+      if (onClose) onClose();
+    } else {
+      alert("Erreur lors de la modification de la dépense");
     }
-
-    const data = await response.json();
-    if (onExpenseUpdated) {
-      onExpenseUpdated();
-    }
-    if (onClose) onClose();
   };
 
   if (displayRemoveExpense)

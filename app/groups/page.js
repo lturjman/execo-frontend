@@ -6,6 +6,9 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGroups } from "../../lib/store/slices/groups";
+
 import Button from "@/components/Button";
 import Image from "next/image";
 import CreateGroup from "@/components/CreateGroup";
@@ -15,21 +18,17 @@ import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { CloseButton } from "@headlessui/react";
 
 export default function Home() {
-  const [groups, setGroups] = useState([]);
+  const dispatch = useDispatch();
+  const groups = useSelector((state) => state.groups.items);
+  const loading = useSelector((state) => state.groups.loading);
+
   let [isOpen, setIsOpen] = useState(false);
 
-  const fetchGroups = () => {
-    fetch(`http://localhost:3000/groups`)
-      .then((response) => response.json())
-      .then((response) => {
-        setGroups(response.data);
-      });
-  };
-
   useEffect(() => {
-    fetchGroups();
-  }, []);
+    dispatch(fetchGroups());
+  }, [dispatch]);
 
+  if (loading) return <div>Chargement...</div>;
   return (
     <div className="p-4 space-y-6 bg-gray-50 min-h-screen">
       {/* Logo Execo */}

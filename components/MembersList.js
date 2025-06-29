@@ -7,23 +7,24 @@ import CreateMember from "./CreateMember";
 import UpdateMember from "./UpdateMember";
 import { CloseButton } from "@headlessui/react";
 
-export default function MembersList({ groupId }) {
-  const [members, setMembers] = useState([]);
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMembers } from "@/lib/store/slices/members";
 
+export default function MembersList({ groupId }) {
   let [displayAddMember, setDisplayAddMember] = useState(false);
   let [editMember, setEditMember] = useState();
 
-  const fetchMembers = () => {
-    fetch(`http://localhost:3000/groups/${groupId}/members/`)
-      .then((response) => response.json())
-      .then((data) => {
-        setMembers(data.data);
-      });
-  };
+  const dispatch = useDispatch();
+  const members = useSelector((state) => state.members.items);
+  const loading = useSelector((state) => state.members.loading);
 
   useEffect(() => {
-    fetchMembers();
-  }, []);
+    if (groupId) {
+      dispatch(fetchMembers({ groupId }));
+    }
+  }, [dispatch, groupId]);
+
+  if (loading) return <div>Chargement...</div>;
 
   if (displayAddMember)
     return (

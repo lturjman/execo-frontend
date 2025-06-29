@@ -3,17 +3,16 @@
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
+import { useDispatch } from "react-redux";
+import { deleteGroup } from "../lib/store/slices/groups";
+
 export default function RemoveGroup({ group, onClose }) {
   const router = useRouter();
 
-  const handleRemoveGroup = async () => {
-    const response = await fetch(`http://localhost:3000/groups/${group._id}`, {
-      method: "DELETE",
-    });
+  const dispatch = useDispatch();
 
-    if (!response.ok) {
-      throw new Error("Erreur lors de la suppression du groupe");
-    }
+  const handleDeleteGroup = async () => {
+    await dispatch(deleteGroup(group._id));
     router.push("/groups");
   };
 
@@ -27,7 +26,7 @@ export default function RemoveGroup({ group, onClose }) {
         perdues
       </div>
       <div className="flex gap-4 ">
-        <Button onClick={handleRemoveGroup} className=" bg-red-400">
+        <Button onClick={handleDeleteGroup} className=" bg-red-400">
           Oui, Supprimer
         </Button>
 

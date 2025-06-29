@@ -6,7 +6,12 @@ import { CloseButton } from "@headlessui/react";
 import RemoveMember from "./RemoveMember";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
+import { useDispatch } from "react-redux";
+import { updateMember } from "../lib/store/slices/members";
+
 export default function UpdateMember({ member, groupId, onClose }) {
+  const dispatch = useDispatch();
+
   const [editableMember, setEditableMember] = useState({ ...member });
   let [displayRemoveMember, setDisplayRemoveMember] = useState(false);
 
@@ -17,23 +22,10 @@ export default function UpdateMember({ member, groupId, onClose }) {
   }, [member]);
 
   const handleUpdateMember = async () => {
-    const response = await fetch(
-      `http://localhost:3000/groups/${groupId}/members/${member._id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ member: editableMember }),
-      }
+    const action = await dispatch(
+      updateMember({ groupId: member.group, member: editableMember })
     );
-
-    if (!response.ok) {
-      throw new Error("Erreur lors de la modification du membre");
-    }
-
-    const data = await response.json();
-    if (onClose) onClose();
+    if (updateMember.fulfilled.match(action)) onClose();
   };
 
   if (displayRemoveMember)
@@ -41,7 +33,7 @@ export default function UpdateMember({ member, groupId, onClose }) {
       <RemoveMember
         groupId={groupId}
         member={member}
-        onClose={() => setDisplayRemoveMember(false)}
+        onClose={() => onClose()}
       ></RemoveMember>
     );
 
