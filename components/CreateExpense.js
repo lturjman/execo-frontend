@@ -1,4 +1,9 @@
 "use client";
+import { useDispatch, useSelector } from "react-redux";
+import { createExpense } from "@/lib/store/slices/expenses";
+import { fetchMembers } from "@/lib/store/slices/members";
+
+import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
@@ -6,43 +11,29 @@ import { CloseButton } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 export default function CreateExpense({ groupId, onExpenseCreated }) {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
   const [expense, setExpense] = useState({
     name: "",
     amount: "",
+    member: "",
   });
-  const [members, setMembers] = useState([]);
+
+  const members = useSelector((state) => state.members.items);
 
   useEffect(() => {
-    const fetchMembers = async () => {
-      const response = await fetch(
-        `http://localhost:3000/groups/${groupId}/members`
-      );
-      if (!response.ok)
-        throw new Error("Erreur lors du chargement des membres");
-      const data = await response.json();
-      setMembers(data.data);
-    };
-
-    fetchMembers();
-  }, [groupId]);
+    if (groupId) {
+      dispatch(fetchMembers({ groupId }));
+    }
+  }, [dispatch, groupId]);
 
   const handleCreateExpense = async () => {
-    const response = await fetch(
-      `http://localhost:3000/groups/${groupId}/expenses`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ expense }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Erreur lors de la création de la dépense");
+    const action = await dispatch(createExpense({ groupId, expense }));
+    if (createExpense.fulfilled.match(action)) {
+      router.push(`/groups/${groupId}`);
+      if (onExpenseCreated) onExpenseCreated();
     }
-
-    if (onExpenseCreated) onExpenseCreated();
   };
 
   return (

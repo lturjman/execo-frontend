@@ -19,6 +19,7 @@ import { useState, useEffect, use } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroup } from "@/lib/store/slices/groups";
+import { fetchExpenses } from "@/lib/store/slices/expenses";
 
 export default function GroupPage({ params }) {
   const { id } = use(params);
@@ -28,7 +29,8 @@ export default function GroupPage({ params }) {
     state.groups.items.find((g) => g && g._id === id)
   );
 
-  const [expenses, setExpenses] = useState([]);
+  const expenses = useSelector((state) => state.expenses.items);
+  const expensesLoading = useSelector((state) => state.expenses.loading);
 
   const [expenseToEdit, setExpenseToEdit] = useState(null);
 
@@ -36,24 +38,14 @@ export default function GroupPage({ params }) {
   let [memberIsOpen, setMemberIsOpen] = useState(false);
   let [expenseIsOpen, setExpenseIsOpen] = useState(false);
 
-  const fetchExpenses = () => {
-    fetch(`http://localhost:3000/groups/${id}/expenses`)
-      .then((res) => res.json())
-      .then(({ data }) => setExpenses(data));
-  };
-
   useEffect(() => {
     dispatch(fetchGroup(id));
+    dispatch(fetchExpenses({ groupId: id }));
   }, [dispatch, id]);
 
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
-
-  if (!group) {
+  if (!group || expensesLoading) {
     return <div>Chargement...</div>;
   }
-
   return (
     <div className="p-4 space-y-6 bg-gray-200 min-h-screen">
       <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden ">
