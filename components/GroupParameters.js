@@ -51,8 +51,11 @@ export default function GroupParameters({ onGroupUpdated, onClose, group }) {
           <XMarkIcon className="size-6" />
         </CloseButton>
       </div>
+
+      <label htmlFor="name">Nom du groupe</label>
       <input
         type="text"
+        name="name"
         className="w-full p-2 rounded bg-gray-100"
         placeholder="Nom du groupe"
         value={editableGroup.name}
