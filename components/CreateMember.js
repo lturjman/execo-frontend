@@ -20,7 +20,11 @@ export default function CreateMember({ onClose, groupId }) {
 
   const handleCreateMember = async () => {
     const action = await dispatch(createMember({ groupId, member }));
-    if (createMember.fulfilled.match(action)) onClose();
+    if (createMember.fulfilled.match(action)) {
+      // On fetch tous les membres après la création
+      await dispatch(fetchMembers({ groupId }));
+      if (onClose) onClose();
+    }
   };
 
   return (

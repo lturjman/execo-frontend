@@ -25,7 +25,10 @@ export default function UpdateMember({ member, groupId, onClose }) {
     const action = await dispatch(
       updateMember({ groupId: member.group, member: editableMember })
     );
-    if (updateMember.fulfilled.match(action)) onClose();
+    if (updateMember.fulfilled.match(action)) {
+      await dispatch(fetchMembers({ groupId }));
+      onClose();
+    }
   };
 
   if (displayRemoveMember)
