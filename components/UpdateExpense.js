@@ -9,6 +9,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { updateExpense } from "../lib/store/slices/expenses";
 import { fetchMembers } from "../lib/store/slices/members";
+import { fetchExpenses } from "../lib/store/slices/expenses";
 
 export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
     if (expense) {
       setEditableExpense({
         ...expense,
-        member: expense.member?._id || expense.member,
+        member: expense.credits[0].member?._id || expense.member,
       });
     }
   }, [expense]);
@@ -37,6 +38,7 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
       updateExpense({ groupId: expense.group, expense: editableExpense })
     );
     if (updateExpense.fulfilled.match(action)) {
+      await dispatch(fetchExpenses({ groupId: expense.group }));
       if (onExpenseUpdated) onExpenseUpdated();
       if (onClose) onClose();
     } else {
@@ -89,10 +91,15 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
 
         <label htmlFor="member">De :</label>
         <select
-          value={editableExpense.member}
+          value={editableExpense.credits[0].member._id}
           name="member"
           onChange={(e) =>
-            setEditableExpense({ ...editableExpense, member: e.target.value })
+            setEditableExpense({
+              ...editableExpense,
+              credits: [
+                { ...editableExpense.credits[0], member: e.target.value },
+              ],
+            })
           }
           className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-purple-400 focus:border-purple-400 block w-full p-2"
         >
@@ -117,7 +124,7 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
         }}
         className="my-4 bg-red-400"
       >
-        Supprimer le membre
+        Supprimer la dépense
       </Button>
     </div>
   );

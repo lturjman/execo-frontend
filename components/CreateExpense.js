@@ -10,6 +10,8 @@ import { useState, useEffect } from "react";
 import { CloseButton } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
+import { Decimal } from "decimal.js";
+
 export default function CreateExpense({ groupId, onExpenseCreated }) {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -29,7 +31,29 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
   }, [dispatch, groupId]);
 
   const handleCreateExpense = async () => {
-    const action = await dispatch(createExpense({ groupId, expense }));
+    const action = await dispatch(
+      createExpense({
+        groupId,
+        expense: {
+          name: expense.name,
+          amount: Decimal.mul(expense.amount, 100),
+          debts: members.map((member) => {
+            return {
+              amount: Decimal.mul(expense.amount, member.share)
+                .times(100)
+                .round(),
+              member: member._id,
+            };
+          }),
+          credits: [
+            {
+              amount: Decimal.mul(expense.amount, 100),
+              member: expense.member,
+            },
+          ],
+        },
+      })
+    );
     if (createExpense.fulfilled.match(action)) {
       router.push(`/groups/${groupId}`);
       if (onExpenseCreated) onExpenseCreated();
