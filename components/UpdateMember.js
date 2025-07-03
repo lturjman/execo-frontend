@@ -2,14 +2,18 @@
 
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
-import { CloseButton } from "@headlessui/react";
 import RemoveMember from "./RemoveMember";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { useDispatch } from "react-redux";
 import { updateMember } from "../lib/store/slices/members";
 
-export default function UpdateMember({ member, groupId, onClose }) {
+export default function UpdateMember({
+  member,
+  groupId,
+  onClose,
+  onMemberUpdatedOrDeleted,
+}) {
   const dispatch = useDispatch();
 
   const [editableMember, setEditableMember] = useState({ ...member });
@@ -26,8 +30,7 @@ export default function UpdateMember({ member, groupId, onClose }) {
       updateMember({ groupId: member.group, member: editableMember })
     );
     if (updateMember.fulfilled.match(action)) {
-      await dispatch(fetchMembers({ groupId }));
-      onClose();
+      onMemberUpdatedOrDeleted();
     }
   };
 
@@ -36,7 +39,8 @@ export default function UpdateMember({ member, groupId, onClose }) {
       <RemoveMember
         groupId={groupId}
         member={member}
-        onClose={() => onClose()}
+        onClose={() => setDisplayRemoveMember(false)}
+        onMemberDeleted={onMemberUpdatedOrDeleted}
       ></RemoveMember>
     );
 
@@ -44,9 +48,13 @@ export default function UpdateMember({ member, groupId, onClose }) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="block mb-2 font-bold text-xl"> Modifier membre :</h2>
-        <CloseButton as={Button} rounded={true} className="bg-gray-400">
+        <Button
+          onClick={() => onClose()}
+          rounded={true}
+          className="bg-gray-400"
+        >
           <XMarkIcon className="size-6" />
-        </CloseButton>
+        </Button>
       </div>
       <div>
         <label htmlFor="name">Nom du membre</label>
@@ -90,9 +98,9 @@ export default function UpdateMember({ member, groupId, onClose }) {
           }
         />
         <div>Part : {editableMember.share}%</div>
-        <CloseButton as={Button} className="my-4" onClick={handleUpdateMember}>
+        <Button className="my-4" onClick={handleUpdateMember}>
           Valider les modifications
-        </CloseButton>
+        </Button>
       </div>
       <hr className="my-2"></hr>
       <label className="block mb-2 font-bold"> Supprimer le membre :</label>

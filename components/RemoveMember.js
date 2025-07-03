@@ -6,7 +6,12 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { deleteMember } from "../lib/store/slices/members";
 
-export default function RemoveMember({ onClose, groupId, member }) {
+export default function RemoveMember({
+  onClose,
+  onMemberDeleted,
+  groupId,
+  member,
+}) {
   const router = useRouter();
 
   const dispatch = useDispatch();
@@ -14,7 +19,7 @@ export default function RemoveMember({ onClose, groupId, member }) {
   const handleDeleteMember = async () => {
     const action = await dispatch(deleteMember({ groupId, member }));
     if (deleteMember.fulfilled.match(action)) {
-      onClose();
+      if (onMemberDeleted) onMemberDeleted();
     } else {
       console.error("Échec suppression :", action.error);
       alert("Erreur lors de la suppression");
