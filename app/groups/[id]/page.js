@@ -23,6 +23,8 @@ import { fetchExpenses } from "@/lib/store/slices/expenses";
 
 import { amountToCurrency } from "@/utils/amountToCurrency";
 
+import { fetchPaybacks } from "@/lib/store/slices/paybacks";
+
 export default function GroupPage({ params }) {
   const { id } = use(params);
   const dispatch = useDispatch();
@@ -34,6 +36,9 @@ export default function GroupPage({ params }) {
   const expenses = useSelector((state) => state.expenses.items);
   const expensesLoading = useSelector((state) => state.expenses.loading);
 
+  const paybacks = useSelector((state) => state.paybacks.items);
+  const paybacksLoading = useSelector((state) => state.paybacks.loading);
+
   const [expenseToEdit, setExpenseToEdit] = useState(null);
 
   let [groupIsOpen, setGroupIsOpen] = useState(false);
@@ -43,6 +48,7 @@ export default function GroupPage({ params }) {
   useEffect(() => {
     dispatch(fetchGroup(id));
     dispatch(fetchExpenses({ groupId: id }));
+    dispatch(fetchPaybacks({ groupId: id }));
   }, [dispatch, id]);
 
   if (!group) {
@@ -128,20 +134,30 @@ export default function GroupPage({ params }) {
 
       {/* Liste des dettes */}
       <section className="space-y-2">
-        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2">
-          <span className="font-semibold">Laura</span>
-          <span>doit</span>
-          <span className="font-semibold">2,38€</span>
-          <span>à</span>
-          <span className="font-semibold">Sherpa</span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2">
-          <span className="font-semibold">Lucas</span>
-          <span>doit</span>
-          <span className="font-semibold">11,05€</span>
-          <span>à</span>
-          <span className="font-semibold">Laura</span>
-        </div>
+        {paybacksLoading ? (
+          <div className="text-center text-gray-500 italic">
+            Chargement des remboursements…
+          </div>
+        ) : paybacks.length === 0 ? (
+          <div className="text-center text-gray-500 italic">
+            Aucun remboursement
+          </div>
+        ) : (
+          paybacks.map((payback, index) => (
+            <div
+              key={index}
+              className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2"
+            >
+              <span className="font-semibold">{payback.from.name}</span>
+              <span>doit</span>
+              <span className="font-semibold">
+                {(payback.amount / 100).toFixed(2)}€
+              </span>
+              <span>à</span>
+              <span className="font-semibold">{payback.to.name}</span>
+            </div>
+          ))
+        )}
       </section>
 
       <div>
