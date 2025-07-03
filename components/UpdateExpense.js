@@ -9,9 +9,15 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { updateExpense } from "../lib/store/slices/expenses";
 import { fetchMembers } from "../lib/store/slices/members";
-import { fetchExpenses } from "../lib/store/slices/expenses";
 
-export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
+import { Decimal } from "decimal.js";
+
+export default function UpdateExpense({
+  expense,
+  onClose,
+  onExpenseUpdated,
+  onExpenseDeleted,
+}) {
   const dispatch = useDispatch();
 
   const [editableExpense, setEditableExpense] = useState({ ...expense });
@@ -28,6 +34,7 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
     if (expense) {
       setEditableExpense({
         ...expense,
+        amount: Decimal.div(expense.amount, 100),
         member: expense.credits[0].member?._id || expense.member,
       });
     }
@@ -35,12 +42,30 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
 
   const handleUpdateExpense = async () => {
     const action = await dispatch(
-      updateExpense({ groupId: expense.group, expense: editableExpense })
+      updateExpense({
+        groupId: expense.group,
+        expense: {
+          ...editableExpense,
+          amount: Decimal.mul(editableExpense.amount, 100).round(),
+          debts: members.map((member) => {
+            return {
+              amount: Decimal.mul(editableExpense.amount, member.share)
+                .times(100)
+                .round(),
+              member: member._id,
+            };
+          }),
+          credits: [
+            {
+              amount: Decimal.mul(editableExpense.amount, 100),
+              member: editableExpense.member,
+            },
+          ],
+        },
+      })
     );
     if (updateExpense.fulfilled.match(action)) {
-      await dispatch(fetchExpenses({ groupId: expense.group }));
       if (onExpenseUpdated) onExpenseUpdated();
-      if (onClose) onClose();
     } else {
       alert("Erreur lors de la modification de la dépense");
     }
@@ -51,6 +76,7 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
       <RemoveExpense
         expense={expense}
         onClose={() => setDisplayRemoveExpense(false)}
+        onExpenseDeleted={onExpenseDeleted}
       ></RemoveExpense>
     );
 
@@ -80,6 +106,7 @@ export default function UpdateExpense({ expense, onClose, onExpenseUpdated }) {
           value={editableExpense.amount}
           className="w-full p-2 mb-4 rounded bg-gray-100"
           name="amount"
+          step=".01"
           placeholder="Dépense en €"
           onChange={(e) =>
             setEditableExpense({

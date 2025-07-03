@@ -55,6 +55,11 @@ export default function GroupPage({ params }) {
     return <div>Chargement...</div>;
   }
 
+  const fetchExpensesAndPaybacks = () => {
+    dispatch(fetchExpenses({ groupId: id }));
+    dispatch(fetchPaybacks({ groupId: id }));
+  };
+
   return (
     <div className="p-4 space-y-6 bg-gray-200 min-h-screen">
       <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden ">
@@ -176,7 +181,7 @@ export default function GroupPage({ params }) {
               <CreateExpense
                 groupId={group._id}
                 onClose={() => setExpenseIsOpen(false)}
-                onExpenseCreated={fetchExpenses}
+                onExpenseCreated={fetchExpensesAndPaybacks}
               ></CreateExpense>
             </DialogPanel>
           </div>
@@ -188,19 +193,26 @@ export default function GroupPage({ params }) {
         <table className="w-full text-left">
           <thead>
             <tr>
-              <th className="py-2 pr-4">Intitulé</th>
-              <th className="py-2 pr-4">Dépenses</th>
-              <th className="py-2 pr-4">Payé par</th>
+              <th className="py-2 px-4">Intitulé</th>
+              <th className="py-2 px-4 text-right">Dépenses</th>
+              <th className="py-2 px-4 text-right">Payé par</th>
               <th></th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {expenses.map((expense) => (
               <tr key={expense._id}>
-                <td className="py-2">{expense.name}</td>
-                <td className="py-2">{amountToCurrency(expense.amount)}</td>
-                <td>{expense.credits[0].member.name}</td>
-                <td>
+                <td className="p-2">{expense.name}</td>
+
+                <td className="p-2 text-right">
+                  {amountToCurrency(expense.amount)}
+                </td>
+
+                <td className="p-2 text-right">
+                  {expense.credits[0].member.name}
+                </td>
+
+                <td className="p-2">
                   <div>
                     <button onClick={() => setExpenseToEdit(expense)}>
                       <PencilIcon className="size-5 text-purple-400" />
@@ -211,14 +223,15 @@ export default function GroupPage({ params }) {
                       transition
                       className="fixed inset-0 flex w-screen items-center bg-black/30 justify-center p-4 transition duration-300 ease-out data-closed:opacity-0"
                     >
-                      <DialogBackdrop className="fixed inset-0 " />
+                      <DialogBackdrop className="fixed inset-0" />
                       <div className="fixed p-4 w-full flex justify-center">
                         <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
                           <UpdateExpense
                             expense={expense}
                             onClose={() => setExpenseToEdit(null)}
-                            onExpenseUpdated={fetchExpenses}
-                          ></UpdateExpense>
+                            onExpenseDeleted={fetchExpensesAndPaybacks}
+                            onExpenseUpdated={fetchExpensesAndPaybacks}
+                          />
                         </DialogPanel>
                       </div>
                     </Dialog>
