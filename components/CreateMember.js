@@ -6,7 +6,7 @@ import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function CreateMember({ onClose, groupId }) {
+export default function CreateMember({ onMemberCreated, onClose, groupId }) {
   const router = useRouter();
 
   const dispatch = useDispatch();
@@ -20,7 +20,9 @@ export default function CreateMember({ onClose, groupId }) {
 
   const handleCreateMember = async () => {
     const action = await dispatch(createMember({ groupId, member }));
-    if (createMember.fulfilled.match(action)) onClose();
+    if (createMember.fulfilled.match(action)) {
+      if (onMemberCreated) onMemberCreated();
+    }
   };
 
   return (

@@ -36,7 +36,7 @@ export default function Home() {
         <Image
           src="/images/execoLogo01.png"
           alt="Logo Execo"
-          width={100}
+          width={150}
           height={50}
         />
       </div>

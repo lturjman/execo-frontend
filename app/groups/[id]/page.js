@@ -21,6 +21,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchGroup } from "@/lib/store/slices/groups";
 import { fetchExpenses } from "@/lib/store/slices/expenses";
 
+import { amountToCurrency } from "@/utils/amountToCurrency";
+
+import { fetchPaybacks } from "@/lib/store/slices/paybacks";
+
 export default function GroupPage({ params }) {
   const { id } = use(params);
   const dispatch = useDispatch();
@@ -32,6 +36,9 @@ export default function GroupPage({ params }) {
   const expenses = useSelector((state) => state.expenses.items);
   const expensesLoading = useSelector((state) => state.expenses.loading);
 
+  const paybacks = useSelector((state) => state.paybacks.items);
+  const paybacksLoading = useSelector((state) => state.paybacks.loading);
+
   const [expenseToEdit, setExpenseToEdit] = useState(null);
 
   let [groupIsOpen, setGroupIsOpen] = useState(false);
@@ -41,11 +48,18 @@ export default function GroupPage({ params }) {
   useEffect(() => {
     dispatch(fetchGroup(id));
     dispatch(fetchExpenses({ groupId: id }));
+    dispatch(fetchPaybacks({ groupId: id }));
   }, [dispatch, id]);
 
-  if (!group || expensesLoading) {
+  if (!group) {
     return <div>Chargement...</div>;
   }
+
+  const fetchExpensesAndPaybacks = () => {
+    dispatch(fetchExpenses({ groupId: id }));
+    dispatch(fetchPaybacks({ groupId: id }));
+  };
+
   return (
     <div className="p-4 space-y-6 bg-gray-200 min-h-screen">
       <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden ">
@@ -125,20 +139,30 @@ export default function GroupPage({ params }) {
 
       {/* Liste des dettes */}
       <section className="space-y-2">
-        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2">
-          <span className="font-semibold">Laura</span>
-          <span>doit</span>
-          <span className="font-semibold">2,38€</span>
-          <span>à</span>
-          <span className="font-semibold">Sherpa</span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2">
-          <span className="font-semibold">Lucas</span>
-          <span>doit</span>
-          <span className="font-semibold">11,05€</span>
-          <span>à</span>
-          <span className="font-semibold">Laura</span>
-        </div>
+        {paybacksLoading ? (
+          <div className="text-center text-gray-500 italic">
+            Chargement des remboursements…
+          </div>
+        ) : paybacks.length === 0 ? (
+          <div className="text-center text-gray-500 italic">
+            Aucun remboursement
+          </div>
+        ) : (
+          paybacks.map((payback, index) => (
+            <div
+              key={index}
+              className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2"
+            >
+              <span className="font-semibold">{payback.from.name}</span>
+              <span>doit</span>
+              <span className="font-semibold">
+                {(payback.amount / 100).toFixed(2)}€
+              </span>
+              <span>à</span>
+              <span className="font-semibold">{payback.to.name}</span>
+            </div>
+          ))
+        )}
       </section>
 
       <div>
@@ -157,7 +181,7 @@ export default function GroupPage({ params }) {
               <CreateExpense
                 groupId={group._id}
                 onClose={() => setExpenseIsOpen(false)}
-                onExpenseCreated={fetchExpenses}
+                onExpenseCreated={fetchExpensesAndPaybacks}
               ></CreateExpense>
             </DialogPanel>
           </div>
@@ -169,19 +193,26 @@ export default function GroupPage({ params }) {
         <table className="w-full text-left">
           <thead>
             <tr>
-              <th className="py-2 pr-4">Intitulé</th>
-              <th className="py-2 pr-4">Dépenses</th>
-              <th className="py-2 pr-4">Membres</th>
+              <th className="py-2 px-4">Intitulé</th>
+              <th className="py-2 px-4 text-right">Dépenses</th>
+              <th className="py-2 px-4 text-right">Payé par</th>
               <th></th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {expenses.map((expense) => (
               <tr key={expense._id}>
-                <td className="py-2">{expense.name}</td>
-                <td className="py-2">{expense.amount.toFixed(2)}€</td>
-                <td>{expense.member?.name}</td>
-                <td>
+                <td className="p-2">{expense.name}</td>
+
+                <td className="p-2 text-right">
+                  {amountToCurrency(expense.amount)}
+                </td>
+
+                <td className="p-2 text-right">
+                  {expense.credits[0].member.name}
+                </td>
+
+                <td className="p-2">
                   <div>
                     <button onClick={() => setExpenseToEdit(expense)}>
                       <PencilIcon className="size-5 text-purple-400" />
@@ -192,14 +223,15 @@ export default function GroupPage({ params }) {
                       transition
                       className="fixed inset-0 flex w-screen items-center bg-black/30 justify-center p-4 transition duration-300 ease-out data-closed:opacity-0"
                     >
-                      <DialogBackdrop className="fixed inset-0 " />
+                      <DialogBackdrop className="fixed inset-0" />
                       <div className="fixed p-4 w-full flex justify-center">
                         <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
                           <UpdateExpense
                             expense={expense}
                             onClose={() => setExpenseToEdit(null)}
-                            onExpenseUpdated={fetchExpenses}
-                          ></UpdateExpense>
+                            onExpenseDeleted={fetchExpensesAndPaybacks}
+                            onExpenseUpdated={fetchExpensesAndPaybacks}
+                          />
                         </DialogPanel>
                       </div>
                     </Dialog>
