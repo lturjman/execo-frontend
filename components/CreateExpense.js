@@ -7,18 +7,19 @@ import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
-import { CloseButton } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { Decimal } from "decimal.js";
+import { NumericFormat } from "react-number-format";
+import ExpenseForm from "./ExpenseForm";
 
-export default function CreateExpense({ groupId, onExpenseCreated }) {
+export default function CreateExpense({ groupId, onExpenseCreated, onClose }) {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const [expense, setExpense] = useState({
     name: "",
-    amount: "",
+    amount: 0,
     member: "",
   });
 
@@ -30,16 +31,16 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
     }
   }, [dispatch, groupId]);
 
-  const handleCreateExpense = async () => {
+  const handleCreateExpense = async (updatedExpense) => {
     const action = await dispatch(
       createExpense({
         groupId,
         expense: {
-          name: expense.name,
-          amount: Decimal.mul(expense.amount, 100),
+          name: updatedExpense.name,
+          amount: Decimal.mul(updatedExpense.amount, 100),
           debts: members.map((member) => {
             return {
-              amount: Decimal.mul(expense.amount, member.share)
+              amount: Decimal.mul(updatedExpense.amount, member.share)
                 .times(100)
                 .round(),
               member: member._id,
@@ -47,14 +48,15 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
           }),
           credits: [
             {
-              amount: Decimal.mul(expense.amount, 100),
-              member: expense.member,
+              amount: Decimal.mul(updatedExpense.amount, 100),
+              member: updatedExpense.member,
             },
           ],
         },
       })
     );
     if (createExpense.fulfilled.match(action)) {
+      if (onClose) onClose();
       router.push(`/groups/${groupId}`);
       if (onExpenseCreated) onExpenseCreated();
     }
@@ -64,51 +66,14 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="block font-bold text-xl"> Nouvelle dépense :</h2>
-        <CloseButton as={Button} rounded={true} className="bg-gray-400">
+        <Button onClick={onClose} rounded={true} className="bg-gray-400">
           <XMarkIcon className="size-6" />
-        </CloseButton>
+        </Button>
       </div>
-      <div>
-        <label htmlFor="name"> Intitulé de la dépense</label>
-        <input
-          type="text"
-          name="name"
-          value={expense.name}
-          className="w-full p-2 mb-4 rounded bg-gray-100"
-          placeholder="Intitulé"
-          onChange={(e) => setExpense({ ...expense, name: e.target.value })}
-        />
-
-        <label htmlFor="amount">Dépense en Euro (€)</label>
-        <input
-          type="number"
-          name="amount"
-          value={expense.amount}
-          className="w-full p-2 mb-4 rounded bg-gray-100"
-          placeholder="Dépense en €"
-          onChange={(e) =>
-            setExpense({ ...expense, amount: Number(e.target.value) })
-          }
-        />
-        <label htmlFor="member">De :</label>
-        <select
-          value={expense.member}
-          name="member"
-          onChange={(e) => setExpense({ ...expense, member: e.target.value })}
-          className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-purple-400 focus:border-purple-400 block w-full p-2"
-        >
-          <option value="">-- Choisir un membre --</option>
-          {members.map((member) => (
-            <option key={member._id} value={member._id}>
-              {member.name}
-            </option>
-          ))}
-        </select>
-
-        <CloseButton as={Button} onClick={handleCreateExpense} className="my-4">
-          Ajouter la dépense
-        </CloseButton>
-      </div>
+      <ExpenseForm
+        expense={expense}
+        handleSubmit={handleCreateExpense}
+      ></ExpenseForm>
     </div>
   );
 }
