@@ -24,6 +24,15 @@ export default function MembersList({ groupId }) {
     }
   }, [dispatch, groupId]);
 
+  function onMemberCreated() {
+    setDisplayAddMember(false);
+    dispatch(fetchMembers({ groupId }));
+  }
+  function onMemberUpdatedOrDeleted() {
+    setEditMember();
+    dispatch(fetchMembers({ groupId }));
+  }
+
   if (loading) return <div>Chargement...</div>;
 
   if (displayAddMember)
@@ -31,6 +40,7 @@ export default function MembersList({ groupId }) {
       <CreateMember
         groupId={groupId}
         onClose={() => setDisplayAddMember(false)}
+        onMemberCreated={onMemberCreated}
       ></CreateMember>
     );
 
@@ -39,7 +49,8 @@ export default function MembersList({ groupId }) {
       <UpdateMember
         groupId={groupId}
         member={editMember}
-        onClose={() => setEditMember()}
+        onClose={setEditMember}
+        onMemberUpdatedOrDeleted={onMemberUpdatedOrDeleted}
       ></UpdateMember>
     );
 
@@ -54,12 +65,16 @@ export default function MembersList({ groupId }) {
 
       {members.map((member, index) => (
         <div key={index}>
-          <div className="flex gap-4 items-center justify-between">
-            <div className="font-bold">{member.name} :</div>
-            <div>Part : {member.share}%</div>
-            <Button onClick={() => setEditMember(member)} rounded="true">
-              <PencilIcon className="size-4 text-white" />
-            </Button>
+          <div className="flex gap-4 items-center">
+            <div className="font-bold w-1/3">{member.name} :</div>
+            <div className="text-right w-1/3">
+              Part: {(member.share * 100).toFixed(2) + "%"}
+            </div>
+            <div className="w-1/3 flex justify-end">
+              <Button onClick={() => setEditMember(member)} rounded="true">
+                <PencilIcon className="size-4 text-white" />
+              </Button>
+            </div>
           </div>
         </div>
       ))}
