@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import { NumericFormat } from "react-number-format";
 import { Decimal } from "decimal.js";
@@ -22,6 +22,10 @@ export default function ExpenseForm({
   const members = useSelector((state) => state.members.items);
 
   const [debts, setDebts] = useState(editableExpense.debts || []);
+
+  useEffect(() => {
+    setDebts(expense.debts || []);
+  }, [expense.debts]);
 
   const toggleBeneficiary = (member) => {
     setDebts((prev) => {
@@ -54,15 +58,15 @@ export default function ExpenseForm({
     });
   };
 
-  const handleDebtAmountChange = (debtIndex, value) => {
-    const debt = debts[debtIndex];
-    debt.amount = value;
+  // const handleDebtAmountChange = (debtIndex, value) => {
+  //   const debt = debts[debtIndex];
+  //   debt.amount = value;
 
-    setDebts((prev) => ({
-      ...prev.filter((d) => d !== debt),
-      debt,
-    }));
-  };
+  //   setDebts((prev) => ({
+  //     ...prev.filter((d) => d !== debt),
+  //     debt,
+  //   }));
+  // };
 
   useEffect(() => {
     if (expense.group) {
@@ -146,7 +150,9 @@ export default function ExpenseForm({
           </thead>
           <tbody>
             {members.map((member) => {
-              const debt = debts.find((debt) => debt.member === member);
+              const debt = debts.find((debt) => {
+                debt.member === member;
+              });
               return (
                 <tr key={member._id} className={` border-t border-gray-200`}>
                   <td className="px-4 py-3 text-center">
