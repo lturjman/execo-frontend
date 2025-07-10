@@ -8,6 +8,8 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useDispatch } from "react-redux";
 import { updateMember } from "../lib/store/slices/members";
 
+import { validateMember } from "../utils/validateMember";
+
 export default function UpdateMember({
   member,
   groupId,
@@ -25,12 +27,17 @@ export default function UpdateMember({
     }
   }, [member]);
 
+  const [errors, setErrors] = useState({});
+
   const handleUpdateMember = async () => {
-    const action = await dispatch(
-      updateMember({ groupId: member.group, member: editableMember })
-    );
-    if (updateMember.fulfilled.match(action)) {
-      onMemberUpdatedOrDeleted();
+    if (validateMember(editableMember, setErrors)) {
+      const action = await dispatch(
+        updateMember({ groupId: member.group, member: editableMember })
+      );
+
+      if (updateMember.fulfilled.match(action)) {
+        onMemberUpdatedOrDeleted();
+      }
     }
   };
 
@@ -68,6 +75,9 @@ export default function UpdateMember({
             setEditableMember({ ...editableMember, name: e.target.value })
           }
         />
+        {errors.name && (
+          <p className="text-red-500 text-sm mb-2">{errors.name}</p>
+        )}
 
         <label htmlFor="monthlyRevenue">Revenus mensuels</label>
         <input
@@ -83,6 +93,9 @@ export default function UpdateMember({
             })
           }
         />
+        {errors.monthlyRevenue && (
+          <p className="text-red-500 text-sm mb-2">{errors.monthlyRevenue}</p>
+        )}
 
         <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
         <input
@@ -97,6 +110,9 @@ export default function UpdateMember({
             })
           }
         />
+        {errors.monthlyCharges && (
+          <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
+        )}
         <div>Part : {editableMember.share}%</div>
         <Button className="my-4" onClick={handleUpdateMember}>
           Valider les modifications

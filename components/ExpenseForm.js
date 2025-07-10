@@ -5,6 +5,7 @@ import { Decimal } from "decimal.js";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMembers } from "../lib/store/slices/members";
 import { Checkbox } from "@headlessui/react";
+import { validateExpense } from "../utils/validateExpense";
 
 export default function ExpenseForm({
   expense,
@@ -26,6 +27,8 @@ export default function ExpenseForm({
   useEffect(() => {
     setDebts(expense.debts || []);
   }, [expense.debts]);
+
+  const [errors, setErrors] = useState({});
 
   const toggleBeneficiary = (member) => {
     setDebts((prev) => {
@@ -76,7 +79,9 @@ export default function ExpenseForm({
 
   const submitForm = (event) => {
     event.preventDefault();
-    handleSubmit(editableExpense);
+    const isValid = validateExpense({ ...editableExpense, debts }, setErrors);
+    if (!isValid) return;
+    handleSubmit({ ...editableExpense, debts });
   };
 
   return (
@@ -95,6 +100,9 @@ export default function ExpenseForm({
             setEditableExpense({ ...editableExpense, name: e.target.value })
           }
         />
+        {errors.name && (
+          <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+        )}
       </div>
       <div>
         <label htmlFor="amount">Montant :</label>
@@ -113,6 +121,9 @@ export default function ExpenseForm({
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
           name="amount"
         />
+        {errors.amount && (
+          <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
+        )}
       </div>
       <div>
         <label htmlFor="member">Payé par :</label>
@@ -133,6 +144,9 @@ export default function ExpenseForm({
             </option>
           ))}
         </select>
+        {errors.member && (
+          <p className="text-red-500 text-sm mt-1">{errors.member}</p>
+        )}
       </div>
 
       <h3 className="text-lg font-semibold text-gray-800">Bénéficiaires :</h3>
@@ -202,6 +216,7 @@ export default function ExpenseForm({
           </tbody>
         </table>
       </div>
+      {errors.debts && <p className="text-red-500 text-sm">{errors.debts}</p>}
 
       <Button className="my-4">{submitLabel}</Button>
     </form>
