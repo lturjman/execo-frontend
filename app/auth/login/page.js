@@ -32,7 +32,7 @@ export default function Login() {
     }
 
     // // Stocker le token
-    // localStorage.setItem("token", data.token);
+    localStorage.setItem("token", data.token);
 
     router.push("/groups");
   };
