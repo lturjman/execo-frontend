@@ -34,9 +34,9 @@ export default function Home() {
       {/* Logo Execo */}
       <div className="mb-4">
         <Image
-          src="/images/execoLogo01.png"
+          src="/images/LOGO02.png"
           alt="Logo Execo"
-          width={150}
+          width={100}
           height={50}
         />
       </div>
