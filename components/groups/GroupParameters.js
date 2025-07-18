@@ -8,9 +8,9 @@ import Button from "@/components/Button";
 import { useState, useEffect } from "react";
 
 import { useDispatch } from "react-redux";
-import { updateGroup } from "../lib/store/slices/groups";
+import { updateGroup } from "@/lib/store/slices/groups";
 
-import { validateGroup } from "../utils/validateGroup";
+import { validateGroup } from "@/utils/validateGroup";
 
 export default function GroupParameters({ onClose, group }) {
   const dispatch = useDispatch();

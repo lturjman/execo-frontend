@@ -5,9 +5,9 @@ import Button from "@/components/Button";
 import { NumericFormat } from "react-number-format";
 import { Decimal } from "decimal.js";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMembers } from "../lib/store/slices/members";
+import { fetchMembers } from "@/lib/store/slices/members";
 import { Checkbox } from "@headlessui/react";
-import { validateExpense } from "../utils/validateExpense";
+import { validateExpense } from "@/utils/validateExpense";
 
 export default function ExpenseForm({
   expense,

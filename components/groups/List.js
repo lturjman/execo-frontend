@@ -7,9 +7,9 @@ import {
 } from "@headlessui/react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGroups } from "../../lib/store/slices/groups";
+import { fetchGroups } from "@/lib/store/slices/groups";
 import Button from "@/components/Button";
-import CreateGroup from "@/components/CreateGroup";
+import CreateGroup from "@/components/groups/Create";
 import GroupCard from "@/components/groups/Card";
 import { useEffect, useState } from "react";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";

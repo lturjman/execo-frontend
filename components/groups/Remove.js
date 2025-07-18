@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
-import { deleteGroup } from "../lib/store/slices/groups";
+import { deleteGroup } from "@/lib/store/slices/groups";
 
 export default function RemoveGroup({ group, onClose }) {
   const router = useRouter();

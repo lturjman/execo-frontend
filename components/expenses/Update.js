@@ -2,14 +2,14 @@
 
 import Button from "@/components/Button";
 import { useState } from "react";
-import RemoveExpense from "./RemoveExpense";
+import RemoveExpense from "./Remove";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { useDispatch, useSelector } from "react-redux";
 import { updateExpense } from "../../lib/store/slices/expenses";
 
 import { Decimal } from "decimal.js";
-import ExpenseForm from "./ExpenseForm";
+import ExpenseForm from "./Form";
 
 export default function UpdateExpense({
   expense,
