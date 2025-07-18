@@ -5,7 +5,7 @@ import { createMember } from "@/lib/store/slices/members";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { validateMember } from "../utils/validateMember";
+import { validateMember } from "../../utils/validateMember";
 
 export default function CreateMember({ onMemberCreated, onClose, groupId }) {
   const router = useRouter();

@@ -1,6 +1,6 @@
 "use client";
 import GroupParameters from "@/components/GroupParameters";
-import MembersList from "@/components/MembersList";
+import MembersList from "@/components/members/List";
 
 import { Cog8ToothIcon, UsersIcon } from "@heroicons/react/24/solid";
 import { useSelector, useDispatch } from "react-redux";

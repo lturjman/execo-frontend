@@ -1,6 +1,6 @@
 "use client";
-import CreateExpense from "@/components/CreateExpense";
-import UpdateExpense from "@/components/UpdateExpense";
+import CreateExpense from "@/components/expenses/Create";
+import UpdateExpense from "@/components/expenses/Update";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 

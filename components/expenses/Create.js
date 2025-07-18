@@ -11,7 +11,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { Decimal } from "decimal.js";
 import { NumericFormat } from "react-number-format";
-import ExpenseForm from "./ExpenseForm";
+import ExpenseForm from "../ExpenseForm";
 
 export default function CreateExpense({ groupId, onExpenseCreated, onClose }) {
   const router = useRouter();

@@ -2,13 +2,13 @@
 
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
-import RemoveMember from "./RemoveMember";
+import RemoveMember from "./Remove";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { useDispatch } from "react-redux";
-import { updateMember } from "../lib/store/slices/members";
+import { updateMember } from "../../lib/store/slices/members";
 
-import { validateMember } from "../utils/validateMember";
+import { validateMember } from "../../utils/validateMember";
 
 export default function UpdateMember({
   member,

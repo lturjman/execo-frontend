@@ -3,8 +3,8 @@
 import Button from "@/components/Button";
 import { PencilIcon, UserPlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
-import CreateMember from "./CreateMember";
-import UpdateMember from "./UpdateMember";
+import CreateMember from "./Create";
+import UpdateMember from "./Update";
 import { CloseButton } from "@headlessui/react";
 
 import { useDispatch, useSelector } from "react-redux";

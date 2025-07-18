@@ -1,6 +1,6 @@
 "use client";
 
-import RemoveGroup from "./RemoveGroup";
+import RemoveGroup from "./Remove";
 import { CloseButton } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 

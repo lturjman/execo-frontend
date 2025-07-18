@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 
-import Parameters from "@/components/groups/Parameters";
+import Parameters from "@/components/groups/CardParameters";
 import ExpensesList from "@/components/expenses/List";
 import DebtsList from "@/components/debts/List";
 

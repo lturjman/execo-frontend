@@ -6,7 +6,7 @@ import RemoveExpense from "./RemoveExpense";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { useDispatch, useSelector } from "react-redux";
-import { updateExpense } from "../lib/store/slices/expenses";
+import { updateExpense } from "../../lib/store/slices/expenses";
 
 import { Decimal } from "decimal.js";
 import ExpenseForm from "./ExpenseForm";
