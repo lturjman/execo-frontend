@@ -5,7 +5,7 @@ import { createMember } from "@/lib/store/slices/members";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { validateMember } from "../utils/validateMember";
+import { validateMember } from "../../utils/validateMember";
 
 export default function CreateMember({ onMemberCreated, onClose, groupId }) {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
     }
   };
   return (
-    <div className="space-y-4">
+    <div className=" space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="block font-bold text-xl"> Nouveau membre :</h2>
       </div>

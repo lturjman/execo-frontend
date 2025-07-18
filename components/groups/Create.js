@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
-import { createGroup } from "../lib/store/slices/groups";
+import { createGroup } from "@/lib/store/slices/groups";
 
 import Button from "@/components/Button";
 import { useState } from "react";
 
-import { validateGroup } from "../utils/validateGroup";
+import { validateGroup } from "@/utils/validateGroup";
 
 export default function CreateGroup({}) {
   const dispatch = useDispatch();

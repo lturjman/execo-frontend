@@ -1,11 +1,13 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import { NumericFormat } from "react-number-format";
 import { Decimal } from "decimal.js";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMembers } from "../lib/store/slices/members";
+import { fetchMembers } from "@/lib/store/slices/members";
 import { Checkbox } from "@headlessui/react";
-import { validateExpense } from "../utils/validateExpense";
+import { validateExpense } from "@/utils/validateExpense";
 
 export default function ExpenseForm({
   expense,
@@ -164,9 +166,7 @@ export default function ExpenseForm({
           </thead>
           <tbody>
             {members.map((member) => {
-              const debt = debts.find((debt) => {
-                debt.member === member;
-              });
+              const debt = debts.find((debt) => debt.member === member);
               return (
                 <tr key={member._id} className={` border-t border-gray-200`}>
                   <td className="px-4 py-3 text-center">

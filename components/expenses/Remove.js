@@ -4,32 +4,22 @@ import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
-import { deleteMember } from "../lib/store/slices/members";
+import { deleteExpense } from "@/lib/store/slices/expenses";
 
-export default function RemoveMember({
-  onClose,
-  onMemberDeleted,
-  groupId,
-  member,
-}) {
+export default function RemoveExpense({ onClose, expense, onExpenseDeleted }) {
   const router = useRouter();
-
   const dispatch = useDispatch();
 
-  const handleDeleteMember = async () => {
-    const action = await dispatch(deleteMember({ groupId, member }));
-    if (deleteMember.fulfilled.match(action)) {
-      if (onMemberDeleted) onMemberDeleted();
-    } else {
-      console.error("Échec suppression :", action.error);
-      alert("Erreur lors de la suppression");
-    }
+  const handleDeleteExpense = async () => {
+    await dispatch(deleteExpense({ groupId: expense.group, expense }));
+    if (onExpenseDeleted) onExpenseDeleted();
+    router.push(`/groups/${expense.group}`);
   };
 
   return (
     <div>
       <h2 className="block mb-2 font-bold text-xl text-center">
-        Êtes vous sûr de vouloir supprimer le membre ?
+        Êtes vous sûr de vouloir supprimer la dépense ?
       </h2>
 
       <div>
@@ -37,7 +27,7 @@ export default function RemoveMember({
         seront reréparties entre les autres membres du groupe
       </div>
       <div>
-        <Button onClick={handleDeleteMember} className="my-4 bg-red-400">
+        <Button onClick={handleDeleteExpense} className="my-4 bg-red-400">
           Oui, Supprimer
         </Button>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import RemoveGroup from "./RemoveGroup";
+import RemoveGroup from "./Remove";
 import { CloseButton } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
@@ -8,9 +8,9 @@ import Button from "@/components/Button";
 import { useState, useEffect } from "react";
 
 import { useDispatch } from "react-redux";
-import { updateGroup } from "../lib/store/slices/groups";
+import { updateGroup } from "@/lib/store/slices/groups";
 
-import { validateGroup } from "../utils/validateGroup";
+import { validateGroup } from "@/utils/validateGroup";
 
 export default function GroupParameters({ onClose, group }) {
   const dispatch = useDispatch();
@@ -42,8 +42,8 @@ export default function GroupParameters({ onClose, group }) {
     );
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 ">
+      <div className="flex justify-between items-center ">
         <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
         <CloseButton as={Button} rounded={true} className="bg-gray-400">
           <XMarkIcon className="size-6" />
