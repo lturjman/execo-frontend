@@ -12,7 +12,7 @@ export default function GroupPage() {
   return (
     <div className="p-4  bg-gray-200 w-full min-h-screen">
       <div className="hidden md:block fixed">
-        <Link href="http://localhost:3001/groups">
+        <Link href="/groups">
           <Image
             src="/images/LOGO01.png"
             alt="Logo Execo"

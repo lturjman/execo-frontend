@@ -11,7 +11,7 @@ export default function Login() {
       }}
     >
       <div className="mt-10">
-        <Link href="http://localhost:3001/">
+        <Link href="/">
           <Image
             src="/images/LOGO06.png"
             alt="Logo Execo"
