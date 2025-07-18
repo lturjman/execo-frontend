@@ -10,20 +10,26 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateGroup } from "../lib/store/slices/groups";
 
+import { validateGroup } from "../utils/validateGroup";
+
 export default function GroupParameters({ onClose, group }) {
   const dispatch = useDispatch();
 
   const [editableGroup, setEditableGroup] = useState(group);
   let [displayRemoveGroup, setDisplayRemoveGroup] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setEditableGroup(group);
   }, [group]);
 
   const handleUpdateGroup = async () => {
-    const action = await dispatch(updateGroup(editableGroup));
-    if (updateGroup.fulfilled.match(action)) {
-      if (onClose) onClose();
+    const isValid = await validateGroup(editableGroup, setErrors);
+    if (isValid) {
+      const action = await dispatch(updateGroup(editableGroup));
+      if (updateGroup.fulfilled.match(action)) {
+        if (onClose) onClose();
+      }
     }
   };
 
@@ -49,12 +55,13 @@ export default function GroupParameters({ onClose, group }) {
         type="text"
         name="name"
         className="w-full p-2 rounded bg-gray-100"
-        placeholder="Nom du groupe"
+        placeholder="Famille, Coloc, ..."
         value={editableGroup.name}
         onChange={(e) =>
           setEditableGroup({ ...editableGroup, name: e.target.value })
         }
       />
+      {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
       <Button onClick={handleUpdateGroup}>Valider les modifications</Button>
 
       <hr className="my-6 border-gray-400"></hr>
