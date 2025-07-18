@@ -4,6 +4,8 @@ import { validateUser } from "@/utils/validateUser";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
+const BACKEND_URL = process.env.BACKEND_URL;
+
 export default function LoginForm() {
   const router = useRouter();
 
@@ -17,7 +19,7 @@ export default function LoginForm() {
     const isValid = validateUser({ email, password }, setErrors);
     if (!isValid) return;
 
-    const res = await fetch("http://localhost:3000/auth/login", {
+    const res = await fetch(`${BACKEND_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

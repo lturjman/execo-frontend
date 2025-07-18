@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
 
+const BACKEND_URL = process.env.BACKEND_URL;
+
 export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -17,7 +19,7 @@ export default function RegisterForm() {
     const isValid = validateUser({ username, email, password }, setErrors);
     if (!isValid) return;
 
-    const res = await fetch("http://localhost:3000/auth/register", {
+    const res = await fetch(`${BACKEND_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
