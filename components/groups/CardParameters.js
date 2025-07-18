@@ -1,5 +1,5 @@
 "use client";
-import GroupParameters from "@/components/groups/GroupParameters";
+import GroupParameters from "@/components/groups/Parameters";
 import MembersList from "@/components/members/List";
 
 import { Cog8ToothIcon, UsersIcon } from "@heroicons/react/24/solid";
@@ -31,7 +31,7 @@ export default function groupParameters() {
   return (
     <div className="p-4 space-y-2">
       <div className="flex gap-2 ">
-        <h1 className="text-xl font-semibold grow">{group.name}</h1>
+        <h1 className="text-xl font-semibold grow">{group?.name}</h1>
 
         {/* Member parameters */}
         <div>
@@ -49,9 +49,9 @@ export default function groupParameters() {
           >
             <DialogBackdrop className="fixed inset-0 " />
             <div className="fixed p-4 w-full flex justify-center">
-              <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+              <DialogPanel className="w-full max-w-[70vh]  bg-white rounded-2xl shadow-lg overflow-hidden p-4">
                 <MembersList
-                  groupId={group._id}
+                  groupId={group?._id}
                   onClose={() => setMemberIsOpen(false)}
                 ></MembersList>
               </DialogPanel>
@@ -76,7 +76,7 @@ export default function groupParameters() {
           >
             <DialogBackdrop className="fixed inset-0" />
             <div className="fixed p-4 w-full flex justify-center">
-              <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+              <DialogPanel className="w-full max-w-[70vh]  bg-white rounded-2xl shadow-lg overflow-hidden p-4">
                 <GroupParameters
                   group={group}
                   onClose={() => setGroupIsOpen(false)}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import LoginForm from "@/components/auth/LoginForm";
+import Link from "next/link";
 
 export default function Login() {
   return (
@@ -10,12 +11,14 @@ export default function Login() {
       }}
     >
       <div className="mt-10">
-        <Image
-          src="/images/LOGO06.png"
-          alt="Logo Execo"
-          width={300}
-          height={100}
-        />
+        <Link href="http://localhost:3001/">
+          <Image
+            src="/images/LOGO06.png"
+            alt="Logo Execo"
+            width={300}
+            height={100}
+          />
+        </Link>
       </div>
 
       <h1 className="text-xl font-bold text-white">Connexion</h1>

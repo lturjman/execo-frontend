@@ -42,8 +42,8 @@ export default function GroupParameters({ onClose, group }) {
     );
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 ">
+      <div className="flex justify-between items-center ">
         <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
         <CloseButton as={Button} rounded={true} className="bg-gray-400">
           <XMarkIcon className="size-6" />

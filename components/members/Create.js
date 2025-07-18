@@ -31,7 +31,7 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
     }
   };
   return (
-    <div className="space-y-4">
+    <div className=" space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="block font-bold text-xl"> Nouveau membre :</h2>
       </div>
