@@ -1,4 +1,4 @@
-export function validateExpense(expense, setErrors) {
+export function validateExpense(expense) {
   const newErrors = {};
 
   if (!expense.name || expense.name.trim() === "") {

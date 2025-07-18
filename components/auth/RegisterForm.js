@@ -7,11 +7,15 @@ export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState("");
 
   const router = useRouter();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    const isValid = validateUser({ username, email, password }, setErrors);
+    if (!isValid) return;
 
     const res = await fetch("http://localhost:3000/auth/register", {
       method: "POST",
@@ -47,6 +51,9 @@ export default function RegisterForm() {
              bg-gray-100 text-gray-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
           />
+          {errors.username && (
+            <p className="text-red-500 text-sm mt-1">{errors.username}</p>
+          )}
         </div>
 
         <div>
@@ -61,6 +68,9 @@ export default function RegisterForm() {
              bg-gray-100 text-gray-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         <div>
@@ -75,12 +85,15 @@ export default function RegisterForm() {
              bg-gray-100 text-gray-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
           />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+          )}
         </div>
 
         <Button type="submit">Créer un compte</Button>
       </form>
       <Button
-        className="bg-gray-400 mt-10 w-70"
+        className="bg-gray-400 mt-10 w-70 mx-auto"
         onClick={() => router.push("/auth/login")}
       >
         Déjà un compte ?

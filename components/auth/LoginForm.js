@@ -9,11 +9,12 @@ export default function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const isValid = validateUser({ email, password });
+    const isValid = validateUser({ email, password }, setErrors);
     if (!isValid) return;
 
     const res = await fetch("http://localhost:3000/auth/login", {
@@ -53,6 +54,9 @@ export default function LoginForm() {
     bg-gray-100 text-gray-800 focus:outline-none
     focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         <div>
@@ -69,12 +73,15 @@ export default function LoginForm() {
     bg-gray-100 text-gray-800 focus:outline-none
     focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
           />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+          )}
         </div>
         <Button type="submit">Se connecter</Button>
       </form>
 
       <Button
-        className="bg-gray-400 mt-10 w-70"
+        className="bg-gray-400 mt-10 w-70 mx-auto"
         onClick={() => router.push("/auth/register")}
       >
         Pas encore de compte ?

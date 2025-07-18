@@ -1,4 +1,4 @@
-export function validateUser(user) {
+export function validateUser(user, setErrors) {
   const newErrors = {};
 
   // if (!user.username || user.username.trim() === "") {
