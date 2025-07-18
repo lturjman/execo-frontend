@@ -1,10 +1,11 @@
 "use client";
+
 import { useState } from "react";
 import { validateUser } from "@/utils/validateUser";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function LoginForm() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function LoginForm() {
     const isValid = validateUser({ email, password }, setErrors);
     if (!isValid) return;
 
-    const res = await fetch(`${BACKEND_URL}/auth/login`, {
+    const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

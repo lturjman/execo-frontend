@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function RegisterForm() {
   const [username, setUsername] = useState("");
@@ -19,7 +19,7 @@ export default function RegisterForm() {
     const isValid = validateUser({ username, email, password }, setErrors);
     if (!isValid) return;
 
-    const res = await fetch(`${BACKEND_URL}/auth/register`, {
+    const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
