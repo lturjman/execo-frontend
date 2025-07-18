@@ -9,6 +9,7 @@ export default function debtsList() {
   const params = useParams();
   const id = params.id;
 
+  const expenses = useSelector((state) => state.expenses.items);
   const paybacks = useSelector((state) => state.paybacks.items);
   const paybacksLoading = useSelector((state) => state.paybacks.loading);
 
@@ -16,7 +17,7 @@ export default function debtsList() {
 
   useEffect(() => {
     dispatch(fetchPaybacks({ groupId: id }));
-  }, [dispatch, id]);
+  }, [dispatch, id, expenses]);
 
   return (
     <div>

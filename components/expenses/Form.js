@@ -166,9 +166,7 @@ export default function ExpenseForm({
           </thead>
           <tbody>
             {members.map((member) => {
-              const debt = debts.find((debt) => {
-                debt.member === member;
-              });
+              const debt = debts.find((debt) => debt.member === member);
               return (
                 <tr key={member._id} className={` border-t border-gray-200`}>
                   <td className="px-4 py-3 text-center">
