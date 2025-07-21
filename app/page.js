@@ -39,7 +39,7 @@ export default function Home() {
             </Button>
           </Link>
           <Link href="/auth/register">
-            <Button className="p-5 text-xl  bg-white dark:bg-zinc-800">
+            <Button className="p-5 text-xl text-zinc-800 bg-white dark:bg-zinc-800 dark:text-white">
               Créer un compte
             </Button>
           </Link>
