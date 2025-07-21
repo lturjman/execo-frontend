@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { validateUser } from "@/utils/validateUser";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
@@ -16,9 +15,6 @@ export default function LoginForm() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    const isValid = validateUser({ email, password }, setErrors);
-    if (!isValid) return;
 
     const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
       method: "POST",
