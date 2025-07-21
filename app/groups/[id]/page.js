@@ -10,7 +10,7 @@ import DebtsList from "@/components/debts/List";
 
 export default function GroupPage() {
   return (
-    <div className="p-4  bg-gray-200 w-full min-h-screen">
+    <div className="p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600">
       <div className="hidden md:block fixed">
         <Link href="/groups">
           <Image

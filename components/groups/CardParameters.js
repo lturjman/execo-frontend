@@ -29,7 +29,7 @@ export default function groupParameters() {
   }, [dispatch, id]);
 
   return (
-    <div className="p-4 space-y-2">
+    <div className="p-4 space-y-2 dark:bg-zinc-800">
       <div className="flex gap-2 ">
         <h1 className="text-xl font-semibold grow">{group?.name}</h1>
 
@@ -49,7 +49,7 @@ export default function groupParameters() {
           >
             <DialogBackdrop className="fixed inset-0 " />
             <div className="fixed p-4 w-full flex justify-center">
-              <DialogPanel className="w-full max-w-[70vh]  bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+              <DialogPanel className="w-full max-w-[70vh]  bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
                 <MembersList
                   groupId={group?._id}
                   onClose={() => setMemberIsOpen(false)}
@@ -76,7 +76,7 @@ export default function groupParameters() {
           >
             <DialogBackdrop className="fixed inset-0" />
             <div className="fixed p-4 w-full flex justify-center">
-              <DialogPanel className="w-full max-w-[70vh]  bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+              <DialogPanel className="w-full max-w-[70vh]  bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
                 <GroupParameters
                   group={group}
                   onClose={() => setGroupIsOpen(false)}

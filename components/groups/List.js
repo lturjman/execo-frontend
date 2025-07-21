@@ -43,7 +43,7 @@ export default function groupsList() {
             fonction des moyens financiers de chacun de manière équitable.
           </p>
 
-          <ul className="bg-white/90 text-gray-800 rounded-xl shadow-md px-8 py-6 text-base w-full max-w-xl">
+          <ul className="bg-white/90 text-zinc-800 rounded-xl shadow-md px-8 py-6 text-base w-full max-w-xl">
             <li className="text-lg font-semibold mb-2">Pour bien démarrer :</li>
             <li className="flex">
               <div className=" font-bold  text-purple-400 ">1</div>{" "}
@@ -108,12 +108,12 @@ export default function groupsList() {
         >
           <DialogBackdrop className="fixed inset-0 bg-black/30 " />{" "}
           <div className="fixed p-4 w-full flex justify-center">
-            <DialogPanel className=" bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4 max-w-md w-full space-y-4">
+            <DialogPanel className=" bg-white rounded-2xl shadow-lg overflow-hidden text-center p-4 max-w-md w-full space-y-4 dark:bg-zinc-800">
               <div className="flex justify-between items-center">
                 <DialogTitle className="block font-bold text-xl">
                   Nouveau Groupe
                 </DialogTitle>
-                <CloseButton as={Button} rounded={true} className="bg-gray-400">
+                <CloseButton as={Button} rounded={true} className="bg-zinc-400">
                   <XMarkIcon className="size-6" />
                 </CloseButton>
               </div>

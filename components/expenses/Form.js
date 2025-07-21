@@ -87,7 +87,7 @@ export default function ExpenseForm({
   };
 
   return (
-    <form onSubmit={submitForm} className="flex flex-col gap-y-4">
+    <form onSubmit={submitForm} className="flex flex-col gap-y-4 ">
       <div>
         <label htmlFor="name">Intitulé de la dépense :</label>
         <input
@@ -95,8 +95,8 @@ export default function ExpenseForm({
           name="name"
           value={editableExpense.name}
           className="appearance-none w-full p-2 focus:border rounded-md
-             bg-gray-100 text-gray-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           placeholder="Course, Loyer, ..."
           onChange={(e) =>
             setEditableExpense({ ...editableExpense, name: e.target.value })
@@ -119,8 +119,8 @@ export default function ExpenseForm({
             setEditableExpense({ ...editableExpense, amount: floatValue })
           }
           className="appearance-none w-full p-2 focus:border rounded-md
-             bg-gray-100 text-gray-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           name="amount"
         />
         {errors.amount && (
@@ -135,9 +135,9 @@ export default function ExpenseForm({
           onChange={(e) =>
             setEditableExpense({ ...editableExpense, member: e.target.value })
           }
-          className="appearance-none w-full p-2 border border-gray-300 rounded-md
-             bg-white text-gray-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+          className="appearance-none w-full p-2 border border-zinc-300 rounded-md
+             bg-white text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
         >
           <option value="">-- Choisir un membre --</option>
           {members.map((member) => (
@@ -151,11 +151,11 @@ export default function ExpenseForm({
         )}
       </div>
 
-      <h3 className="text-lg font-semibold text-gray-800">Bénéficiaires :</h3>
+      <h3 className="text-lg font-semibold text-zinc-800">Bénéficiaires :</h3>
 
-      <div className="overflow-hidden rounded-md bg-white shadow-sm">
-        <table className="w-full text-left">
-          <thead className="bg-gray-800 text-white">
+      <div className="overflow-hidden rounded-md bg-white shadow-sm dark:bg-zinc-800 dark:border dark:border-zinc-500">
+        <table className="w-full text-left ">
+          <thead className="bg-zinc-800 text-white dark:bg-zinc-600  ">
             <tr>
               <th className="px-4 py-3 w-12 text-center"></th>
               <th className="px-4 py-3 font-semibold">Nom :</th>
@@ -168,12 +168,12 @@ export default function ExpenseForm({
             {members.map((member) => {
               const debt = debts.find((debt) => debt.member === member);
               return (
-                <tr key={member._id} className={` border-t border-gray-200`}>
+                <tr key={member._id} className={` border-t border-zinc-200`}>
                   <td className="px-4 py-3 text-center">
                     <Checkbox
                       checked={debts.some((debt) => debt.member === member)}
                       onChange={() => toggleBeneficiary(member)}
-                      className="group block size-5 rounded data-checked:border-none border border-gray-400 bg-white data-checked:bg-purple-400 p-1"
+                      className="group block size-5 rounded data-checked:border-none border border-zinc-400 bg-white data-checked:bg-purple-400 p-1"
                     >
                       <svg
                         className="stroke-white opacity-0 group-data-checked:opacity-100"
@@ -191,7 +191,7 @@ export default function ExpenseForm({
                   </td>
                   <td className="px-4 py-3">
                     <div>{member.name}</div>
-                    {/* <div className="text-xs text-gray-400">
+                    {/* <div className="text-xs text-zinc-400">
                 Part: {(member.share * 100).toFixed(2) + "%"}
               </div> */}
                   </td>
@@ -205,8 +205,8 @@ export default function ExpenseForm({
                       suffix=" €"
                       disabled
                       className="appearance-none w-full p-2 focus:border rounded-md
-             bg-gray-100 text-gray-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 text-right"
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 text-right dark:bg-zinc-600 dark:text-zinc-200"
                       name="amount"
                     />
                   </td>

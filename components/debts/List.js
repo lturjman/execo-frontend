@@ -23,18 +23,18 @@ export default function debtsList() {
     <div>
       <section className="space-y-2">
         {paybacksLoading ? (
-          <div className="text-center text-gray-500 italic">
+          <div className="text-center text-zinc-500 italic">
             Chargement des remboursements…
           </div>
         ) : paybacks.length === 0 ? (
-          <div className="text-center text-gray-500 italic">
+          <div className="text-center text-zinc-500 italic dark:text-zinc-400">
             Aucun remboursement
           </div>
         ) : (
           paybacks.map((payback, index) => (
             <div
               key={index}
-              className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2"
+              className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4 flex justify-center space-x-2 dark:bg-zinc-800"
             >
               <span className="font-semibold">{payback.from.name}</span>
               <span>doit</span>

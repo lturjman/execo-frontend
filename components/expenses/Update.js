@@ -66,7 +66,7 @@ export default function UpdateExpense({
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="block mb-2 font-bold text-xl"> Modifier la dépense :</h2>
-        <Button onClick={onClose} rounded={true} className="bg-gray-400">
+        <Button onClick={onClose} rounded={true} className="bg-zinc-400">
           <XMarkIcon className="size-6" />
         </Button>
       </div>
