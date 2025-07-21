@@ -16,9 +16,6 @@ export default function RegisterForm() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const isValid = validateUser({ username, email, password }, setErrors);
-    if (!isValid) return;
-
     const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/register`, {
       method: "POST",
       headers: {
