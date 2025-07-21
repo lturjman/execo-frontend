@@ -45,7 +45,7 @@ export default function GroupParameters({ onClose, group }) {
     <div className="space-y-4 ">
       <div className="flex justify-between items-center ">
         <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
-        <CloseButton as={Button} rounded={true} className="bg-gray-400">
+        <CloseButton as={Button} rounded={true} className="bg-zinc-400">
           <XMarkIcon className="size-6" />
         </CloseButton>
       </div>
@@ -54,7 +54,7 @@ export default function GroupParameters({ onClose, group }) {
       <input
         type="text"
         name="name"
-        className="w-full p-2 rounded bg-gray-100"
+        className="w-full p-2 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
         placeholder="Famille, Coloc, ..."
         value={editableGroup.name}
         onChange={(e) =>
@@ -64,7 +64,7 @@ export default function GroupParameters({ onClose, group }) {
       {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
       <Button onClick={handleUpdateGroup}>Valider les modifications</Button>
 
-      <hr className="my-6 border-gray-400"></hr>
+      <hr className="my-6 border-zinc-400"></hr>
       <h2 className="block font-bold text-xl"> Supprimer le groupe :</h2>
       <div>
         Attention, le groupe sera supprimé définitivement et toutes les dépenses

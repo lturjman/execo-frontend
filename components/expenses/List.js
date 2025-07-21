@@ -52,7 +52,7 @@ export default function expensesList() {
         >
           <DialogBackdrop className=" fixed inset-0 " />
           <div className="fixed p-4 w-full max-w-[90vh] flex justify-center">
-            <DialogPanel className="w-full max-w-[90vh] bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+            <DialogPanel className="w-full max-w-[90vh] bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
               <CreateExpense
                 groupId={group?._id}
                 onClose={() => setExpenseIsOpen(false)}
@@ -65,7 +65,7 @@ export default function expensesList() {
 
       {/* Tableau des dépenses */}
       {expenses.length > 0 && (
-        <section className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-6">
+        <section className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-6 dark:bg-zinc-800">
           <table className="w-full text-left">
             <thead>
               <tr>
@@ -101,7 +101,7 @@ export default function expensesList() {
                       >
                         <DialogBackdrop className="fixed inset-0" />
                         <div className="fixed p-4 w-full flex justify-center">
-                          <DialogPanel className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-4">
+                          <DialogPanel className=" bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
                             <UpdateExpense
                               expense={expense}
                               onClose={() => setExpenseToEdit(null)}
@@ -121,7 +121,7 @@ export default function expensesList() {
       )}
 
       {expenses.length === 0 && (
-        <p className="text-center text-gray-500 italic">
+        <p className="text-center text-zinc-500 italic dark:text-zinc-400">
           Aucune dépense pour le moment. Ajoutez-en une !
         </p>
       )}

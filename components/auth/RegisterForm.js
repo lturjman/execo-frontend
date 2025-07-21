@@ -50,8 +50,8 @@ export default function RegisterForm() {
             onChange={(e) => setUsername(e.target.value)}
             required
             className="appearance-none w-full p-2 focus:border rounded-md
-             bg-gray-100 text-gray-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           />
           {errors.username && (
             <p className="text-red-500 text-sm mt-1">{errors.username}</p>
@@ -67,8 +67,8 @@ export default function RegisterForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="appearance-none w-full p-2 focus:border rounded-md
-             bg-gray-100 text-gray-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -84,8 +84,8 @@ export default function RegisterForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             className="appearance-none w-full p-2 focus:border rounded-md
-             bg-gray-100 text-gray-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           />
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -95,7 +95,7 @@ export default function RegisterForm() {
         <Button type="submit">Créer un compte</Button>
       </form>
       <Button
-        className="bg-gray-400 mt-10 w-70 mx-auto"
+        className="bg-zinc-400 mt-10 w-70 mx-auto"
         onClick={() => router.push("/auth/login")}
       >
         Déjà un compte ?

@@ -44,9 +44,7 @@ export default function LoginForm() {
     <div>
       <form onSubmit={handleLogin} className=" w-full flex flex-col gap-4">
         <div>
-          <label htmlFor="name" className="text-white">
-            Email :
-          </label>
+          <label htmlFor="name">Email :</label>
           <input
             type="email"
             placeholder="contact@email.com"
@@ -54,8 +52,8 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="appearance-none w-full p-2 focus:border rounded-md
-    bg-gray-100 text-gray-800 focus:outline-none
-    focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+    bg-zinc-100 text-zinc-800 focus:outline-none
+    focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -63,9 +61,7 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="name" className="text-white">
-            Mot de passe :
-          </label>
+          <label htmlFor="name">Mot de passe :</label>
           <input
             type="password"
             placeholder="************"
@@ -73,8 +69,8 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             className="appearance-none w-full p-2 focus:border rounded-md
-    bg-gray-100 text-gray-800 focus:outline-none
-    focus:ring-1 focus:ring-purple-400 focus:border-purple-400"
+    bg-zinc-100 text-zinc-800 focus:outline-none
+    focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           />
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -84,7 +80,7 @@ export default function LoginForm() {
       </form>
 
       <Button
-        className="bg-gray-400 mt-10 w-70 mx-auto"
+        className="bg-zinc-400 mt-10 w-70 mx-auto"
         onClick={() => router.push("/auth/register")}
       >
         Pas encore de compte ?

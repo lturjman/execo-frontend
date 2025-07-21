@@ -58,7 +58,7 @@ export default function UpdateMember({
         <Button
           onClick={() => onClose()}
           rounded={true}
-          className="bg-gray-400"
+          className="bg-zinc-400"
         >
           <XMarkIcon className="size-6" />
         </Button>
@@ -68,7 +68,7 @@ export default function UpdateMember({
         <input
           type="text"
           name="name"
-          className="w-full p-2 mb-4 rounded bg-gray-100"
+          className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
           placeholder="Nom"
           value={editableMember.name}
           onChange={(e) =>
@@ -83,7 +83,7 @@ export default function UpdateMember({
         <input
           type="number"
           name="monthlyRevenue"
-          className="w-full p-2 mb-4 rounded bg-gray-100"
+          className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
           placeholder="Revenus"
           value={editableMember.monthlyRevenue}
           onChange={(e) =>
@@ -100,7 +100,7 @@ export default function UpdateMember({
         <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
         <input
           type="number"
-          className="w-full p-2 mb-4 rounded bg-gray-100"
+          className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
           placeholder="Charges personnelles fixes"
           value={editableMember.monthlyCharges}
           onChange={(e) =>
@@ -113,7 +113,7 @@ export default function UpdateMember({
         {errors.monthlyCharges && (
           <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
         )}
-        <div>Part : {editableMember.share}%</div>
+        <div>Part : {(member.share * 100).toFixed(2) + "%"}</div>
         <Button className="my-4" onClick={handleUpdateMember}>
           Valider les modifications
         </Button>

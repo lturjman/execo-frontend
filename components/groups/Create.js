@@ -34,7 +34,7 @@ export default function CreateGroup({}) {
       <input
         type="text"
         name="name"
-        className="w-full p-2 mb-4 rounded bg-gray-100"
+        className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
         placeholder="Nom du groupe"
         value={group.name}
         onChange={(e) => setGroup({ ...group, name: e.target.value })}

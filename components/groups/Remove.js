@@ -30,7 +30,7 @@ export default function RemoveGroup({ group, onClose }) {
           Oui, Supprimer
         </Button>
 
-        <Button className="bg-gray-400" onClick={onClose}>
+        <Button className="bg-zinc-400" onClick={onClose}>
           Non, Annuler
         </Button>
       </div>

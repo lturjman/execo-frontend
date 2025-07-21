@@ -39,8 +39,8 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       <input
         type="text"
         name="name"
-        className="w-full p-2 mb-4 rounded bg-gray-100"
-        placeholder="Nom"
+        className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
+        placeholder="John Doe"
         onChange={(e) => setMember({ ...member, name: e.target.value })}
       />
       {errors.name && (
@@ -51,8 +51,8 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       <input
         type="number"
         name="monthlyRevenue"
-        className="w-full p-2 mb-4 rounded bg-gray-100"
-        placeholder="Revenus"
+        className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
+        placeholder="1800"
         onChange={(e) =>
           setMember({ ...member, monthlyRevenue: Number(e.target.value) })
         }
@@ -65,8 +65,8 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       <input
         type="number"
         name="monthlyCharges"
-        className="w-full p-2 mb-4 rounded bg-gray-100"
-        placeholder="Charges personnelles fixes"
+        className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
+        placeholder="600"
         onChange={(e) =>
           setMember({ ...member, monthlyCharges: Number(e.target.value) })
         }
@@ -74,9 +74,11 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       {errors.monthlyCharges && (
         <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
       )}
-      <div>Part : {member.share}%</div>
-      <Button onClick={handleCreateMember}>Ajouter au groupe</Button>
-      <Button onClick={onClose} className="bg-gray-400">
+
+      <Button onClick={handleCreateMember} className="mt-4">
+        Ajouter au groupe
+      </Button>
+      <Button onClick={onClose} className="bg-zinc-400">
         Annuler
       </Button>
     </div>
