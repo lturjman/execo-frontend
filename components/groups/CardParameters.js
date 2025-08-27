@@ -13,7 +13,7 @@ import { fetchGroup } from "@/lib/store/slices/groups";
 
 export default function groupParameters() {
   const params = useParams();
-  const id = params.id;
+  const id = params.groupId;
 
   const group = useSelector((state) =>
     state.groups.items.find((g) => g && g._id === id)
@@ -28,6 +28,7 @@ export default function groupParameters() {
     dispatch(fetchGroup(id));
   }, [dispatch, id]);
 
+  console.log(group);
   return (
     <div className="p-4 space-y-2 dark:bg-zinc-800">
       <div className="flex gap-2 ">
