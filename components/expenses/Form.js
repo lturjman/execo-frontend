@@ -14,21 +14,28 @@ export default function ExpenseForm({
   handleSubmit,
   submitLabel = "Valider",
 }) {
+  console.log("test de expense : ", expense);
   const dispatch = useDispatch();
-  const [editableExpense, setEditableExpense] = useState({
-    ...expense,
-    amount: Decimal.div(expense.amount, 100).toString(),
-    member:
-      (expense.credits && expense.credits[0].member?._id) || expense.member,
-  });
+  const [editableExpense, setEditableExpense] = useState({ ...expense });
+
+  // useEffect(() => {
+  //   if (expense) {
+  //     setEditableExpense({
+  //       ...expense,
+  //       amount: Decimal.div(expense.amount, 100).toString(),
+  //       member:
+  //         (expense.credits && expense.credits[0].member?._id) || expense.member,
+  //     });
+  //   }
+  // }, [expense]);
 
   const members = useSelector((state) => state.members.items);
 
-  const [debts, setDebts] = useState(editableExpense.debts || []);
+  const [debts, setDebts] = useState(editableExpense?.debts || []);
 
   useEffect(() => {
-    setDebts(expense.debts || []);
-  }, [expense.debts]);
+    setDebts(expense?.debts || []);
+  }, [expense?.debts]);
 
   const [errors, setErrors] = useState({});
 
@@ -36,7 +43,7 @@ export default function ExpenseForm({
     setDebts((prev) => {
       let debts;
       if (prev.some((debt) => debt.member === member)) {
-        debts = prev.filter((debt) => debt.member !== member); // Si déjà sélectionné, on le retire
+        debts = prev.filter((debt) => debt.member !== member);
       } else {
         debts = [
           ...prev,
@@ -44,7 +51,7 @@ export default function ExpenseForm({
             amount: 0,
             member: member,
           },
-        ]; // Sinon on l’ajoute
+        ];
       }
 
       const beneficiaryShares = debts.reduce((total, debt) => {
@@ -63,21 +70,11 @@ export default function ExpenseForm({
     });
   };
 
-  // const handleDebtAmountChange = (debtIndex, value) => {
-  //   const debt = debts[debtIndex];
-  //   debt.amount = value;
-
-  //   setDebts((prev) => ({
-  //     ...prev.filter((d) => d !== debt),
-  //     debt,
-  //   }));
-  // };
-
   useEffect(() => {
-    if (expense.group) {
-      dispatch(fetchMembers({ groupId: expense.group }));
+    if (expense?.group) {
+      dispatch(fetchMembers({ groupId: expense?.group }));
     }
-  }, [dispatch, expense.group]);
+  }, [dispatch, expense?.group]);
 
   const submitForm = (event) => {
     event.preventDefault();
@@ -93,7 +90,7 @@ export default function ExpenseForm({
         <input
           type="text"
           name="name"
-          value={editableExpense.name}
+          value={editableExpense?.name}
           className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
@@ -109,7 +106,7 @@ export default function ExpenseForm({
       <div>
         <label htmlFor="amount">Montant :</label>
         <NumericFormat
-          value={editableExpense.amount}
+          value={editableExpense?.amount}
           decimalScale={2}
           decimalSeparator=","
           thousandSeparator=" "
@@ -130,7 +127,7 @@ export default function ExpenseForm({
       <div>
         <label htmlFor="member">Payé par :</label>
         <select
-          value={editableExpense.member}
+          value={editableExpense?.member}
           name="member"
           onChange={(e) =>
             setEditableExpense({ ...editableExpense, member: e.target.value })

@@ -1,6 +1,6 @@
 "use client";
-import CreateExpense from "@/components/expenses/Create";
-import UpdateExpense from "@/components/expenses/Update";
+// import CreateExpense from "@/components/expenses/Create";
+// import UpdateExpense from "@/components/expenses/Update";
 
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
@@ -8,15 +8,17 @@ import { PencilIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import { amountToCurrency } from "@/utils/amountToCurrency";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import Button from "@/components/Button";
 
 import { fetchExpenses } from "@/lib/store/slices/expenses";
 
-export default function expensesList() {
+export default function expensesList({ expense }) {
+  const router = useRouter();
+
   const params = useParams();
-  const id = params.id;
+  const id = params.groupId;
 
   const group = useSelector((state) =>
     state.groups.items.find((g) => g && g._id === id)
@@ -24,9 +26,9 @@ export default function expensesList() {
 
   const expenses = useSelector((state) => state.expenses.items);
 
-  const [expenseToEdit, setExpenseToEdit] = useState(null);
+  // const [expenseToEdit, setExpenseToEdit] = useState(null);
 
-  let [expenseIsOpen, setExpenseIsOpen] = useState(false);
+  // let [expenseIsOpen, setExpenseIsOpen] = useState(false);
 
   const fetchExpensesAndPaybacks = () => {
     dispatch(fetchExpenses({ groupId: id }));
@@ -41,10 +43,17 @@ export default function expensesList() {
   return (
     <div className=" space-y-4">
       <div>
-        <Button className="" onClick={() => setExpenseIsOpen(true)}>
+        {/* <Button className="" onClick={() => setExpenseIsOpen(true)}>
+          Ajouter une dépense
+        </Button> */}
+
+        <Button
+          onClick={() => router.push(`/groups/${group?._id}/expenses/new`)}
+        >
           Ajouter une dépense
         </Button>
-        <Dialog
+
+        {/* <Dialog
           open={expenseIsOpen}
           onClose={() => setExpenseIsOpen(false)}
           transition
@@ -60,7 +69,7 @@ export default function expensesList() {
               ></CreateExpense>
             </DialogPanel>
           </div>
-        </Dialog>
+        </Dialog> */}
       </div>
 
       {/* Tableau des dépenses */}
@@ -76,45 +85,54 @@ export default function expensesList() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {expenses.map((expense) => (
-                <tr key={expense._id}>
-                  <td className="p-2">{expense.name}</td>
+              {expenses
+                .slice()
+                .reverse()
+                .map((expense) => (
+                  <tr key={expense._id}>
+                    <td className="p-2">{expense.name}</td>
 
-                  <td className="p-2 text-right">
-                    {amountToCurrency(expense.amount)}
-                  </td>
+                    <td className="p-2 text-right">
+                      {amountToCurrency(expense.amount)}
+                    </td>
 
-                  <td className="p-2 text-right">
-                    {expense.credits[0].member.name}
-                  </td>
+                    <td className="p-2 text-right">
+                      {expense.credits[0].member.name}
+                    </td>
 
-                  <td className="p-2">
-                    <div>
-                      <button onClick={() => setExpenseToEdit(expense)}>
-                        <PencilIcon className="size-5 text-purple-400" />
-                      </button>
-                      <Dialog
-                        open={expenseToEdit === expense}
-                        onClose={() => setExpenseToEdit(null)}
-                        transition
-                        className="fixed inset-0 flex w-screen items-center bg-black/30 justify-center p-4 transition duration-300 ease-out data-closed:opacity-0"
-                      >
-                        <DialogBackdrop className="fixed inset-0" />
-                        <div className="fixed p-4 w-full flex justify-center">
-                          <DialogPanel className=" bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
-                            <UpdateExpense
-                              expense={expense}
-                              onClose={() => setExpenseToEdit(null)}
-                              onExpenseDeleted={fetchExpensesAndPaybacks}
-                              onExpenseUpdated={fetchExpensesAndPaybacks}
-                            />
-                          </DialogPanel>
-                        </div>
-                      </Dialog>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    <td className="p-2">
+                      <div>
+                        <button
+                          onClick={() =>
+                            router.push(
+                              `/groups/${expense.group}/expenses/${expense._id}`
+                            )
+                          }
+                        >
+                          <PencilIcon className="size-5 text-purple-400" />
+                        </button>
+                        {/* <Dialog
+                          open={expenseToEdit === expense}
+                          onClose={() => setExpenseToEdit(null)}
+                          transition
+                          className="fixed inset-0 flex w-screen items-center bg-black/30 justify-center p-4 transition duration-300 ease-out data-closed:opacity-0"
+                        >
+                          <DialogBackdrop className="fixed inset-0" />
+                          <div className="fixed p-4 w-full flex justify-center">
+                            <DialogPanel className=" bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
+                              <UpdateExpense
+                                expense={expense}
+                                onClose={() => setExpenseToEdit(null)}
+                                onExpenseDeleted={fetchExpensesAndPaybacks}
+                                onExpenseUpdated={fetchExpensesAndPaybacks}
+                              />
+                            </DialogPanel>
+                          </div>
+                        </Dialog> */}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </section>

@@ -13,7 +13,6 @@ export default function RemoveExpense({ onClose, expense, onExpenseDeleted }) {
   const handleDeleteExpense = async () => {
     await dispatch(deleteExpense({ groupId: expense.group, expense }));
     if (onExpenseDeleted) onExpenseDeleted();
-    router.push(`/groups/${expense.group}`);
   };
 
   return (
