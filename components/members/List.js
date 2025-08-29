@@ -56,12 +56,7 @@ export default function MembersList({ groupId }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="block font-bold text-xl"> Gestion des membres :</h2>
-        <CloseButton as={Button} rounded={true} className="bg-zinc-400">
-          <XMarkIcon className="size-6" />
-        </CloseButton>
-      </div>
+      <h2 className="block font-bold text-xl"> Gestion des membres :</h2>
 
       {members.map((member, index) => (
         <div key={index}>

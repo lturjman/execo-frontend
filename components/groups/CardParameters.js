@@ -11,7 +11,10 @@ import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 
 import { fetchGroup } from "@/lib/store/slices/groups";
 
+import { useRouter } from "next/navigation";
 export default function groupParameters() {
+  const router = useRouter();
+
   const params = useParams();
   const id = params.groupId;
 
@@ -35,7 +38,7 @@ export default function groupParameters() {
         <h1 className="text-xl font-semibold grow">{group?.name}</h1>
 
         {/* Member parameters */}
-        <div>
+        {/* <div>
           <Button rounded="true" className="">
             <UsersIcon
               onClick={() => setMemberIsOpen(true)}
@@ -58,10 +61,18 @@ export default function groupParameters() {
               </DialogPanel>
             </div>
           </Dialog>
-        </div>
+        </div> */}
+
+        <Button
+          rounded="true"
+          className=""
+          onClick={() => router.push(`/groups/${id}/members`)}
+        >
+          <UsersIcon className="size-5 text-white" />
+        </Button>
 
         {/* Group parameters */}
-        <div>
+        {/* <div>
           <Button
             rounded="true"
             className=""
@@ -85,7 +96,14 @@ export default function groupParameters() {
               </DialogPanel>
             </div>
           </Dialog>
-        </div>
+        </div> */}
+        <Button
+          rounded="true"
+          className=""
+          onClick={() => router.push(`/groups/${id}/parameters`)}
+        >
+          <Cog8ToothIcon className="size-5 text-white" />
+        </Button>
       </div>
     </div>
   );

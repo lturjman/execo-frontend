@@ -14,6 +14,7 @@ import GroupCard from "@/components/groups/Card";
 import { useEffect, useState } from "react";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { CloseButton } from "@headlessui/react";
+import Link from "next/link";
 
 export default function groupsList() {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ export default function groupsList() {
             </li>
           </ul>
 
-          <div
+          {/* <div
             onClick={() => setIsOpen(true)}
             className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out"
           >
@@ -71,7 +72,17 @@ export default function groupsList() {
                 Ajouter un groupe
               </span>
             </div>
-          </div>
+          </div> */}
+          <Link href="/groups/new">
+            <div className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out">
+              <div className="flex flex-col items-center justify-center w-64 aspect-video border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
+                <PlusIcon className="w-10 h-10" />
+                <span className="mt-3 font-medium text-lg">
+                  Ajouter un groupe
+                </span>
+              </div>
+            </div>
+          </Link>
         </div>
       ) : (
         // Cas où il y a des groupes
@@ -82,22 +93,31 @@ export default function groupsList() {
             ))}
 
             {/* Carte d'ajout en fin de liste */}
-            <div
-              onClick={() => setIsOpen(true)}
-              className="hidden sm:flex h-full w-full max-w-sm cursor-pointer transition-transform hover:scale-105 duration-300 ease-in-out flex-col items-center justify-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner"
-            >
-              <PlusIcon className="w-10 h-10" />
-              <span className="mt-3 font-medium text-lg text-center">
-                Ajouter un groupe
-              </span>
-            </div>
+            <Link href="/groups/new">
+              <div className="hidden sm:flex h-full w-full max-w-sm cursor-pointer transition-transform hover:scale-105 duration-300 ease-in-out flex-col items-center justify-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
+                <PlusIcon className="w-10 h-10" />
+                <span className="mt-3 font-medium text-lg text-center">
+                  Ajouter un groupe
+                </span>
+              </div>
+            </Link>
+            {/* <Link href="/groups/new">
+              <Button className="w-24 h-24 shadow-md">
+                <PlusIcon className="size-9"></PlusIcon>
+              </Button>
+            </Link> */}
           </div>
         </div>
       )}
 
       {/* Bouton flottant */}
       <div className="sm:hidden fixed bottom-6 right-6">
-        <Button onClick={() => setIsOpen(true)} className="w-24 h-24 shadow-md">
+        <Link href="/groups/new">
+          <Button className="w-24 h-24 shadow-md">
+            <PlusIcon className="size-9"></PlusIcon>
+          </Button>
+        </Link>
+        {/* <Button onClick={() => setIsOpen(true)} className="w-24 h-24 shadow-md">
           <PlusIcon className="size-9"></PlusIcon>
         </Button>
         <Dialog
@@ -124,7 +144,7 @@ export default function groupsList() {
               ></CreateGroup>
             </DialogPanel>
           </div>
-        </Dialog>
+        </Dialog> */}
       </div>
     </div>
   );

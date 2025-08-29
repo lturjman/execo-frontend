@@ -12,6 +12,8 @@ import { updateGroup } from "@/lib/store/slices/groups";
 
 import { validateGroup } from "@/utils/validateGroup";
 
+import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
+
 export default function GroupParameters({ onClose, group }) {
   const dispatch = useDispatch();
 
@@ -33,22 +35,17 @@ export default function GroupParameters({ onClose, group }) {
     }
   };
 
-  if (displayRemoveGroup)
-    return (
-      <RemoveGroup
-        group={group}
-        onClose={() => setDisplayRemoveGroup(false)}
-      ></RemoveGroup>
-    );
+  // if (displayRemoveGroup)
+  //   return (
+  //     <RemoveGroup
+  //       group={group}
+  //       onClose={() => setDisplayRemoveGroup(false)}
+  //     ></RemoveGroup>
+  //   );
 
   return (
     <div className="space-y-4 ">
-      <div className="flex justify-between items-center ">
-        <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
-        <CloseButton as={Button} rounded={true} className="bg-zinc-400">
-          <XMarkIcon className="size-6" />
-        </CloseButton>
-      </div>
+      <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
 
       <label htmlFor="name">Nom du groupe</label>
       <input
@@ -78,6 +75,22 @@ export default function GroupParameters({ onClose, group }) {
           Supprimer le groupe
         </Button>
       </div>
+
+      <Dialog
+        open={displayRemoveGroup}
+        onClose={() => setDisplayRemoveGroup(false)}
+        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 z-50"
+      >
+        <DialogBackdrop className="fixed inset-0" />
+        <div className="fixed p-4 w-full flex justify-center">
+          <DialogPanel className="bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
+            <RemoveGroup
+              group={group}
+              onClose={() => setDisplayRemoveGroup(false)}
+            />
+          </DialogPanel>
+        </div>
+      </Dialog>
     </div>
   );
 }
