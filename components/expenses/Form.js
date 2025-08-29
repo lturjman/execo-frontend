@@ -16,34 +16,48 @@ export default function ExpenseForm({
 }) {
   console.log("test de expense : ", expense);
   const dispatch = useDispatch();
-  const [editableExpense, setEditableExpense] = useState({ ...expense });
+  const [editableExpense, setEditableExpense] = useState({
+    ...expense,
+    amount: Decimal.div(expense.amount, 100).toString(),
+  });
 
-  // useEffect(() => {
-  //   if (expense) {
-  //     setEditableExpense({
-  //       ...expense,
-  //       amount: Decimal.div(expense.amount, 100).toString(),
-  //       member:
-  //         (expense.credits && expense.credits[0].member?._id) || expense.member,
-  //     });
-  //   }
-  // }, [expense]);
+  useEffect(() => {
+    if (expense) {
+      setEditableExpense({
+        ...expense,
+        amount: Decimal.div(expense.amount, 100).toString(),
+        member:
+          (expense.credits && expense.credits[0].member?._id) || expense.member,
+      });
+    }
+  }, [expense]);
 
   const members = useSelector((state) => state.members.items);
 
-  const [debts, setDebts] = useState(editableExpense?.debts || []);
+  const [debts, setDebts] = useState(
+    Array.isArray(editableExpense?.debts) ? editableExpense.debts : []
+  );
 
   useEffect(() => {
-    setDebts(expense?.debts || []);
-  }, [expense?.debts]);
+    if (Array.isArray(editableExpense?.debts)) {
+      setDebts(
+        editableExpense.debts.map((debt) => ({
+          ...debt,
+          amount: Decimal.div(debt.amount, 100).toString(),
+        }))
+      );
+    } else {
+      setDebts([]);
+    }
+  }, [editableExpense?.debts]);
 
   const [errors, setErrors] = useState({});
 
   const toggleBeneficiary = (member) => {
     setDebts((prev) => {
       let debts;
-      if (prev.some((debt) => debt.member === member)) {
-        debts = prev.filter((debt) => debt.member !== member);
+      if (prev.some((debt) => debt.member._id === member._id)) {
+        debts = prev.filter((debt) => debt.member._id !== member._id);
       } else {
         debts = [
           ...prev,
@@ -83,6 +97,24 @@ export default function ExpenseForm({
     handleSubmit({ ...editableExpense, debts });
   };
 
+  useEffect(() => {
+    if (debts.length > 0 && editableExpense.amount) {
+      const beneficiaryShares = debts.reduce((total, debt) => {
+        return total + (debt.member.share || 1);
+      }, 0);
+
+      setDebts(
+        debts.map((debt) => ({
+          ...debt,
+          amount: Decimal.mul(
+            Decimal.div(debt.member.share || 1, beneficiaryShares),
+            editableExpense.amount
+          ).toString(),
+        }))
+      );
+    }
+  }, [editableExpense.amount, debts.length]);
+
   return (
     <form onSubmit={submitForm} className="flex flex-col gap-y-4 ">
       <div>
@@ -90,7 +122,7 @@ export default function ExpenseForm({
         <input
           type="text"
           name="name"
-          value={editableExpense?.name}
+          value={editableExpense.name}
           className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
@@ -109,12 +141,19 @@ export default function ExpenseForm({
           value={editableExpense?.amount}
           decimalScale={2}
           decimalSeparator=","
+          allowedDecimalSeparators={[".", ","]}
           thousandSeparator=" "
           fixedDecimalScale
           suffix=" €"
-          onValueChange={({ floatValue }) =>
-            setEditableExpense({ ...editableExpense, amount: floatValue })
-          }
+          inputMode="decimal"
+          placeholder="0,00 €"
+          allowNegative={false}
+          onValueChange={({ floatValue }) => {
+            setEditableExpense({
+              ...editableExpense,
+              amount: floatValue ?? "",
+            });
+          }}
           className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
@@ -163,12 +202,13 @@ export default function ExpenseForm({
           </thead>
           <tbody>
             {members.map((member) => {
-              const debt = debts.find((debt) => debt.member === member);
+              const debt = debts.find((debt) => debt.member._id === member._id);
+
               return (
                 <tr key={member._id} className={` border-t border-zinc-200`}>
                   <td className="px-4 py-3 text-center">
                     <Checkbox
-                      checked={debts.some((debt) => debt.member === member)}
+                      checked={!!debt}
                       onChange={() => toggleBeneficiary(member)}
                       className="group block size-5 rounded data-checked:border-none border border-zinc-400 bg-white data-checked:bg-purple-400 p-1"
                     >

@@ -5,7 +5,13 @@ export function validateExpense(expense, setErrors) {
     newErrors.name = "Veuillez entrer l'intitulé de la dépense.";
   }
 
-  if (expense.amount === "0" || isNaN(expense.amount)) {
+  if (
+    expense.amount === "" ||
+    expense.amount === null ||
+    expense.amount === undefined ||
+    Number(expense.amount) <= 0 ||
+    isNaN(Number(expense.amount))
+  ) {
     newErrors.amount = "Veuillez entrer un montant valide.";
   }
 

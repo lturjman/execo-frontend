@@ -13,7 +13,6 @@ import ExpenseForm from "./Form";
 
 export default function UpdateExpense({
   expense,
-  onClose,
   onExpenseUpdated,
   onExpenseDeleted,
   onShowRemove,
