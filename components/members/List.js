@@ -5,7 +5,6 @@ import { PencilIcon, UserPlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import CreateMember from "./Create";
 import UpdateMember from "./Update";
-import { CloseButton } from "@headlessui/react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMembers } from "@/lib/store/slices/members";

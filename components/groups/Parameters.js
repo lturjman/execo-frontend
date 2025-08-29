@@ -1,8 +1,6 @@
 "use client";
 
 import RemoveGroup from "./Remove";
-import { CloseButton } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
@@ -34,14 +32,6 @@ export default function GroupParameters({ onClose, group }) {
       }
     }
   };
-
-  // if (displayRemoveGroup)
-  //   return (
-  //     <RemoveGroup
-  //       group={group}
-  //       onClose={() => setDisplayRemoveGroup(false)}
-  //     ></RemoveGroup>
-  //   );
 
   return (
     <div className="space-y-4 ">

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import UpdateExpenseClient from "@/components/expenses/UpdateExpenseClient";
 import Button from "@/components/Button";

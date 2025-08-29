@@ -1,7 +1,6 @@
 "use client";
 
 import Button from "@/components/Button";
-import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
 import { deleteMember } from "../../lib/store/slices/members";
@@ -12,8 +11,6 @@ export default function RemoveMember({
   groupId,
   member,
 }) {
-  const router = useRouter();
-
   const dispatch = useDispatch();
 
   const handleDeleteMember = async () => {

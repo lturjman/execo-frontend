@@ -1,13 +1,11 @@
 "use client";
 
 import Button from "@/components/Button";
-import { useRouter } from "next/navigation";
 
 import { useDispatch } from "react-redux";
 import { deleteExpense } from "@/lib/store/slices/expenses";
 
 export default function RemoveExpense({ onClose, expense, onExpenseDeleted }) {
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const handleDeleteExpense = async () => {
