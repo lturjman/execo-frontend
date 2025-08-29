@@ -12,7 +12,7 @@ export default function ParametersPage({ params }) {
       </Button>
 
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden p-6 mt-12">
-        <GroupParameters group={{ _id: params.id }} />
+        <GroupParameters group={{ _id: groupId }} />
       </div>
     </div>
   );
