@@ -9,12 +9,46 @@ export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { username: "", email: "", password: "" };
+
+    if (!username) {
+      newErrors.username = "Le nom d'utilisateur est obligatoire";
+      valid = false;
+    }
+
+    if (!email) {
+      newErrors.email = "L'email n'est pas valide";
+      valid = false;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        newErrors.email = "L'email n'est pas valide";
+        valid = false;
+      }
+    }
+
+    if (!password) {
+      newErrors.password = "Le mot de passe n'est pas valide";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const router = useRouter();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
     const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/register`, {
       method: "POST",
@@ -23,11 +57,22 @@ export default function RegisterForm() {
       },
       body: JSON.stringify({ username, email, password }),
     });
-
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.msg || "Une erreur est survenue");
+      const newErrors = { username: "", email: "", password: "" };
+
+      if (data?.field === "username") {
+        newErrors.username = "Ce nom d'utilisateur n'est pas valide";
+      } else if (data?.field === "email") {
+        newErrors.email = "Cet email n'est pas valide";
+      } else {
+        newErrors.email = "L'email n'est pas valide";
+        newErrors.password = "Le mot de passe n'est pas valide";
+      }
+
+      setErrors(newErrors);
+      return;
     }
 
     // Stocker le token
@@ -35,13 +80,18 @@ export default function RegisterForm() {
 
     router.push("/groups");
   };
+
   return (
     <div>
-      <form onSubmit={handleRegister} className=" w-full flex flex-col gap-4">
+      <form
+        noValidate
+        onSubmit={handleRegister}
+        className="w-full flex flex-col gap-4"
+      >
         <div>
-          <label htmlFor="name">Nom d'utilisateur :</label>
+          <label htmlFor="username">Nom d'utilisateur :</label>
           <input
-            type="username"
+            type="text"
             placeholder="JohnDoe"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -56,7 +106,7 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="name">Email :</label>
+          <label htmlFor="email">Email :</label>
           <input
             type="email"
             placeholder="contact@email.com"
@@ -73,7 +123,7 @@ export default function RegisterForm() {
         </div>
 
         <div>
-          <label htmlFor="name">Mot de passe :</label>
+          <label htmlFor="password">Mot de passe :</label>
           <input
             type="password"
             placeholder="************"
@@ -91,6 +141,7 @@ export default function RegisterForm() {
 
         <Button type="submit">Créer un compte</Button>
       </form>
+
       <Button
         className="bg-zinc-400 mt-10 w-70 mx-auto"
         onClick={() => router.push("/auth/login")}
