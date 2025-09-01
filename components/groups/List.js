@@ -20,8 +20,6 @@ export default function groupsList() {
   if (loading) return <div>Chargement...</div>;
   return (
     <div className="p-4 space-y-6">
-      {/* Message de bienvenue */}
-
       {groups.length === 0 ? (
         // Cas où il n'y a aucun groupe
         <div className="flex flex-col items-center justify-center min-h-[70vh] w-full px-6 text-white space-y-8 ">

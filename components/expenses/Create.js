@@ -17,7 +17,7 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
 
   const [expense, setExpense] = useState({
     name: "",
-    amount: "",
+    amount: 0,
     member: "",
   });
 
