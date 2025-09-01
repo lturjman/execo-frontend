@@ -1,0 +1,45 @@
+"use client";
+
+import { useState } from "react";
+import Button from "@/components/Button";
+import { useRouter } from "next/navigation";
+
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export default function LogoutForm() {
+  const router = useRouter();
+
+  const error = "Une erreur est survenue lors de la déconnexion";
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+
+    const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/logout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!res.ok) {
+      error;
+      return;
+    }
+
+    localStorage.removeItem("token");
+
+    router.push("/auth/login");
+  };
+
+  return (
+    <div>
+      <Button
+        onClick={handleLogout}
+        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+      >
+        Déconnexion
+      </Button>
+    </div>
+  );
+}
