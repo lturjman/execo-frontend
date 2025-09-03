@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import RemoveMember from "./Remove";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
+import { NumericFormat } from "react-number-format";
+
 import { useDispatch } from "react-redux";
 import { updateMember } from "../../lib/store/slices/members";
 
@@ -80,35 +82,54 @@ export default function UpdateMember({
         )}
 
         <label htmlFor="monthlyRevenue">Revenus mensuels</label>
-        <input
-          type="number"
-          name="monthlyRevenue"
-          className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
-          placeholder="Revenus"
-          value={editableMember.monthlyRevenue}
-          onChange={(e) =>
+        <NumericFormat
+          value={editableMember?.monthlyRevenue}
+          decimalScale={2}
+          decimalSeparator=","
+          allowedDecimalSeparators={[".", ","]}
+          thousandSeparator=" "
+          fixedDecimalScale
+          suffix=" €"
+          inputMode="decimal"
+          placeholder="0,00 €"
+          allowNegative={false}
+          onValueChange={(values) =>
             setEditableMember({
               ...editableMember,
-              monthlyRevenue: Number(e.target.value),
+              monthlyRevenue: values.floatValue ?? null,
             })
           }
+          className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+          name="monthlyRevenue"
         />
         {errors.monthlyRevenue && (
           <p className="text-red-500 text-sm mb-2">{errors.monthlyRevenue}</p>
         )}
 
         <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
-        <input
-          type="number"
-          className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
-          placeholder="Charges personnelles fixes"
-          value={editableMember.monthlyCharges}
-          onChange={(e) =>
+        <NumericFormat
+          value={editableMember?.monthlyCharges}
+          decimalScale={2}
+          decimalSeparator=","
+          allowedDecimalSeparators={[".", ","]}
+          thousandSeparator=" "
+          fixedDecimalScale
+          suffix=" €"
+          inputMode="decimal"
+          placeholder="0,00 €"
+          allowNegative={false}
+          onValueChange={(values) =>
             setEditableMember({
               ...editableMember,
-              monthlyCharges: Number(e.target.value),
+              monthlyCharges: values.floatValue ?? null,
             })
           }
+          className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+          name="monthlyCharges"
         />
         {errors.monthlyCharges && (
           <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
