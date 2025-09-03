@@ -34,12 +34,12 @@ export default function Home() {
         </div>
         <div className="flex flex-col gap-4 w-full">
           <Link href="/auth/login">
-            <Button className="p-5 text-xl bg-zinc-800 dark:bg-white dark:text-zinc-800">
+            <Button className="p-5 text-xl bg-zinc-800 hover:bg-zinc-700 dark:bg-white hover:dark:bg-zinc-100 dark:text-zinc-800">
               Se connecter
             </Button>
           </Link>
           <Link href="/auth/register">
-            <Button className="p-5 text-xl text-zinc-800 bg-white dark:bg-zinc-800 dark:text-white">
+            <Button className="p-5 text-xl text-zinc-800 bg-white hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white">
               Créer un compte
             </Button>
           </Link>

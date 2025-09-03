@@ -7,7 +7,7 @@ import { fetchPaybacks } from "@/lib/store/slices/paybacks";
 
 export default function debtsList() {
   const params = useParams();
-  const id = params.id;
+  const id = params.groupId;
 
   const expenses = useSelector((state) => state.expenses.items);
   const paybacks = useSelector((state) => state.paybacks.items);

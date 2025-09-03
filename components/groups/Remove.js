@@ -17,7 +17,7 @@ export default function RemoveGroup({ group, onClose }) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-2">
       <h2 className="block font-bold text-xl">
         Êtes vous sûr de vouloir supprimer le groupe ?
       </h2>
@@ -26,11 +26,17 @@ export default function RemoveGroup({ group, onClose }) {
         perdues
       </div>
       <div className="flex gap-4 ">
-        <Button onClick={handleDeleteGroup} className=" bg-red-400">
+        <Button
+          onClick={handleDeleteGroup}
+          className=" bg-red-400 hover:bg-red-500 active:bg-red-600"
+        >
           Oui, Supprimer
         </Button>
 
-        <Button className="bg-zinc-400" onClick={onClose}>
+        <Button
+          className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600"
+          onClick={onClose}
+        >
           Non, Annuler
         </Button>
       </div>

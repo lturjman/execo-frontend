@@ -1,7 +1,7 @@
 "use client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createMember } from "@/lib/store/slices/members";
-
+import { NumericFormat } from "react-number-format";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { validateMember } from "../../utils/validateMember";
 
 export default function CreateMember({ onMemberCreated, onClose, groupId }) {
   const router = useRouter();
+  const loading = useSelector((state) => state.members.loading);
 
   const dispatch = useDispatch();
 
@@ -39,7 +40,9 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       <input
         type="text"
         name="name"
-        className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
+        className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
         placeholder="John Doe"
         onChange={(e) => setMember({ ...member, name: e.target.value })}
       />
@@ -48,37 +51,60 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       )}
 
       <label htmlFor="monthlyRevenue">Revenus mensuels</label>
-      <input
-        type="number"
-        name="monthlyRevenue"
-        className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
-        placeholder="1800"
-        onChange={(e) =>
-          setMember({ ...member, monthlyRevenue: Number(e.target.value) })
+      <NumericFormat
+        value={member?.monthlyRevenue}
+        decimalScale={2}
+        decimalSeparator=","
+        allowedDecimalSeparators={[".", ","]}
+        thousandSeparator=" "
+        fixedDecimalScale
+        suffix=" €"
+        inputMode="decimal"
+        placeholder="0,00 €"
+        allowNegative={false}
+        onValueChange={(values) =>
+          setMember({ ...member, monthlyRevenue: values.floatValue ?? null })
         }
+        className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+        name="monthlyRevenue"
       />
       {errors.monthlyRevenue && (
         <p className="text-red-500 text-sm mb-2">{errors.monthlyRevenue}</p>
       )}
 
       <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
-      <input
-        type="number"
-        name="monthlyCharges"
-        className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
-        placeholder="600"
-        onChange={(e) =>
-          setMember({ ...member, monthlyCharges: Number(e.target.value) })
+      <NumericFormat
+        value={member?.monthlyCharges}
+        decimalScale={2}
+        decimalSeparator=","
+        allowedDecimalSeparators={[".", ","]}
+        thousandSeparator=" "
+        fixedDecimalScale
+        suffix=" €"
+        inputMode="decimal"
+        placeholder="0,00 €"
+        allowNegative={false}
+        onValueChange={(values) =>
+          setMember({ ...member, monthlyCharges: values.floatValue ?? null })
         }
+        className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+        name="monthlyCharges"
       />
       {errors.monthlyCharges && (
         <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
       )}
 
-      <Button onClick={handleCreateMember} className="mt-4">
-        Ajouter au groupe
+      <Button onClick={handleCreateMember} disabled={loading} className="mt-4">
+        {loading ? "En cours de chargement..." : "Ajouter au groupe"}
       </Button>
-      <Button onClick={onClose} className="bg-zinc-400">
+      <Button
+        onClick={onClose}
+        className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600"
+      >
         Annuler
       </Button>
     </div>

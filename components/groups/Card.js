@@ -3,7 +3,7 @@ import Button from "../Button";
 
 export default function GroupCard({ group }) {
   return (
-    <div className="w-full max-w-sm mx-auto bg-white rounded-lg shadow-md overflow-hidden flex flex-col transition-transform hover:scale-[1.02] duration-200 dark:bg-zinc-600">
+    <div className="w-full mx-auto bg-white rounded-lg shadow-md overflow-hidden flex flex-col transition-transform hover:scale-[1.02] duration-200 dark:bg-zinc-600">
       {/* Image */}
       <div className="relative w-full h-40 sm:h-48 md:h-56">
         <Image

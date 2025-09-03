@@ -1,18 +1,17 @@
 "use client";
+
 import { useDispatch, useSelector } from "react-redux";
 import { createExpense } from "@/lib/store/slices/expenses";
 import { fetchMembers } from "@/lib/store/slices/members";
 
 import { useRouter } from "next/navigation";
 
-import Button from "@/components/Button";
 import { useState, useEffect } from "react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { Decimal } from "decimal.js";
 import ExpenseForm from "./Form";
 
-export default function CreateExpense({ groupId, onExpenseCreated, onClose }) {
+export default function CreateExpense({ groupId, onExpenseCreated }) {
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -37,14 +36,12 @@ export default function CreateExpense({ groupId, onExpenseCreated, onClose }) {
         expense: {
           name: updatedExpense.name,
           amount: Decimal.mul(updatedExpense.amount, 100),
-          debts: members.map((member) => {
-            return {
-              amount: Decimal.mul(updatedExpense.amount, member.share)
-                .times(100)
-                .round(),
-              member: member._id,
-            };
-          }),
+          debts: members.map((member) => ({
+            amount: Decimal.mul(updatedExpense.amount, member.share)
+              .times(100)
+              .round(),
+            member: member._id,
+          })),
           credits: [
             {
               amount: Decimal.mul(updatedExpense.amount, 100),
@@ -54,25 +51,18 @@ export default function CreateExpense({ groupId, onExpenseCreated, onClose }) {
         },
       })
     );
+
     if (createExpense.fulfilled.match(action)) {
-      if (onClose) onClose();
       router.push(`/groups/${groupId}`);
       if (onExpenseCreated) onExpenseCreated();
     }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="block font-bold text-xl"> Nouvelle dépense :</h2>
-        <Button onClick={onClose} rounded={true} className="bg-zinc-400">
-          <XMarkIcon className="size-6" />
-        </Button>
-      </div>
-      <ExpenseForm
-        expense={expense}
-        handleSubmit={handleCreateExpense}
-      ></ExpenseForm>
+    <div className="space-y-4 ">
+      <h2 className="font-bold text-xl">Nouvelle dépense :</h2>
+
+      <ExpenseForm expense={expense} handleSubmit={handleCreateExpense} />
     </div>
   );
 }

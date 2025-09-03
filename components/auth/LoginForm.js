@@ -11,10 +11,30 @@ export default function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { email: "", password: "" };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailRegex.test(email)) {
+      newErrors.email = "L'email n'est pas valide";
+      valid = false;
+    }
+    if (!password) {
+      newErrors.password = "Le mot de passe n'est pas valide";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
     const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
       method: "POST",
@@ -27,10 +47,13 @@ export default function LoginForm() {
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.msg || "Une erreur est survenue");
+      setErrors({
+        email: "L'email n'est pas valide",
+        password: "Le mot de passe n'est pas valide",
+      });
+      return;
     }
 
-    // // Stocker le token
     localStorage.setItem("token", data.token);
 
     router.push("/groups");
@@ -38,9 +61,13 @@ export default function LoginForm() {
 
   return (
     <div>
-      <form onSubmit={handleLogin} className=" w-full flex flex-col gap-4">
+      <form
+        noValidate
+        onSubmit={handleLogin}
+        className="w-full flex flex-col gap-4"
+      >
         <div>
-          <label htmlFor="name">Email :</label>
+          <label htmlFor="email">Email :</label>
           <input
             type="email"
             placeholder="contact@email.com"
@@ -57,7 +84,7 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="name">Mot de passe :</label>
+          <label htmlFor="password">Mot de passe :</label>
           <input
             type="password"
             placeholder="************"
@@ -72,11 +99,12 @@ export default function LoginForm() {
             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
           )}
         </div>
+
         <Button type="submit">Se connecter</Button>
       </form>
 
       <Button
-        className="bg-zinc-400 mt-10 w-70 mx-auto"
+        className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600 mt-10 w-70 mx-auto"
         onClick={() => router.push("/auth/register")}
       >
         Pas encore de compte ?

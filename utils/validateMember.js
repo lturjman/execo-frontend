@@ -1,4 +1,4 @@
-export async function validateMember(member, setErrors) {
+export function validateMember(member, setErrors) {
   const newErrors = {};
 
   if (!member.name || member.name.trim() === "") {

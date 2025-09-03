@@ -3,7 +3,6 @@
 import Button from "@/components/Button";
 import { useState } from "react";
 import RemoveExpense from "./Remove";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import { useDispatch, useSelector } from "react-redux";
 import { updateExpense } from "../../lib/store/slices/expenses";
@@ -13,9 +12,9 @@ import ExpenseForm from "./Form";
 
 export default function UpdateExpense({
   expense,
-  onClose,
   onExpenseUpdated,
   onExpenseDeleted,
+  onShowRemove,
 }) {
   const dispatch = useDispatch();
   const members = useSelector((state) => state.members.items);
@@ -64,12 +63,8 @@ export default function UpdateExpense({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="block mb-2 font-bold text-xl"> Modifier la dépense :</h2>
-        <Button onClick={onClose} rounded={true} className="bg-zinc-400">
-          <XMarkIcon className="size-6" />
-        </Button>
-      </div>
+      <h2 className="block mb-2 font-bold text-xl"> Modifier la dépense :</h2>
+
       <ExpenseForm
         expense={expense}
         handleSubmit={handleUpdateExpense}
@@ -79,10 +74,8 @@ export default function UpdateExpense({
       <label className="block mb-2 font-bold"> Supprimer la dépense :</label>
       <div>Attention, la dépense sera supprimé définitivement.</div>
       <Button
-        onClick={() => {
-          setDisplayRemoveExpense(true);
-        }}
-        className="my-4 bg-red-400"
+        onClick={onShowRemove}
+        className="my-4 bg-red-400 hover:bg-red-500 active:bg-red-600"
       >
         Supprimer la dépense
       </Button>

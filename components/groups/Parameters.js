@@ -1,26 +1,29 @@
 "use client";
 
 import RemoveGroup from "./Remove";
-import { CloseButton } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
 
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateGroup } from "@/lib/store/slices/groups";
 
 import { validateGroup } from "@/utils/validateGroup";
 
-export default function GroupParameters({ onClose, group }) {
-  const dispatch = useDispatch();
+import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
-  const [editableGroup, setEditableGroup] = useState(group);
+export default function GroupParameters({ onClose, groupId }) {
+  const dispatch = useDispatch();
+  const group = useSelector((state) =>
+    state.groups.items?.find((group) => group._id === groupId)
+  );
+
+  const [editableGroup, setEditableGroup] = useState({ ...group });
   let [displayRemoveGroup, setDisplayRemoveGroup] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setEditableGroup(group);
+    if (group) setEditableGroup(group);
   }, [group]);
 
   const handleUpdateGroup = async () => {
@@ -33,28 +36,15 @@ export default function GroupParameters({ onClose, group }) {
     }
   };
 
-  if (displayRemoveGroup)
-    return (
-      <RemoveGroup
-        group={group}
-        onClose={() => setDisplayRemoveGroup(false)}
-      ></RemoveGroup>
-    );
-
   return (
-    <div className="space-y-4 ">
-      <div className="flex justify-between items-center ">
-        <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
-        <CloseButton as={Button} rounded={true} className="bg-zinc-400">
-          <XMarkIcon className="size-6" />
-        </CloseButton>
-      </div>
-
+    <div className="space-y-4 p-2">
       <label htmlFor="name">Nom du groupe</label>
       <input
         type="text"
         name="name"
-        className="w-full p-2 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
+        className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
         placeholder="Famille, Coloc, ..."
         value={editableGroup.name}
         onChange={(e) =>
@@ -65,7 +55,7 @@ export default function GroupParameters({ onClose, group }) {
       <Button onClick={handleUpdateGroup}>Valider les modifications</Button>
 
       <hr className="my-6 border-zinc-400"></hr>
-      <h2 className="block font-bold text-xl"> Supprimer le groupe :</h2>
+      <h2 className="block font-bold text-2xl"> Supprimer le groupe :</h2>
       <div>
         Attention, le groupe sera supprimé définitivement et toutes les dépenses
         seront perdues.
@@ -73,11 +63,27 @@ export default function GroupParameters({ onClose, group }) {
       <div>
         <Button
           onClick={() => setDisplayRemoveGroup(true)}
-          className=" bg-red-400"
+          className=" bg-red-400 hover:bg-red-500 active:bg-red-600"
         >
           Supprimer le groupe
         </Button>
       </div>
+
+      <Dialog
+        open={displayRemoveGroup}
+        onClose={() => setDisplayRemoveGroup(false)}
+        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 dark:bg-black/70 p-4 z-50"
+      >
+        <DialogBackdrop className="fixed inset-0" />
+        <div className="fixed p-4 w-full flex justify-center">
+          <DialogPanel className="bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-700">
+            <RemoveGroup
+              group={group}
+              onClose={() => setDisplayRemoveGroup(false)}
+            />
+          </DialogPanel>
+        </div>
+      </Dialog>
     </div>
   );
 }
