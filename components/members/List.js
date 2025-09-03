@@ -15,7 +15,6 @@ export default function MembersList({ groupId }) {
 
   const dispatch = useDispatch();
   const members = useSelector((state) => state.members.items);
-  const loading = useSelector((state) => state.members.loading);
 
   useEffect(() => {
     if (groupId) {
@@ -31,8 +30,6 @@ export default function MembersList({ groupId }) {
     setEditMember();
     dispatch(fetchMembers({ groupId }));
   }
-
-  if (loading) return <div>Chargement...</div>;
 
   if (displayAddMember)
     return (

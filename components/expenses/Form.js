@@ -14,12 +14,13 @@ export default function ExpenseForm({
   handleSubmit,
   submitLabel = "Valider",
 }) {
-  console.log("test de expense : ", expense);
   const dispatch = useDispatch();
   const [editableExpense, setEditableExpense] = useState({
     ...expense,
     amount: Decimal.div(expense.amount, 100).toString(),
   });
+
+  const loading = useSelector((state) => state.expenses.loading);
 
   useEffect(() => {
     if (expense) {
@@ -241,9 +242,7 @@ export default function ExpenseForm({
                       fixedDecimalScale
                       suffix=" €"
                       disabled
-                      className="appearance-none w-full p-2 focus:border rounded-md
-             bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 text-right dark:bg-zinc-600 dark:text-zinc-200"
+                      className=" w-full p-2 focus:border rounded-md text-right"
                       name="amount"
                     />
                   </td>
@@ -255,7 +254,9 @@ export default function ExpenseForm({
       </div>
       {errors.debts && <p className="text-red-500 text-sm">{errors.debts}</p>}
 
-      <Button className="my-4">{submitLabel}</Button>
+      <Button className="my-4" disabled={loading}>
+        {loading ? "En cours de chargement..." : submitLabel}
+      </Button>
     </form>
   );
 }

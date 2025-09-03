@@ -5,22 +5,25 @@ import RemoveGroup from "./Remove";
 import Button from "@/components/Button";
 import { useState, useEffect } from "react";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateGroup } from "@/lib/store/slices/groups";
 
 import { validateGroup } from "@/utils/validateGroup";
 
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
-export default function GroupParameters({ onClose, group }) {
+export default function GroupParameters({ onClose, groupId }) {
   const dispatch = useDispatch();
+  const group = useSelector((state) =>
+    state.groups.items?.find((group) => group._id === groupId)
+  );
 
-  const [editableGroup, setEditableGroup] = useState(group);
+  const [editableGroup, setEditableGroup] = useState({ ...group });
   let [displayRemoveGroup, setDisplayRemoveGroup] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setEditableGroup(group);
+    if (group) setEditableGroup(group);
   }, [group]);
 
   const handleUpdateGroup = async () => {
@@ -39,7 +42,9 @@ export default function GroupParameters({ onClose, group }) {
       <input
         type="text"
         name="name"
-        className="w-full p-2 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
+        className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
         placeholder="Famille, Coloc, ..."
         value={editableGroup.name}
         onChange={(e) =>

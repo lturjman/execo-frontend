@@ -20,7 +20,7 @@ export default function ParametersPage({ params }) {
       </h1>
 
       <div className="w-full max-w-4xl bg-white dark:bg-zinc-800 rounded-2xl shadow-lg overflow-hidden p-6 mt-12">
-        <GroupParameters group={{ _id: groupId }} />
+        <GroupParameters groupId={groupId} />
       </div>
     </div>
   );

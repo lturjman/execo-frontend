@@ -71,7 +71,7 @@ export default function groupsList() {
 
             {/* Carte d'ajout en fin de liste */}
             <Link href="/groups/new">
-              <div className="hidden sm:flex h-full w-full max-w-sm cursor-pointer transition-transform hover:scale-105 duration-300 ease-in-out flex-col items-center justify-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
+              <div className="hidden sm:flex h-full w-full  cursor-pointer transition-transform hover:scale-105 duration-300 ease-in-out flex-col items-center justify-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
                 <PlusIcon className="w-10 h-10" />
                 <span className="mt-3 font-medium text-lg text-center">
                   Ajouter un groupe
@@ -85,7 +85,7 @@ export default function groupsList() {
       {/* Bouton flottant */}
       <div className="sm:hidden fixed bottom-6 right-6">
         <Link href="/groups/new">
-          <Button className="w-24 h-24 shadow-md">
+          <Button className="w-20 h-20 ring-2 ring-white shadow-lg shadow-purple-600/50">
             <PlusIcon className="size-9"></PlusIcon>
           </Button>
         </Link>

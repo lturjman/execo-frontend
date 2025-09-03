@@ -1,5 +1,5 @@
 "use client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createMember } from "@/lib/store/slices/members";
 import { NumericFormat } from "react-number-format";
 import Button from "@/components/Button";
@@ -9,6 +9,7 @@ import { validateMember } from "../../utils/validateMember";
 
 export default function CreateMember({ onMemberCreated, onClose, groupId }) {
   const router = useRouter();
+  const loading = useSelector((state) => state.members.loading);
 
   const dispatch = useDispatch();
 
@@ -97,8 +98,8 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
         <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
       )}
 
-      <Button onClick={handleCreateMember} className="mt-4">
-        Ajouter au groupe
+      <Button onClick={handleCreateMember} disabled={loading} className="mt-4">
+        {loading ? "En cours de chargement..." : "Ajouter au groupe"}
       </Button>
       <Button
         onClick={onClose}
