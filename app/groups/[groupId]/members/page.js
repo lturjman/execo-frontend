@@ -17,7 +17,7 @@ export default function MembersPage({ params }) {
         {" "}
         Gestion des membres :
       </h1>
-      <div className="w-full max-w-3xl bg-white dark:bg-zinc-800 rounded-2xl shadow-lg overflow-hidden p-10 mt-12">
+      <div className="w-full max-w-3xl bg-white dark:bg-zinc-800 rounded-2xl shadow-lg overflow-hidden p-10 mt-10">
         <MembersList groupId={groupId} />
       </div>
     </div>

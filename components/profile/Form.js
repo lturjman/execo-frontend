@@ -32,28 +32,35 @@ export default function ProfileForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <input
-        type="text"
-        value={editableUser.username}
-        onChange={(e) =>
-          setEditableUser({ ...editableUser, username: e.target.value })
-        }
-        // placeholder="Nom d'utilisateur"
-        className="appearance-none w-full p-2 focus:border rounded-md
+      <div>
+        <label>Nom d'utilisateur : </label>
+        <input
+          type="text"
+          value={editableUser.username}
+          onChange={(e) =>
+            setEditableUser({ ...editableUser, username: e.target.value })
+          }
+          // placeholder="Nom d'utilisateur"
+          className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-      />
-      <input
-        type="email"
-        value={editableUser.email}
-        onChange={(e) =>
-          setEditableUser({ ...editableUser, email: e.target.value })
-        }
-        // placeholder="Email"
-        className="appearance-none w-full p-2 focus:border rounded-md
+        />
+      </div>
+
+      <div>
+        <label>Email : </label>
+        <input
+          type="email"
+          value={editableUser.email}
+          onChange={(e) =>
+            setEditableUser({ ...editableUser, email: e.target.value })
+          }
+          // placeholder="Email"
+          className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-      />
+        />
+      </div>
       <Button
         type="submit"
         disabled={status === "loading"}
