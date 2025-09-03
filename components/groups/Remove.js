@@ -28,12 +28,15 @@ export default function RemoveGroup({ group, onClose }) {
       <div className="flex gap-4 ">
         <Button
           onClick={handleDeleteGroup}
-          className=" bg-red-400 hover:bg-red-500"
+          className=" bg-red-400 hover:bg-red-500 active:bg-red-600"
         >
           Oui, Supprimer
         </Button>
 
-        <Button className="bg-zinc-400 hover:bg-zinc-500" onClick={onClose}>
+        <Button
+          className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600"
+          onClick={onClose}
+        >
           Non, Annuler
         </Button>
       </div>

@@ -75,7 +75,7 @@ export default function UpdateExpense({
       <div>Attention, la dépense sera supprimé définitivement.</div>
       <Button
         onClick={onShowRemove}
-        className="my-4 bg-red-400 hover:bg-red-500"
+        className="my-4 bg-red-400 hover:bg-red-500 active:bg-red-600"
       >
         Supprimer la dépense
       </Button>

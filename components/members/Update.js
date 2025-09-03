@@ -56,7 +56,7 @@ export default function UpdateMember({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="block mb-2 font-bold text-xl"> Modifier membre :</h2>
+        <h2 className="block font-bold text-xl"> Modifier membre :</h2>
         <Button
           onClick={() => onClose()}
           rounded={true}
@@ -70,7 +70,8 @@ export default function UpdateMember({
         <input
           type="text"
           name="name"
-          className="w-full p-2 mb-4 rounded bg-zinc-100 dark:bg-zinc-600 dark:text-zinc-200"
+          className="w-full p-2 mb-4 rounded bg-zinc-100 focus:outline-none focus:border
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           placeholder="Nom"
           value={editableMember.name}
           onChange={(e) =>
@@ -101,7 +102,7 @@ export default function UpdateMember({
           }
           className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200 mb-4"
           name="monthlyRevenue"
         />
         {errors.monthlyRevenue && (
@@ -128,7 +129,7 @@ export default function UpdateMember({
           }
           className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200 "
           name="monthlyCharges"
         />
         {errors.monthlyCharges && (
@@ -147,7 +148,7 @@ export default function UpdateMember({
       </div>
       <Button
         onClick={() => setDisplayRemoveMember(true)}
-        className="my-4 bg-red-400 hover:bg-red-500"
+        className="my-4 bg-red-400 hover:bg-red-500 active:bg-red-600"
       >
         Supprimer le membre
       </Button>

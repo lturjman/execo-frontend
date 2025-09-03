@@ -100,7 +100,10 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       <Button onClick={handleCreateMember} className="mt-4">
         Ajouter au groupe
       </Button>
-      <Button onClick={onClose} className="bg-zinc-400 hover:bg-zinc-500">
+      <Button
+        onClick={onClose}
+        className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600"
+      >
         Annuler
       </Button>
     </div>

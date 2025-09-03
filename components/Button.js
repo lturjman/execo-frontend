@@ -10,7 +10,7 @@ export default function Button({
 }) {
   function getClassName() {
     return twMerge(
-      "top-4 left-4 rounded-full size-8 flex items-center justify-center bg-purple-400 hover:bg-purple-500 text-white font-semibold py-2 cursor-pointer",
+      "top-4 left-4 rounded-full size-8 flex items-center justify-center bg-purple-400 hover:bg-purple-500 active:bg-purple-700 text-white font-semibold py-2 cursor-pointer",
       rounded ? "size-8" : "w-full",
       className
     );

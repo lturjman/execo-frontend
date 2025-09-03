@@ -40,7 +40,7 @@ export default function LogoutForm() {
     <div>
       <Button
         onClick={handleLogout}
-        className="px-4 py-2 bg-red-400 text-white rounded-full hover:bg-red-500"
+        className="px-4 py-2 bg-red-400 text-white rounded-full hover:bg-red-500 active:bg-red-600"
       >
         Déconnexion
       </Button>

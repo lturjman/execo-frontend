@@ -58,7 +58,7 @@ export default function GroupParameters({ onClose, group }) {
       <div>
         <Button
           onClick={() => setDisplayRemoveGroup(true)}
-          className=" bg-red-400 hover:bg-red-500"
+          className=" bg-red-400 hover:bg-red-500 active:bg-red-600"
         >
           Supprimer le groupe
         </Button>
