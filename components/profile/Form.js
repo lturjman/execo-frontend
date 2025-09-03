@@ -1,18 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUser } from "@/lib/store/slices/users";
+import { fetchMe } from "@/lib/store/slices/users";
+import Button from "../Button";
 
 export default function ProfileForm() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.users.items[0]);
+  const user = useSelector((state) => state.users.me);
   const status = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
 
   const [editableUser, setEditableUser] = useState(user || {});
 
   useEffect(() => {
-    dispatch(fetchUser());
+    dispatch(fetchMe());
   }, [dispatch]);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function ProfileForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 max-w-sm">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <input
         type="text"
         value={editableUser.username}
@@ -38,7 +39,9 @@ export default function ProfileForm() {
           setEditableUser({ ...editableUser, username: e.target.value })
         }
         // placeholder="Nom d'utilisateur"
-        className="border rounded p-2"
+        className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
       />
       <input
         type="email"
@@ -47,18 +50,17 @@ export default function ProfileForm() {
           setEditableUser({ ...editableUser, email: e.target.value })
         }
         // placeholder="Email"
-        className="border rounded p-2"
+        className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
       />
-      <button
+      <Button
         type="submit"
         disabled={status === "loading"}
-        className="bg-green-600 text-white p-2 rounded"
+        className="px-4 py-2 rounded-full hover:bg-purple-500"
       >
         {status === "loading" ? "Mise à jour..." : "Mettre à jour"}
-      </button>
-      {/* {status === "succeeded" && (
-        <p className="text-green-600">Profil mis à jour ✅</p>
-      )} */}
+      </Button>
     </form>
   );
 }
