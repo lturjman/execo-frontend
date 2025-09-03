@@ -14,8 +14,8 @@ export default function RemoveExpense({ onClose, expense, onExpenseDeleted }) {
   };
 
   return (
-    <div>
-      <h2 className="block mb-2 font-bold text-xl text-center">
+    <div className="p-4">
+      <h2 className="block mb-2 font-bold text-2xl text-center">
         Êtes vous sûr de vouloir supprimer la dépense ?
       </h2>
 
@@ -24,11 +24,14 @@ export default function RemoveExpense({ onClose, expense, onExpenseDeleted }) {
         seront reréparties entre les autres membres du groupe
       </div>
       <div>
-        <Button onClick={handleDeleteExpense} className="my-4 bg-red-400">
+        <Button
+          onClick={handleDeleteExpense}
+          className="my-6 bg-red-400 hover:bg-red-500"
+        >
           Oui, Supprimer
         </Button>
 
-        <Button className="bg-zinc-400" onClick={onClose}>
+        <Button className="bg-zinc-400 hover:bg-zinc-500" onClick={onClose}>
           Non, Annuler
         </Button>
       </div>

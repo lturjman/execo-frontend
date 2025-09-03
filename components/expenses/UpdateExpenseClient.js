@@ -31,11 +31,11 @@ export default function UpdateExpenseClient({ groupId }) {
       <Dialog
         open={showRemoveModal}
         onClose={() => setShowRemoveModal(false)}
-        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 z-50"
+        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 dark:bg-black/70 p-4 z-50"
       >
         <DialogBackdrop className="fixed inset-0" />
-        <div className="fixed p-4 w-full flex justify-center">
-          <DialogPanel className="bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
+        <div className="fixed p-4 w-full flex justify-center max-w-3xl">
+          <DialogPanel className="bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-700">
             <RemoveExpense
               expense={expense}
               onClose={() => setShowRemoveModal(false)}

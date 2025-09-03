@@ -11,7 +11,7 @@ export default function NewExpensePage({ params }) {
         <ArrowLeftIcon className="size-5 text-white" />
       </Button>
 
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-lg overflow-hidden p-6 mt-12">
+      <div className="w-full max-w-4xl bg-white dark:bg-zinc-800 rounded-2xl shadow-lg overflow-hidden p-6 mt-12">
         <NewExpenseClient groupId={groupId} />
       </div>
     </div>

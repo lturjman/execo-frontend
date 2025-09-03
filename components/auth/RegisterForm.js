@@ -143,7 +143,7 @@ export default function RegisterForm() {
       </form>
 
       <Button
-        className="bg-zinc-400 mt-10 w-70 mx-auto"
+        className="bg-zinc-400 hover:bg-zinc-500 mt-10 w-70 mx-auto"
         onClick={() => router.push("/auth/login")}
       >
         Déjà un compte ?

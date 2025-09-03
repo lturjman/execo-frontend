@@ -54,9 +54,7 @@ export default function MembersList({ groupId }) {
     );
 
   return (
-    <div className="space-y-4">
-      <h2 className="block font-bold text-xl"> Gestion des membres :</h2>
-
+    <div className="space-y-4 ">
       {members.map((member, index) => (
         <div key={index}>
           <div className="flex gap-4 items-center">
@@ -73,7 +71,10 @@ export default function MembersList({ groupId }) {
         </div>
       ))}
 
-      <Button onClick={() => setDisplayAddMember(true)} className="gap-2">
+      <Button
+        onClick={() => setDisplayAddMember(true)}
+        className="gap-2 max-w-xl mx-auto mt-6"
+      >
         <UserPlusIcon className="size-5 text-white" /> Ajouter un membre
       </Button>
     </div>

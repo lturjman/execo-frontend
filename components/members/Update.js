@@ -126,7 +126,7 @@ export default function UpdateMember({
       </div>
       <Button
         onClick={() => setDisplayRemoveMember(true)}
-        className="my-4 bg-red-400"
+        className="my-4 bg-red-400 hover:bg-red-500"
       >
         Supprimer le membre
       </Button>

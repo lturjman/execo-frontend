@@ -73,7 +73,10 @@ export default function UpdateExpense({
       <hr className="my-2"></hr>
       <label className="block mb-2 font-bold"> Supprimer la dépense :</label>
       <div>Attention, la dépense sera supprimé définitivement.</div>
-      <Button onClick={onShowRemove} className="my-4 bg-red-400">
+      <Button
+        onClick={onShowRemove}
+        className="my-4 bg-red-400 hover:bg-red-500"
+      >
         Supprimer la dépense
       </Button>
     </div>

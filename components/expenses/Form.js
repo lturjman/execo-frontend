@@ -187,7 +187,7 @@ export default function ExpenseForm({
         )}
       </div>
 
-      <h3 className="text-lg font-semibold text-zinc-800">Bénéficiaires :</h3>
+      <h3 className="text-lg font-semibold">Bénéficiaires :</h3>
 
       <div className="overflow-hidden rounded-md bg-white shadow-sm dark:bg-zinc-800 dark:border dark:border-zinc-500">
         <table className="w-full text-left ">

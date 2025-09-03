@@ -34,9 +34,7 @@ export default function GroupParameters({ onClose, group }) {
   };
 
   return (
-    <div className="space-y-4 ">
-      <h2 className="block font-bold text-xl">Paramètres du groupe</h2>
-
+    <div className="space-y-4 p-2">
       <label htmlFor="name">Nom du groupe</label>
       <input
         type="text"
@@ -52,7 +50,7 @@ export default function GroupParameters({ onClose, group }) {
       <Button onClick={handleUpdateGroup}>Valider les modifications</Button>
 
       <hr className="my-6 border-zinc-400"></hr>
-      <h2 className="block font-bold text-xl"> Supprimer le groupe :</h2>
+      <h2 className="block font-bold text-2xl"> Supprimer le groupe :</h2>
       <div>
         Attention, le groupe sera supprimé définitivement et toutes les dépenses
         seront perdues.
@@ -60,7 +58,7 @@ export default function GroupParameters({ onClose, group }) {
       <div>
         <Button
           onClick={() => setDisplayRemoveGroup(true)}
-          className=" bg-red-400"
+          className=" bg-red-400 hover:bg-red-500"
         >
           Supprimer le groupe
         </Button>
@@ -69,11 +67,11 @@ export default function GroupParameters({ onClose, group }) {
       <Dialog
         open={displayRemoveGroup}
         onClose={() => setDisplayRemoveGroup(false)}
-        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 p-4 z-50"
+        className="fixed inset-0 flex w-screen items-center justify-center bg-black/30 dark:bg-black/70 p-4 z-50"
       >
         <DialogBackdrop className="fixed inset-0" />
         <div className="fixed p-4 w-full flex justify-center">
-          <DialogPanel className="bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-800">
+          <DialogPanel className="bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-700">
             <RemoveGroup
               group={group}
               onClose={() => setDisplayRemoveGroup(false)}

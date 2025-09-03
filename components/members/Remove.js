@@ -34,11 +34,14 @@ export default function RemoveMember({
         seront reréparties entre les autres membres du groupe
       </div>
       <div>
-        <Button onClick={handleDeleteMember} className="my-4 bg-red-400">
+        <Button
+          onClick={handleDeleteMember}
+          className="my-4 bg-red-400 hover:bg-red-500"
+        >
           Oui, Supprimer
         </Button>
 
-        <Button className="bg-zinc-400" onClick={onClose}>
+        <Button className="bg-zinc-400 hover:bg-zinc-500" onClick={onClose}>
           Non, Annuler
         </Button>
       </div>
