@@ -14,6 +14,7 @@ import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
 export default function GroupParameters({ onClose, groupId }) {
   const dispatch = useDispatch();
+  const loading = useSelector((state) => state.groups.loading);
   const group = useSelector((state) =>
     state.groups.items?.find((group) => group._id === groupId)
   );
@@ -52,7 +53,10 @@ export default function GroupParameters({ onClose, groupId }) {
         }
       />
       {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-      <Button onClick={handleUpdateGroup}>Valider les modifications</Button>
+      <Button onClick={handleUpdateGroup} disabled={loading}>
+        {" "}
+        {loading ? "Mise à jour..." : "Mettre à jour"}
+      </Button>
 
       <hr className="my-6 border-zinc-400"></hr>
       <h2 className="block font-bold text-2xl"> Supprimer le groupe :</h2>
