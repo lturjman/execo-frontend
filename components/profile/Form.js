@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMe } from "@/lib/store/slices/users";
+import { fetchMe, updateUser } from "@/lib/store/slices/users";
 import Button from "../Button";
 
 export default function ProfileForm() {
@@ -9,6 +9,7 @@ export default function ProfileForm() {
   const user = useSelector((state) => state.users.me);
   const status = useSelector((state) => state.users.status);
   const error = useSelector((state) => state.users.error);
+  const loading = useSelector((state) => state.users.loading);
 
   const [editableUser, setEditableUser] = useState(user || {});
 
@@ -20,14 +21,11 @@ export default function ProfileForm() {
     if (user) setEditableUser(user);
   }, [user]);
 
-  if (status === "loading" && !user) return <p>Chargement...</p>;
   if (status === "failed") return <p className="text-red-500">{error}</p>;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!editableUser.id) return;
-    dispatch(updateUser({ id: editableUser.id, userData: editableUser }));
+    dispatch(updateUser({ userData: editableUser }));
   };
 
   return (
@@ -61,12 +59,8 @@ export default function ProfileForm() {
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
         />
       </div>
-      <Button
-        type="submit"
-        disabled={status === "loading"}
-        className="px-4 py-2 rounded-full hover:bg-purple-500"
-      >
-        {status === "loading" ? "Mise à jour..." : "Mettre à jour"}
+      <Button type="submit" disabled={loading}>
+        {loading ? "Mise à jour..." : "Mettre à jour"}
       </Button>
     </form>
   );

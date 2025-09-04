@@ -137,7 +137,7 @@ export default function UpdateMember({
         )}
         <div>Part : {(member.share * 100).toFixed(2) + "%"}</div>
         <Button className="my-4" onClick={handleUpdateMember}>
-          Valider les modifications
+          Mettre à jour le membre
         </Button>
       </div>
       <hr className="my-2"></hr>
