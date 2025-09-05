@@ -57,6 +57,12 @@ export default function GroupParameters({ onClose, groupId }) {
         {" "}
         {loading ? "Mise à jour..." : "Mettre à jour"}
       </Button>
+      <Button
+        className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600 mx-auto "
+        href={`/groups/${groupId}`}
+      >
+        Retour au groupe
+      </Button>
 
       <hr className="my-6 border-zinc-400"></hr>
       <h2 className="block font-bold text-2xl"> Supprimer le groupe :</h2>

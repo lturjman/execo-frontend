@@ -5,10 +5,12 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 
 import Parameters from "@/components/groups/CardParameters";
-import ExpensesList from "@/components/expenses/List";
-import DebtsList from "@/components/debts/List";
 
-export default function GroupPage() {
+import MembersGroupClient from "@/components/members/MembersGroupClient";
+
+export default function GroupPage({ params }) {
+  const { groupId } = params;
+
   return (
     <div className="p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600">
       <div className="hidden md:block fixed">
@@ -41,8 +43,7 @@ export default function GroupPage() {
           <Parameters />
         </div>
 
-        <DebtsList />
-        <ExpensesList />
+        <MembersGroupClient groupId={groupId} />
       </div>
     </div>
   );

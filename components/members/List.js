@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/components/Button";
-import { PencilIcon, UserPlusIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import { useState, useEffect } from "react";
 import CreateMember from "./Create";
 import UpdateMember from "./Update";
@@ -67,13 +67,21 @@ export default function MembersList({ groupId }) {
           </div>
         </div>
       ))}
+      <div className="space-y-2">
+        <Button
+          onClick={() => setDisplayAddMember(true)}
+          className="gap-2 max-w-xl mx-auto mt-6"
+        >
+          <UserPlusIcon className="size-5 text-white" /> Ajouter un membre
+        </Button>
 
-      <Button
-        onClick={() => setDisplayAddMember(true)}
-        className="gap-2 max-w-xl mx-auto mt-6"
-      >
-        <UserPlusIcon className="size-5 text-white" /> Ajouter un membre
-      </Button>
+        <Button
+          className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600 max-w-xl mx-auto "
+          href={`/groups/${groupId}`}
+        >
+          Retour au groupe
+        </Button>
+      </div>
     </div>
   );
 }
