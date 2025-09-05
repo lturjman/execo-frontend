@@ -13,7 +13,7 @@ export default function GroupPage({ params }) {
 
   return (
     <div className="p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600">
-      <div className="hidden md:block fixed">
+      {/* <div className="hidden md:block fixed">
         <Link href="/groups">
           <Image
             src="/images/LOGO01.png"
@@ -22,23 +22,14 @@ export default function GroupPage({ params }) {
             height={100}
           />
         </Link>
-      </div>
+      </div> */}
 
-      <div className="space-y-6 max-w-[70vh] mx-auto">
+      <div className="space-y-6 max-w-[70vh] mx-auto mt-10 md:mt-0">
         <div className=" bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="relative">
-            <Image
-              src="/images/groupImg.png"
-              alt="Image de groupe"
-              width={200}
-              height={100}
-              className="object-cover w-full h-full"
-            />
-            {/* Retour */}
-            <Button href="/groups" rounded="true" className="absolute">
-              <ArrowLeftIcon className="size-5 text-white" />
-            </Button>
-          </div>
+          {/* Retour */}
+          <Button href="/groups" rounded="true" className="absolute">
+            <ArrowLeftIcon className="size-5 text-white" />
+          </Button>
 
           <Parameters />
         </div>

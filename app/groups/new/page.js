@@ -10,7 +10,7 @@ export default function NewGroupPage() {
   const dispatch = useDispatch();
 
   return (
-    <div className="p-6 max-w-2xl mx-auto my-[20vh]">
+    <div className="p-6 max-w-4xl mx-auto my-[10vh]">
       <Button href={`/groups`} rounded="true" className="absolute">
         <ArrowLeftIcon className="size-5 text-white" />
       </Button>

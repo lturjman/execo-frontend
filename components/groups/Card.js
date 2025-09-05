@@ -7,8 +7,8 @@ export default function GroupCard({ group }) {
       {/* Image */}
       <div className="relative w-full h-40 sm:h-48 md:h-56">
         <Image
-          src="/images/groupImg.png"
-          alt="Image de groupe"
+          src={group.imageUrl || "/images/group1.jpg"}
+          alt={`Image de groupe ${group.name}`}
           fill
           className="object-cover"
           priority

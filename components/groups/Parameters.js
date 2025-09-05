@@ -12,6 +12,15 @@ import { validateGroup } from "@/utils/validateGroup";
 
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
+const groupImages = [
+  "/images/group1.jpg",
+  "/images/group2.jpg",
+  "/images/group3.jpg",
+  "/images/group4.jpg",
+  "/images/group5.jpg",
+  "/images/group6.jpg",
+];
+
 export default function GroupParameters({ onClose, groupId }) {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.groups.loading);
@@ -22,6 +31,7 @@ export default function GroupParameters({ onClose, groupId }) {
   const [editableGroup, setEditableGroup] = useState({ ...group });
   let [displayRemoveGroup, setDisplayRemoveGroup] = useState(false);
   const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (group) setEditableGroup(group);
@@ -32,9 +42,15 @@ export default function GroupParameters({ onClose, groupId }) {
     if (isValid) {
       const action = await dispatch(updateGroup(editableGroup));
       if (updateGroup.fulfilled.match(action)) {
+        setSuccess(true);
         if (onClose) onClose();
       }
     }
+  };
+
+  const handleChange = (field, value) => {
+    setEditableGroup({ ...editableGroup, [field]: value });
+    if (success) setSuccess(false);
   };
 
   return (
@@ -53,10 +69,45 @@ export default function GroupParameters({ onClose, groupId }) {
         }
       />
       {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-      <Button onClick={handleUpdateGroup} disabled={loading}>
-        {" "}
-        {loading ? "Mise à jour..." : "Mettre à jour"}
-      </Button>
+
+      {/* Choix de l'image du groupe */}
+      <label className="block mt-4 mb-2">Choisir une image de groupe :</label>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+        {groupImages.map((img) => (
+          <button
+            type="button"
+            key={img}
+            onClick={() =>
+              setEditableGroup({ ...editableGroup, imageUrl: img })
+            }
+            className={`relative rounded-lg overflow-hidden border-2 transition 
+              ${
+                editableGroup.imageUrl === img
+                  ? "border-purple-400 shadow-lg shadow-zinc-300"
+                  : "border-transparent"
+              }`}
+          >
+            <img
+              src={img}
+              alt="Option de groupe"
+              className="w-full h-[15vh] md:h-[20vh] object-cover"
+            />
+          </button>
+        ))}
+      </div>
+
+      <div>
+        <Button onClick={handleUpdateGroup} disabled={loading}>
+          {" "}
+          {loading ? "Mise à jour..." : "Mettre à jour"}
+        </Button>
+        {success && (
+          <p className="text-zinc-600 dark:text-zinc-300 text-sm text-center mt-2">
+            {" "}
+            ✅ Mise à jour réussie
+          </p>
+        )}
+      </div>
       <Button
         className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600 mx-auto "
         href={`/groups/${groupId}`}
