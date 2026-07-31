@@ -28,6 +28,7 @@ export default function groupParameters() {
 
   return (
     <div className=" dark:bg-zinc-800 bg-white rounded-2xl shadow-lg space-y-4">
+      {group && (
       <div>
         <div className=" flex h-[25vh] overflow-hidden justify-center">
           <Image
@@ -57,6 +58,7 @@ export default function groupParameters() {
           </Button>
         </div>
       </div>
+      )}
     </div>
   );
 }

@@ -55,7 +55,7 @@ export default function MembersList({ groupId }) {
       {members.map((member, index) => (
         <div key={index}>
           <div className="flex gap-4 items-center">
-            <div className="font-bold w-1/3">{member.name} :</div>
+            <div className="font-bold w-1/3">{member.nickname} :</div>
             <div className="text-right w-1/3">
               Part: {(member.share * 100).toFixed(2) + "%"}
             </div>

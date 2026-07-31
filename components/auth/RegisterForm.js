@@ -9,15 +9,25 @@ export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [monthlyRevenues, setmonthlyRevenues] = useState("");
+  const [monthlyCharges, setMonthlyCharges] = useState("");
   const [errors, setErrors] = useState({
     username: "",
     email: "",
     password: "",
+    monthlyRevenues: "",
+    monthlyCharges: "",
   });
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = { username: "", email: "", password: "" };
+    const newErrors = {
+      username: "",
+      email: "",
+      password: "",
+      monthlyRevenues: "",
+      monthlyCharges: "",
+    };
 
     if (!username) {
       newErrors.username = "Le nom d'utilisateur est obligatoire";
@@ -40,6 +50,16 @@ export default function RegisterForm() {
       valid = false;
     }
 
+    if (!monthlyRevenues) {
+      newErrors.monthlyRevenues = "Les revenus mensuels ne sont pas valides";
+      valid = false;
+    }
+
+    if (!monthlyCharges) {
+      newErrors.monthlyCharges = "Les charges mensuelles ne sont pas valides";
+      valid = false;
+    }
+
     setErrors(newErrors);
     return valid;
   };
@@ -55,20 +75,38 @@ export default function RegisterForm() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        monthlyRevenues,
+        monthlyCharges,
+      }),
     });
     const data = await res.json();
 
     if (!res.ok) {
-      const newErrors = { username: "", email: "", password: "" };
+      const newErrors = {
+        username: "",
+        email: "",
+        password: "",
+        monthlyRevenues: "",
+        monthlyCharges: "",
+      };
 
       if (data?.field === "username") {
         newErrors.username = "Ce nom d'utilisateur n'est pas valide";
       } else if (data?.field === "email") {
         newErrors.email = "Cet email n'est pas valide";
+      } else if (data?.field === "monthlyRevenues") {
+        newErrors.monthlyRevenues = "Ces revenus mensuels se sont pas valides";
+      } else if (data?.field === "monthlyCharges") {
+        newErrors.monthlyCharges = "Ces charges mensuelles se sont pas valides";
       } else {
         newErrors.email = "L'email n'est pas valide";
         newErrors.password = "Le mot de passe n'est pas valide";
+        newErrors.monthlyRevenues = "Les revenus mensuels ne sont pas valides";
+        newErrors.monthlyCharges = "Les charges mensuelles ne sont pas valides";
       }
 
       setErrors(newErrors);
@@ -136,6 +174,42 @@ export default function RegisterForm() {
           />
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="monthlyRevenues">Revenus mensuels net en € :</label>
+          <input
+            type="number"
+            placeholder="2 228"
+            value={monthlyRevenues}
+            onChange={(e) => setmonthlyRevenues(e.target.value)}
+            required
+            className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+          />
+          {errors.monthlyRevenues && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.monthlyRevenues}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="monthlyCharges">Charges mensuelles en € :</label>
+          <input
+            type="number"
+            placeholder="800"
+            value={monthlyCharges}
+            onChange={(e) => setMonthlyCharges(e.target.value)}
+            required
+            className="appearance-none w-full p-2 focus:border rounded-md
+             bg-zinc-100 text-zinc-800 focus:outline-none
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+          />
+          {errors.monthlyCharges && (
+            <p className="text-red-500 text-sm mt-1">{errors.monthlyCharges}</p>
           )}
         </div>
 

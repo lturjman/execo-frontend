@@ -14,9 +14,7 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
   const dispatch = useDispatch();
 
   const [member, setMember] = useState({
-    name: "",
-    monthlyRevenue: null,
-    monthlyCharges: null,
+    nickname: "",
     share: 0,
   });
 
@@ -36,66 +34,18 @@ export default function CreateMember({ onMemberCreated, onClose, groupId }) {
       <div className="flex justify-between items-center">
         <h2 className="block font-bold text-xl"> Nouveau membre :</h2>
       </div>
-      <label htmlFor="name">Nom du membre</label>
+      <label htmlFor="nickname">Nom du membre</label>
       <input
         type="text"
-        name="name"
+        nickname="nickname"
         className="appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
         placeholder="John Doe"
-        onChange={(e) => setMember({ ...member, name: e.target.value })}
+        onChange={(e) => setMember({ ...member, nickname: e.target.value })}
       />
-      {errors.name && (
-        <p className="text-red-500 text-sm mb-2">{errors.name}</p>
-      )}
-
-      <label htmlFor="monthlyRevenue">Revenus mensuels</label>
-      <NumericFormat
-        value={member?.monthlyRevenue}
-        decimalScale={2}
-        decimalSeparator=","
-        allowedDecimalSeparators={[".", ","]}
-        thousandSeparator=" "
-        fixedDecimalScale
-        suffix=" €"
-        inputMode="decimal"
-        placeholder="0,00 €"
-        allowNegative={false}
-        onValueChange={(values) =>
-          setMember({ ...member, monthlyRevenue: values.floatValue ?? null })
-        }
-        className="appearance-none w-full p-2 focus:border rounded-md
-             bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-        name="monthlyRevenue"
-      />
-      {errors.monthlyRevenue && (
-        <p className="text-red-500 text-sm mb-2">{errors.monthlyRevenue}</p>
-      )}
-
-      <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
-      <NumericFormat
-        value={member?.monthlyCharges}
-        decimalScale={2}
-        decimalSeparator=","
-        allowedDecimalSeparators={[".", ","]}
-        thousandSeparator=" "
-        fixedDecimalScale
-        suffix=" €"
-        inputMode="decimal"
-        placeholder="0,00 €"
-        allowNegative={false}
-        onValueChange={(values) =>
-          setMember({ ...member, monthlyCharges: values.floatValue ?? null })
-        }
-        className="appearance-none w-full p-2 focus:border rounded-md
-             bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-        name="monthlyCharges"
-      />
-      {errors.monthlyCharges && (
-        <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
+      {errors.nickname && (
+        <p className="text-red-500 text-sm mb-2">{errors.nickname}</p>
       )}
 
       <Button onClick={handleCreateMember} disabled={loading} className="mt-4">

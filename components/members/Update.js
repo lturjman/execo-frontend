@@ -34,7 +34,7 @@ export default function UpdateMember({
   const handleUpdateMember = async () => {
     if (validateMember(editableMember, setErrors)) {
       const action = await dispatch(
-        updateMember({ groupId: member.group, member: editableMember })
+        updateMember({ groupId: member.group, member: editableMember }),
       );
 
       if (updateMember.fulfilled.match(action)) {
@@ -66,75 +66,22 @@ export default function UpdateMember({
         </Button>
       </div>
       <div>
-        <label htmlFor="name">Nom du membre</label>
+        <label htmlFor="nickname">Nom du membre</label>
         <input
           type="text"
-          name="name"
+          nickname="nickname"
           className="w-full p-2 mb-4 rounded bg-zinc-100 focus:outline-none focus:border
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           placeholder="Nom"
-          value={editableMember.name}
+          value={editableMember.nickname}
           onChange={(e) =>
-            setEditableMember({ ...editableMember, name: e.target.value })
+            setEditableMember({ ...editableMember, nickname: e.target.value })
           }
         />
-        {errors.name && (
-          <p className="text-red-500 text-sm mb-2">{errors.name}</p>
+        {errors.nickname && (
+          <p className="text-red-500 text-sm mb-2">{errors.nickname}</p>
         )}
 
-        <label htmlFor="monthlyRevenue">Revenus mensuels</label>
-        <NumericFormat
-          value={editableMember?.monthlyRevenue}
-          decimalScale={2}
-          decimalSeparator=","
-          allowedDecimalSeparators={[".", ","]}
-          thousandSeparator=" "
-          fixedDecimalScale
-          suffix=" €"
-          inputMode="decimal"
-          placeholder="0,00 €"
-          allowNegative={false}
-          onValueChange={(values) =>
-            setEditableMember({
-              ...editableMember,
-              monthlyRevenue: values.floatValue ?? null,
-            })
-          }
-          className="appearance-none w-full p-2 focus:border rounded-md
-             bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200 mb-4"
-          name="monthlyRevenue"
-        />
-        {errors.monthlyRevenue && (
-          <p className="text-red-500 text-sm mb-2">{errors.monthlyRevenue}</p>
-        )}
-
-        <label htmlFor="monthlyCharges">Charges personnelles fixes</label>
-        <NumericFormat
-          value={editableMember?.monthlyCharges}
-          decimalScale={2}
-          decimalSeparator=","
-          allowedDecimalSeparators={[".", ","]}
-          thousandSeparator=" "
-          fixedDecimalScale
-          suffix=" €"
-          inputMode="decimal"
-          placeholder="0,00 €"
-          allowNegative={false}
-          onValueChange={(values) =>
-            setEditableMember({
-              ...editableMember,
-              monthlyCharges: values.floatValue ?? null,
-            })
-          }
-          className="appearance-none w-full p-2 focus:border rounded-md
-             bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200 "
-          name="monthlyCharges"
-        />
-        {errors.monthlyCharges && (
-          <p className="text-red-500 text-sm mb-2">{errors.monthlyCharges}</p>
-        )}
         <div>Part : {(member.share * 100).toFixed(2) + "%"}</div>
         <Button className="my-4" onClick={handleUpdateMember}>
           Mettre à jour le membre
