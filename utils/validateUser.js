@@ -1,12 +1,12 @@
-export function validateUser(user, setErrors) {
-  const newErrors = {};
+export function validateUser (user, setErrors) {
+  const newErrors = {}
 
-  if (!user.username || user.username.trim() === "") {
-    newErrors.username = "Veuillez entrer le nom d'utilisateur.";
+  if (!user.username || user.username.trim() === '') {
+    newErrors.username = "Veuillez entrer le nom d'utilisateur."
   }
 
-  if (!user.email || user.email.trim() === "") {
-    newErrors.email = "Veuillez entrer l'email.";
+  if (!user.email || user.email.trim() === '') {
+    newErrors.email = "Veuillez entrer l'email."
   }
 
   if (
@@ -14,7 +14,7 @@ export function validateUser(user, setErrors) {
     isNaN(user.monthlyRevenues) ||
     user.monthlyRevenues < 0
   ) {
-    newErrors.monthlyRevenues = "Les revenus doivent être un nombre positif.";
+    newErrors.monthlyRevenues = 'Les revenus doivent être un nombre positif.'
   }
 
   if (
@@ -22,9 +22,9 @@ export function validateUser(user, setErrors) {
     isNaN(user.monthlyCharges) ||
     user.monthlyCharges < 0
   ) {
-    newErrors.monthlyCharges = "Les charges doivent être un nombre positif.";
+    newErrors.monthlyCharges = 'Les charges doivent être un nombre positif.'
   }
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
+  setErrors(newErrors)
+  return Object.keys(newErrors).length === 0
 }

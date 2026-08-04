@@ -1,31 +1,31 @@
-"use client";
+'use client'
 
-import Button from "@/components/Button";
+import Button from '@/components/Button'
 
-import { useDispatch } from "react-redux";
-import { deleteMember } from "../../lib/store/slices/members";
+import { useDispatch } from 'react-redux'
+import { deleteMember } from '../../lib/store/slices/members'
 
-export default function RemoveMember({
+export default function RemoveMember ({
   onClose,
   onMemberDeleted,
   groupId,
-  member,
+  member
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
 
   const handleDeleteMember = async () => {
-    const action = await dispatch(deleteMember({ groupId, member }));
+    const action = await dispatch(deleteMember({ groupId, member }))
     if (deleteMember.fulfilled.match(action)) {
-      if (onMemberDeleted) onMemberDeleted();
+      if (onMemberDeleted) onMemberDeleted()
     } else {
-      console.error("Échec suppression :", action.error);
-      alert("Erreur lors de la suppression");
+      console.error('Échec suppression :', action.error)
+      alert('Erreur lors de la suppression')
     }
-  };
+  }
 
   return (
     <div>
-      <h2 className="block mb-2 font-bold text-xl text-center">
+      <h2 className='block mb-2 font-bold text-xl text-center'>
         Êtes vous sûr de vouloir supprimer le membre ?
       </h2>
 
@@ -36,18 +36,18 @@ export default function RemoveMember({
       <div>
         <Button
           onClick={handleDeleteMember}
-          className="my-4 bg-red-400 hover:bg-red-500 active:bg-red-600"
+          className='my-4 bg-red-400 hover:bg-red-500 active:bg-red-600'
         >
           Oui, Supprimer
         </Button>
 
         <Button
-          className="bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600"
+          className='bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600'
           onClick={onClose}
         >
           Non, Annuler
         </Button>
       </div>
     </div>
-  );
+  )
 }

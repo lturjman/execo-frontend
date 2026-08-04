@@ -1,18 +1,16 @@
-import Image from "next/image";
-import Button from "@/components/Button";
-import Link from "next/link";
+import Button from '@/components/Button'
 
-import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 
-import Parameters from "@/components/groups/CardParameters";
+import Parameters from '@/components/groups/CardParameters'
 
-import MembersGroupClient from "@/components/members/MembersGroupClient";
+import MembersGroupClient from '@/components/members/MembersGroupClient'
 
-export default function GroupPage({ params }) {
-  const { groupId } = params;
+export default function GroupPage ({ params }) {
+  const { groupId } = params
 
   return (
-    <div className="p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600">
+    <div className='p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600'>
       {/* <div className="hidden md:block fixed">
         <Link href="/groups">
           <Image
@@ -24,11 +22,11 @@ export default function GroupPage({ params }) {
         </Link>
       </div> */}
 
-      <div className="space-y-6 max-w-[70vh] mx-auto mt-10 md:mt-0">
-        <div className=" bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div className='space-y-6 max-w-[70vh] mx-auto mt-10 md:mt-0'>
+        <div className=' bg-white rounded-2xl shadow-lg overflow-hidden'>
           {/* Retour */}
-          <Button href="/groups" rounded="true" className="absolute">
-            <ArrowLeftIcon className="size-5 text-white" />
+          <Button href='/groups' rounded='true' className='absolute'>
+            <ArrowLeftIcon className='size-5 text-white' />
           </Button>
 
           <Parameters />
@@ -37,5 +35,5 @@ export default function GroupPage({ params }) {
         <MembersGroupClient groupId={groupId} />
       </div>
     </div>
-  );
+  )
 }

@@ -1,26 +1,26 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import Button from "@/components/Button";
-import { NumericFormat } from "react-number-format";
-import { Decimal } from "decimal.js";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchMembers } from "@/lib/store/slices/members";
-import { Checkbox } from "@headlessui/react";
-import { validateExpense } from "@/utils/validateExpense";
+import { useEffect, useState } from 'react'
+import Button from '@/components/Button'
+import { NumericFormat } from 'react-number-format'
+import { Decimal } from 'decimal.js'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchMembers } from '@/lib/store/slices/members'
+import { Checkbox } from '@headlessui/react'
+import { validateExpense } from '@/utils/validateExpense'
 
-export default function ExpenseForm({
+export default function ExpenseForm ({
   expense,
   handleSubmit,
-  submitLabel = "Valider",
+  submitLabel = 'Valider'
 }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   const [editableExpense, setEditableExpense] = useState({
     ...expense,
-    amount: Decimal.div(expense.amount, 100).toString(),
-  });
+    amount: Decimal.div(expense.amount, 100).toString()
+  })
 
-  const loading = useSelector((state) => state.expenses.loading);
+  const loading = useSelector((state) => state.expenses.loading)
 
   useEffect(() => {
     if (expense) {
@@ -28,50 +28,50 @@ export default function ExpenseForm({
         ...expense,
         amount: Decimal.div(expense.amount, 100).toString(),
         member:
-          (expense.credits && expense.credits[0].member?._id) || expense.member,
-      });
+          (expense.credits && expense.credits[0].member?._id) || expense.member
+      })
     }
-  }, [expense]);
+  }, [expense])
 
-  const members = useSelector((state) => state.members.items);
+  const members = useSelector((state) => state.members.items)
 
   const [debts, setDebts] = useState(
     Array.isArray(editableExpense?.debts) ? editableExpense.debts : []
-  );
+  )
 
   useEffect(() => {
     if (Array.isArray(editableExpense?.debts)) {
       setDebts(
         editableExpense.debts.map((debt) => ({
           ...debt,
-          amount: Decimal.div(debt.amount, 100).toString(),
+          amount: Decimal.div(debt.amount, 100).toString()
         }))
-      );
+      )
     } else {
-      setDebts([]);
+      setDebts([])
     }
-  }, [editableExpense?.debts]);
+  }, [editableExpense?.debts])
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({})
 
   const toggleBeneficiary = (member) => {
     setDebts((prev) => {
-      let debts;
+      let debts
       if (prev.some((debt) => debt.member._id === member._id)) {
-        debts = prev.filter((debt) => debt.member._id !== member._id);
+        debts = prev.filter((debt) => debt.member._id !== member._id)
       } else {
         debts = [
           ...prev,
           {
             amount: 0,
-            member: member,
-          },
-        ];
+            member
+          }
+        ]
       }
 
       const beneficiaryShares = debts.reduce((total, debt) => {
-        return total + debt.member.share;
-      }, 0);
+        return total + debt.member.share
+      }, 0)
 
       return debts.map((debt) => {
         return {
@@ -79,30 +79,30 @@ export default function ExpenseForm({
           amount: Decimal.mul(
             Decimal.div(debt.member.share, beneficiaryShares),
             editableExpense.amount
-          ).toString(),
-        };
-      });
-    });
-  };
+          ).toString()
+        }
+      })
+    })
+  }
 
   useEffect(() => {
     if (expense?.group) {
-      dispatch(fetchMembers({ groupId: expense?.group }));
+      dispatch(fetchMembers({ groupId: expense?.group }))
     }
-  }, [dispatch, expense?.group]);
+  }, [dispatch, expense?.group])
 
   const submitForm = (event) => {
-    event.preventDefault();
-    const isValid = validateExpense({ ...editableExpense, debts }, setErrors);
-    if (!isValid) return;
-    handleSubmit({ ...editableExpense, debts });
-  };
+    event.preventDefault()
+    const isValid = validateExpense({ ...editableExpense, debts }, setErrors)
+    if (!isValid) return
+    handleSubmit({ ...editableExpense, debts })
+  }
 
   useEffect(() => {
     if (debts.length > 0 && editableExpense.amount) {
       const beneficiaryShares = debts.reduce((total, debt) => {
-        return total + (debt.member.share || 1);
-      }, 0);
+        return total + (debt.member.share || 1)
+      }, 0)
 
       setDebts(
         debts.map((debt) => ({
@@ -110,73 +110,71 @@ export default function ExpenseForm({
           amount: Decimal.mul(
             Decimal.div(debt.member.share || 1, beneficiaryShares),
             editableExpense.amount
-          ).toString(),
+          ).toString()
         }))
-      );
+      )
     }
-  }, [editableExpense.amount, debts.length]);
+  }, [editableExpense.amount, debts.length])
 
   return (
-    <form onSubmit={submitForm} className="flex flex-col gap-y-4 ">
+    <form onSubmit={submitForm} className='flex flex-col gap-y-4 '>
       <div>
-        <label htmlFor="name">Intitulé de la dépense :</label>
+        <label htmlFor='name'>Intitulé de la dépense :</label>
         <input
-          type="text"
-          name="name"
+          type='text'
+          name='name'
           value={editableExpense.name}
-          className="appearance-none w-full p-2 focus:border rounded-md
+          className='appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-          placeholder="Course, Loyer, ..."
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200'
+          placeholder='Course, Loyer, ...'
           onChange={(e) =>
-            setEditableExpense({ ...editableExpense, name: e.target.value })
-          }
+            setEditableExpense({ ...editableExpense, name: e.target.value })}
         />
         {errors.name && (
-          <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+          <p className='text-red-500 text-sm mt-1'>{errors.name}</p>
         )}
       </div>
       <div>
-        <label htmlFor="amount">Montant :</label>
+        <label htmlFor='amount'>Montant :</label>
         <NumericFormat
           value={editableExpense?.amount}
           decimalScale={2}
-          decimalSeparator=","
-          allowedDecimalSeparators={[".", ","]}
-          thousandSeparator=" "
+          decimalSeparator=','
+          allowedDecimalSeparators={['.', ',']}
+          thousandSeparator=' '
           fixedDecimalScale
-          suffix=" €"
-          inputMode="decimal"
-          placeholder="0,00 €"
+          suffix=' €'
+          inputMode='decimal'
+          placeholder='0,00 €'
           allowNegative={false}
           onValueChange={({ floatValue }) => {
             setEditableExpense({
               ...editableExpense,
-              amount: floatValue ?? "",
-            });
+              amount: floatValue ?? ''
+            })
           }}
-          className="appearance-none w-full p-2 focus:border rounded-md
+          className='appearance-none w-full p-2 focus:border rounded-md
              bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-          name="amount"
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200'
+          name='amount'
         />
         {errors.amount && (
-          <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
+          <p className='text-red-500 text-sm mt-1'>{errors.amount}</p>
         )}
       </div>
       <div>
-        <label htmlFor="member">Payé par :</label>
+        <label htmlFor='member'>Payé par :</label>
         <select
           value={editableExpense?.member}
-          name="member"
+          name='member'
           onChange={(e) =>
-            setEditableExpense({ ...editableExpense, member: e.target.value })
-          }
-          className="appearance-none w-full p-2 border border-zinc-300 rounded-md
+            setEditableExpense({ ...editableExpense, member: e.target.value })}
+          className='appearance-none w-full p-2 border border-zinc-300 rounded-md
              bg-white text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
+             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200'
         >
-          <option value="">-- Choisir un membre --</option>
+          <option value=''>-- Choisir un membre --</option>
           {members.map((member) => (
             <option key={member._id} value={member._id}>
               {member.name}
@@ -184,79 +182,79 @@ export default function ExpenseForm({
           ))}
         </select>
         {errors.member && (
-          <p className="text-red-500 text-sm mt-1">{errors.member}</p>
+          <p className='text-red-500 text-sm mt-1'>{errors.member}</p>
         )}
       </div>
 
-      <h3 className="text-lg font-semibold">Bénéficiaires :</h3>
+      <h3 className='text-lg font-semibold'>Bénéficiaires :</h3>
 
-      <div className="overflow-hidden rounded-md bg-white shadow-sm dark:bg-zinc-800 dark:border dark:border-zinc-500">
-        <table className="w-full text-left ">
-          <thead className="bg-zinc-800 text-white dark:bg-zinc-600  ">
+      <div className='overflow-hidden rounded-md bg-white shadow-sm dark:bg-zinc-800 dark:border dark:border-zinc-500'>
+        <table className='w-full text-left '>
+          <thead className='bg-zinc-800 text-white dark:bg-zinc-600  '>
             <tr>
-              <th className="px-4 py-3 w-12 text-center"></th>
-              <th className="px-4 py-3 font-semibold">Nom :</th>
-              <th className="px-4 py-3 text-right font-semibold">
+              <th className='px-4 py-3 w-12 text-center' />
+              <th className='px-4 py-3 font-semibold'>Nom :</th>
+              <th className='px-4 py-3 text-right font-semibold'>
                 Montant dû :
               </th>
             </tr>
           </thead>
           <tbody>
             {members.map((member) => {
-              const debt = debts.find((debt) => debt.member._id === member._id);
+              const debt = debts.find((debt) => debt.member._id === member._id)
 
               return (
-                <tr key={member._id} className={` border-t border-zinc-200`}>
-                  <td className="px-4 py-3 text-center">
+                <tr key={member._id} className=' border-t border-zinc-200'>
+                  <td className='px-4 py-3 text-center'>
                     <Checkbox
                       checked={!!debt}
                       onChange={() => toggleBeneficiary(member)}
-                      className="group block size-5 rounded data-checked:border-none border border-zinc-400 bg-white data-checked:bg-purple-400 p-1"
+                      className='group block size-5 rounded data-checked:border-none border border-zinc-400 bg-white data-checked:bg-purple-400 p-1'
                     >
                       <svg
-                        className="stroke-white opacity-0 group-data-checked:opacity-100"
-                        viewBox="0 0 14 14"
-                        fill="none"
+                        className='stroke-white opacity-0 group-data-checked:opacity-100'
+                        viewBox='0 0 14 14'
+                        fill='none'
                       >
                         <path
-                          d="M3 8L6 11L11 3.5"
+                          d='M3 8L6 11L11 3.5'
                           strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
                         />
                       </svg>
                     </Checkbox>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className='px-4 py-3'>
                     <div>{member.name}</div>
                     {/* <div className="text-xs text-zinc-400">
                 Part: {(member.share * 100).toFixed(2) + "%"}
               </div> */}
                   </td>
-                  <td className="p-4 text-right">
+                  <td className='p-4 text-right'>
                     <NumericFormat
                       value={debt?.amount || 0}
                       decimalScale={2}
-                      decimalSeparator=","
-                      thousandSeparator=" "
+                      decimalSeparator=','
+                      thousandSeparator=' '
                       fixedDecimalScale
-                      suffix=" €"
+                      suffix=' €'
                       disabled
-                      className=" w-full p-2 focus:border rounded-md text-right"
-                      name="amount"
+                      className=' w-full p-2 focus:border rounded-md text-right'
+                      name='amount'
                     />
                   </td>
                 </tr>
-              );
+              )
             })}
           </tbody>
         </table>
       </div>
-      {errors.debts && <p className="text-red-500 text-sm">{errors.debts}</p>}
+      {errors.debts && <p className='text-red-500 text-sm'>{errors.debts}</p>}
 
-      <Button className="my-4" disabled={loading}>
-        {loading ? "En cours de chargement..." : submitLabel}
+      <Button className='my-4' disabled={loading}>
+        {loading ? 'En cours de chargement...' : submitLabel}
       </Button>
     </form>
-  );
+  )
 }
