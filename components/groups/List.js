@@ -7,6 +7,7 @@ import GroupCard from "@/components/groups/Card";
 import { useEffect } from "react";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
 export default function groupsList() {
   const dispatch = useDispatch();
@@ -70,26 +71,52 @@ export default function groupsList() {
             ))}
 
             {/* Carte d'ajout en fin de liste */}
-            <Link href="/groups/new">
-              <div className="hidden sm:flex h-full w-full  cursor-pointer transition-transform hover:scale-105 duration-300 ease-in-out flex-col items-center justify-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
-                <PlusIcon className="w-10 h-10" />
-                <span className="mt-3 font-medium text-lg text-center">
-                  Ajouter un groupe
-                </span>
-              </div>
-            </Link>
+            <div className="hidden sm:flex h-full w-full flex-col items-center justify-center rounded-lg gap-4">
+              <Button
+                href="/groups/new"
+                className=" hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300  hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4"
+              >
+                CRÉER UN GROUPE
+              </Button>
+              <Button
+                href="/groups/join"
+                className="hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300 hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4"
+              >
+                REJOINDRE UN GROUPE
+              </Button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Bouton flottant */}
-      <div className="sm:hidden fixed bottom-6 right-6">
-        <Link href="/groups/new">
-          <Button className="w-20 h-20 ring-2 ring-white shadow-lg shadow-purple-600/50">
-            <PlusIcon className="size-9"></PlusIcon>
-          </Button>
-        </Link>
-      </div>
+      <Popover className="sm:hidden fixed bottom-6 right-6 z-50">
+        <PopoverButton className="flex items-center justify-center w-20 h-20 rounded-full bg-purple-400 hover:bg-purple-500 active:bg-purple-700 ring-2 ring-white shadow-lg shadow-purple-600/50 cursor-pointer focus:outline-none">
+          {({ open }) => (
+            <PlusIcon
+              className={`size-9 text-white transition-transform duration-300 ${
+                open ? "rotate-45" : ""
+              }`}
+            />
+          )}
+        </PopoverButton>
+        <PopoverPanel className="absolute bottom-24 right-0 w-70 bg-white dark:bg-zinc-700 rounded-xl shadow-lg overflow-hidden">
+          <div className="flex flex-col">
+            <Link
+              href="/groups/new"
+              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600"
+            >
+              CRÉER UN GROUPE
+            </Link>
+            <Link
+              href="/groups/join"
+              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 border-t border-zinc-200 dark:border-zinc-600"
+            >
+              REJOINDRE UN GROUPE
+            </Link>
+          </div>
+        </PopoverPanel>
+      </Popover>
     </div>
   );
 }
