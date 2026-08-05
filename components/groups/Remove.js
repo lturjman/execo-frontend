@@ -12,6 +12,7 @@ export default function RemoveGroup ({ group, onClose }) {
   const dispatch = useDispatch()
 
   const handleDeleteGroup = async () => {
+    if (!group) return
     await dispatch(deleteGroup(group._id))
     router.push('/groups')
   }
