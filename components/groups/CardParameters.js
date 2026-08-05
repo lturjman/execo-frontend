@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Button from '@/components/Button'
 import Image from 'next/image'
+import getGroupImage from '@/utils/groupImage'
 
 import { fetchGroup } from '@/lib/store/slices/groups'
 
@@ -31,7 +32,7 @@ export default function groupParameters () {
         <div>
           <div className=' flex h-[25vh] overflow-hidden justify-center'>
             <Image
-              src={group.imageUrl || '/images/group1.jpg'}
+              src={getGroupImage(group.imageUrl)}
               alt={`Image de groupe ${group.name}`}
               width={1000}
               height={500}

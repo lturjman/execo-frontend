@@ -9,15 +9,7 @@ import Button from '@/components/Button'
 import { useState } from 'react'
 
 import { validateGroup } from '@/utils/validateGroup'
-
-const groupImages = [
-  '/images/group1.jpg',
-  '/images/group2.jpg',
-  '/images/group3.jpg',
-  '/images/group4.jpg',
-  '/images/group5.jpg',
-  '/images/group6.jpg'
-]
+import { groupImages } from '@/utils/groupImage'
 
 export default function CreateGroup () {
   const dispatch = useDispatch()

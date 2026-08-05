@@ -6,20 +6,12 @@ import Button from '@/components/Button'
 import { useState, useEffect } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { updateGroup } from '@/lib/store/slices/groups'
+import { updateGroup, fetchGroup } from '@/lib/store/slices/groups'
 
 import { validateGroup } from '@/utils/validateGroup'
 
 import { Dialog, DialogPanel, DialogBackdrop } from '@headlessui/react'
-
-const groupImages = [
-  '/images/group1.jpg',
-  '/images/group2.jpg',
-  '/images/group3.jpg',
-  '/images/group4.jpg',
-  '/images/group5.jpg',
-  '/images/group6.jpg'
-]
+import { groupImages } from '@/utils/groupImage'
 
 export default function GroupParameters ({ onClose, groupId }) {
   const dispatch = useDispatch()
@@ -36,6 +28,10 @@ export default function GroupParameters ({ onClose, groupId }) {
   useEffect(() => {
     if (group) setEditableGroup(group)
   }, [group])
+
+  useEffect(() => {
+    dispatch(fetchGroup(groupId))
+  }, [dispatch, groupId])
 
   const handleUpdateGroup = async () => {
     const isValid = await validateGroup(editableGroup, setErrors)
