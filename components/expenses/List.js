@@ -59,7 +59,7 @@ export default function expensesList () {
                     </td>
 
                     <td className='p-2 text-right'>
-                      {expense.credits[0].member.name}
+                      {expense.credits[0].member.nickname}
                     </td>
 
                     <td className='p-2'>

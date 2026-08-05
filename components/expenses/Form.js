@@ -15,10 +15,13 @@ export default function ExpenseForm ({
   submitLabel = 'Valider'
 }) {
   const dispatch = useDispatch()
-  const [editableExpense, setEditableExpense] = useState({
+  const [editableExpense, setEditableExpense] = useState(() => ({
     ...expense,
-    amount: Decimal.div(expense.amount, 100).toString()
-  })
+    amount:
+      expense?.amount != null
+        ? Decimal.div(expense.amount, 100).toString()
+        : ''
+  }))
 
   const loading = useSelector((state) => state.expenses.loading)
 
@@ -177,7 +180,7 @@ export default function ExpenseForm ({
           <option value=''>-- Choisir un membre --</option>
           {members.map((member) => (
             <option key={member._id} value={member._id}>
-              {member.name}
+              {member.nickname}
             </option>
           ))}
         </select>
@@ -226,7 +229,7 @@ export default function ExpenseForm ({
                     </Checkbox>
                   </td>
                   <td className='px-4 py-3'>
-                    <div>{member.name}</div>
+                    <div>{member.nickname}</div>
                     {/* <div className="text-xs text-zinc-400">
                 Part: {(member.share * 100).toFixed(2) + "%"}
               </div> */}

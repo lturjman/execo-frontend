@@ -2,9 +2,10 @@
 
 import { useRouter, useParams } from 'next/navigation'
 import UpdateExpense from '@/components/expenses/Update'
-import { useSelector } from 'react-redux'
-import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useState, useEffect } from 'react'
 import RemoveExpense from '@/components/expenses/Remove'
+import { fetchExpenses } from '@/lib/store/slices/expenses'
 import { Dialog, DialogPanel, DialogBackdrop } from '@headlessui/react'
 
 export default function UpdateExpenseClient ({ groupId }) {
@@ -12,11 +13,18 @@ export default function UpdateExpenseClient ({ groupId }) {
   const params = useParams()
   const expenseId = params.expenseId
 
+  const dispatch = useDispatch()
   const expense = useSelector((state) =>
     state.expenses.items.find((e) => e._id === expenseId)
   )
 
   const [showRemoveModal, setShowRemoveModal] = useState(false)
+
+  useEffect(() => {
+    if (!expense && groupId) {
+      dispatch(fetchExpenses({ groupId }))
+    }
+  }, [dispatch, groupId, expense])
 
   return (
     <>
