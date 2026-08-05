@@ -6,8 +6,8 @@ import Parameters from '@/components/groups/CardParameters'
 
 import MembersGroupClient from '@/components/members/MembersGroupClient'
 
-export default function GroupPage ({ params }) {
-  const { groupId } = params
+export default async function GroupPage ({ params }) {
+  const { groupId } = await params
 
   return (
     <div className='p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600'>

@@ -2,8 +2,8 @@ import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import UpdateExpenseClient from '@/components/expenses/UpdateExpenseClient'
 import Button from '@/components/Button'
 
-export default function UpdateExpensePage ({ params }) {
-  const groupId = params.groupId
+export default async function UpdateExpensePage ({ params }) {
+  const { groupId } = await params
 
   return (
     <div className='min-h-screen bg-zinc-200 dark:bg-zinc-600 p-4 flex justify-center items-start relative '>
