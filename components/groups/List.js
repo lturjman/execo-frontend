@@ -55,16 +55,14 @@ export default function groupsList() {
             <Link href="/groups/new">
               <div className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out">
                 <div className="flex flex-col items-center justify-center w-64 aspect-video border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
-                  <span className="mt-3 font-medium text-lg">
-                    Créer un groupe
-                  </span>
+                  <span className="font-medium text-lg">Créer un groupe</span>
                 </div>
               </div>
             </Link>
             <Link href="/groups/join">
               <div className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out">
                 <div className="flex flex-col items-center justify-center w-64 aspect-video border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
-                  <span className="mt-3 font-medium text-lg">
+                  <span className="font-medium text-lg">
                     Rejoindre un groupe
                   </span>
                 </div>
