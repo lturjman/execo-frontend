@@ -51,7 +51,7 @@ export default function groupsList() {
             </li>
           </ul>
 
-          <div className="flex gap-6">
+          <div className="hidden sm:flex gap-6">
             <Link href="/groups/new">
               <div className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out">
                 <div className="flex flex-col items-center justify-center w-64 aspect-video border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
