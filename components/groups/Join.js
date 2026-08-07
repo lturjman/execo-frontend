@@ -139,7 +139,7 @@ export default function JoinGroup () {
   }
 
   return (
-    <div className='bg-white dark:bg-zinc-700 rounded-xl shadow-md p-6 space-y-4'>
+    <div className='bg-white dark:bg-zinc-700 rounded-xl shadow-md p-4 space-y-4 sm:p-6 text-center'>
       <h1 className='text-2xl font-bold mb-6'>
         {groupName
           ? `Rejoindre le groupe "${groupName}"`
@@ -148,19 +148,57 @@ export default function JoinGroup () {
 
       {step === 'code' && (
         <>
-          <label htmlFor='code' className='block'>
-            Code du groupe
-          </label>
-          <input
-            id='code'
-            type='text'
-            value={code}
-            onChange={(e) => setCode(e.target.value.toUpperCase())}
-            placeholder='ex. ABC123XY'
-            className='uppercase appearance-none w-full p-2 focus:border rounded-md
-             bg-zinc-100 text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200'
-          />
+          <label className='block'>Code du groupe</label>
+          <div
+            className='grid w-full max-w-md grid-cols-8 gap-1.5 sm:gap-2 mx-auto'
+            onPaste={(e) => {
+              e.preventDefault()
+              const pasted = e.clipboardData
+                .getData('text')
+                .toUpperCase()
+                .replace(/[^A-Z0-9]/g, '')
+                .slice(0, 8)
+              if (pasted) setCode(pasted)
+            }}
+          >
+            {Array.from({ length: 8 }).map((_, index) => (
+              <input
+                key={index}
+                id={`code-${index}`}
+                type='text'
+                inputMode='text'
+                maxLength={1}
+                aria-label={`Caractère ${index + 1} du code`}
+                value={code[index] || ''}
+                onChange={(e) => {
+                  const char = e.target.value
+                    .toUpperCase()
+                    .replace(/[^A-Z0-9]/g, '')
+                  if (!char) return
+                  const next =
+                    code.slice(0, index) + char + code.slice(index + 1)
+                  setCode(next.slice(0, 8))
+                  const nextInput = document.getElementById(
+                    `code-${index + 1}`
+                  )
+                  if (nextInput) nextInput.focus()
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Backspace') {
+                    e.preventDefault()
+                    if (code[index]) {
+                      setCode(code.slice(0, index) + code.slice(index + 1))
+                    } else if (index > 0) {
+                      const prev = document.getElementById(`code-${index - 1}`)
+                      if (prev) prev.focus()
+                      setCode(code.slice(0, index - 1) + code.slice(index))
+                    }
+                  }
+                }}
+                className='flex aspect-[6/7] w-full items-center justify-center rounded-xl bg-zinc-100 text-lg font-bold uppercase text-zinc-900 text-center focus:outline-none focus:ring-2 focus:ring-purple-400 dark:bg-zinc-600 dark:text-zinc-200 sm:text-xl'
+              />
+            ))}
+          </div>
           <p className='text-sm text-zinc-500 dark:text-zinc-300'>
             Demandez le code à un membre du groupe pour le rejoindre.
           </p>
