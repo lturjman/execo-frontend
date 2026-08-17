@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Button from '@/components/Button'
 import { NumericFormat } from 'react-number-format'
 import { Decimal } from 'decimal.js'
@@ -9,12 +9,45 @@ import { fetchMembers } from '@/lib/store/slices/members'
 import { Checkbox } from '@headlessui/react'
 import { validateExpense } from '@/utils/validateExpense'
 
+function rescaleTo100 (pcts, ids) {
+  const newPcts = { ...pcts }
+  const total = ids.reduce((sum, id) => sum + (newPcts[id] || 0), 0)
+  if (total > 0 && Math.abs(total - 100) > 0.01) {
+    const factor = 100 / total
+    ids.forEach(id => { newPcts[id] *= factor })
+  }
+  return newPcts
+}
+
+function computeDebtsFromPercentages (pcts, totalAmount, checkedMembers) {
+  if (!totalAmount || Number(totalAmount) <= 0 || checkedMembers.length === 0) {
+    return checkedMembers.map(m => ({ amount: '0', member: m }))
+  }
+
+  const total = new Decimal(totalAmount)
+  const checkedTotal = checkedMembers.reduce((sum, m) => sum + (pcts[m._id] || 0), 0)
+
+  if (checkedTotal <= 0) {
+    return checkedMembers.map(m => ({ amount: '0', member: m }))
+  }
+
+  return checkedMembers.map(member => {
+    const pct = pcts[member._id] || 0
+    const normalizedPct = new Decimal(pct).div(checkedTotal)
+    const amount = total.mul(normalizedPct)
+    return { amount: amount.toString(), member }
+  })
+}
+
 export default function ExpenseForm ({
   expense,
   handleSubmit,
   submitLabel = 'Valider'
 }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.expenses.loading)
+  const members = useSelector((state) => state.members.items)
+
   const [editableExpense, setEditableExpense] = useState(() => ({
     ...expense,
     amount:
@@ -23,7 +56,16 @@ export default function ExpenseForm ({
         : ''
   }))
 
-  const loading = useSelector((state) => state.expenses.loading)
+  const [percentages, setPercentages] = useState({})
+  const [checkedIds, setCheckedIds] = useState(() => {
+    if (Array.isArray(expense?.debts)) {
+      return expense.debts.map(d => d.member?._id || d.member).filter(Boolean)
+    }
+    return []
+  })
+
+  const [errors, setErrors] = useState({})
+  const allWereUncheckedRef = useRef(false)
 
   useEffect(() => {
     if (expense) {
@@ -36,63 +78,121 @@ export default function ExpenseForm ({
     }
   }, [expense])
 
-  const members = useSelector((state) => state.members.items)
-
-  const [debts, setDebts] = useState(
-    Array.isArray(editableExpense?.debts) ? editableExpense.debts : []
-  )
-
-  useEffect(() => {
-    if (Array.isArray(editableExpense?.debts)) {
-      setDebts(
-        editableExpense.debts.map((debt) => ({
-          ...debt,
-          amount: Decimal.div(debt.amount, 100).toString()
-        }))
-      )
-    } else {
-      setDebts([])
-    }
-  }, [editableExpense?.debts])
-
-  const [errors, setErrors] = useState({})
-
-  const toggleBeneficiary = (member) => {
-    setDebts((prev) => {
-      let debts
-      if (prev.some((debt) => debt.member._id === member._id)) {
-        debts = prev.filter((debt) => debt.member._id !== member._id)
-      } else {
-        debts = [
-          ...prev,
-          {
-            amount: 0,
-            member
-          }
-        ]
-      }
-
-      const beneficiaryShares = debts.reduce((total, debt) => {
-        return total + debt.member.share
-      }, 0)
-
-      return debts.map((debt) => {
-        return {
-          ...debt,
-          amount: Decimal.mul(
-            Decimal.div(debt.member.share, beneficiaryShares),
-            editableExpense.amount
-          ).toString()
-        }
-      })
-    })
-  }
-
   useEffect(() => {
     if (expense?.group) {
       dispatch(fetchMembers({ groupId: expense?.group }))
     }
   }, [dispatch, expense?.group])
+
+  useEffect(() => {
+    if (members.length > 0) {
+      const pcts = {}
+      members.forEach(m => {
+        pcts[m._id] = 0
+      })
+
+      if (Array.isArray(expense?.debts) && expense.debts.length > 0 && expense.amount > 0) {
+        expense.debts.forEach(debt => {
+          const memberId = debt.member?._id || debt.member
+          if (memberId) {
+            pcts[memberId] = new Decimal(debt.amount).div(expense.amount).mul(100).toNumber()
+          }
+        })
+      }
+
+      setPercentages(pcts)
+    }
+  }, [members, expense])
+
+  const checkedMembers = members.filter(m => checkedIds.includes(m._id))
+  const debts = computeDebtsFromPercentages(percentages, editableExpense.amount, checkedMembers)
+
+  const toggleBeneficiary = (member) => {
+    const isChecked = checkedIds.includes(member._id)
+
+    if (isChecked) {
+      const wasLastChecked = checkedIds.length === 1
+
+      setPercentages(prev => {
+        const newPcts = { ...prev }
+        const removedPct = newPcts[member._id] || 0
+        newPcts[member._id] = 0
+
+        if (wasLastChecked) {
+          members.forEach(m => { newPcts[m._id] = 0 })
+        } else {
+          const remainingChecked = checkedIds.filter(id => id !== member._id)
+          const remainingTotal = remainingChecked.reduce((sum, id) => sum + (prev[id] || 0), 0)
+
+          if (remainingTotal > 0) {
+            remainingChecked.forEach(id => {
+              newPcts[id] = (prev[id] || 0) + (removedPct * (prev[id] || 0) / remainingTotal)
+            })
+          } else if (remainingChecked.length > 0) {
+            const equal = removedPct / remainingChecked.length
+            remainingChecked.forEach(id => { newPcts[id] = equal })
+          }
+        }
+
+        return newPcts
+      })
+      setCheckedIds(prev => {
+        const newChecked = prev.filter(id => id !== member._id)
+        if (newChecked.length === 0) {
+          allWereUncheckedRef.current = true
+        }
+        return newChecked
+      })
+    } else {
+      if (allWereUncheckedRef.current) {
+        allWereUncheckedRef.current = false
+        const newPcts = {}
+        members.forEach(m => { newPcts[m._id] = 0 })
+        newPcts[member._id] = 100
+        setPercentages(newPcts)
+      } else {
+        setPercentages(prev => {
+          const newCheckedIds = [...checkedIds, member._id]
+          const newPcts = { ...prev }
+
+          newCheckedIds.forEach(id => {
+            const m = members.find(mem => mem._id === id)
+            if (m) newPcts[id] = new Decimal(m.share).mul(100).toNumber()
+          })
+
+          members.forEach(m => {
+            if (!newCheckedIds.includes(m._id)) newPcts[m._id] = 0
+          })
+
+          return rescaleTo100(newPcts, newCheckedIds)
+        })
+      }
+      setCheckedIds(prev => [...prev, member._id])
+    }
+  }
+
+  const handlePercentageChange = (memberId, value) => {
+    setPercentages(prev => {
+      const newPcts = { ...prev, [memberId]: value }
+      const otherIds = checkedIds.filter(id => id !== memberId)
+      if (otherIds.length === 0) return newPcts
+
+      const remainder = Math.max(0, 100 - value)
+      const othersTotal = otherIds.reduce((sum, id) => sum + (prev[id] || 0), 0)
+
+      if (othersTotal > 0 && remainder > 0) {
+        const factor = remainder / othersTotal
+        otherIds.forEach(id => { newPcts[id] = prev[id] * factor })
+      } else if (remainder > 0) {
+        const equal = remainder / otherIds.length
+        otherIds.forEach(id => { newPcts[id] = equal })
+      } else {
+        otherIds.forEach(id => { newPcts[id] = 0 })
+      }
+
+      return newPcts
+    })
+  }
 
   const submitForm = (event) => {
     event.preventDefault()
@@ -100,24 +200,6 @@ export default function ExpenseForm ({
     if (!isValid) return
     handleSubmit({ ...editableExpense, debts })
   }
-
-  useEffect(() => {
-    if (debts.length > 0 && editableExpense.amount) {
-      const beneficiaryShares = debts.reduce((total, debt) => {
-        return total + (debt.member.share || 1)
-      }, 0)
-
-      setDebts(
-        debts.map((debt) => ({
-          ...debt,
-          amount: Decimal.mul(
-            Decimal.div(debt.member.share || 1, beneficiaryShares),
-            editableExpense.amount
-          ).toString()
-        }))
-      )
-    }
-  }, [editableExpense.amount, debts.length])
 
   return (
     <form onSubmit={submitForm} className='flex flex-col gap-y-4 '>
@@ -197,6 +279,7 @@ export default function ExpenseForm ({
             <tr>
               <th className='px-4 py-3 w-12 text-center' />
               <th className='px-4 py-3 font-semibold'>Nom :</th>
+              <th className='px-4 py-3 text-center font-semibold'>Taux :</th>
               <th className='px-4 py-3 text-right font-semibold'>
                 Montant dû :
               </th>
@@ -204,13 +287,15 @@ export default function ExpenseForm ({
           </thead>
           <tbody>
             {members.map((member) => {
-              const debt = debts.find((debt) => debt.member._id === member._id)
+              const debt = debts.find((d) => (d.member._id || d.member) === member._id)
+              const isChecked = checkedIds.includes(member._id)
+              const pct = percentages[member._id] ?? 0
 
               return (
                 <tr key={member._id} className=' border-t border-zinc-200'>
                   <td className='px-4 py-3 text-center'>
                     <Checkbox
-                      checked={!!debt}
+                      checked={isChecked}
                       onChange={() => toggleBeneficiary(member)}
                       className='group block size-5 rounded data-checked:border-none border border-zinc-400 bg-white data-checked:bg-purple-400 p-1'
                     >
@@ -230,9 +315,23 @@ export default function ExpenseForm ({
                   </td>
                   <td className='px-4 py-3'>
                     <div>{member.nickname}</div>
-                    {/* <div className="text-xs text-zinc-400">
-                Part: {(member.share * 100).toFixed(2) + "%"}
-              </div> */}
+                  </td>
+                  <td className='px-4 py-3 text-center'>
+                    <NumericFormat
+                      value={pct}
+                      decimalScale={2}
+                      decimalSeparator=','
+                      suffix=' %'
+                      allowNegative={false}
+                      onValueChange={({ floatValue }) => {
+                        if (floatValue !== undefined && floatValue >= 0) {
+                          handlePercentageChange(member._id, floatValue)
+                        }
+                      }}
+                      className='w-24 p-1 text-center rounded-md border border-zinc-300
+                         bg-white text-zinc-800 focus:outline-none
+                         focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200'
+                    />
                   </td>
                   <td className='p-4 text-right'>
                     <NumericFormat

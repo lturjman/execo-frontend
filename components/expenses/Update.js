@@ -4,7 +4,7 @@ import Button from '@/components/Button'
 import { useState } from 'react'
 import RemoveExpense from './Remove'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { updateExpense } from '../../lib/store/slices/expenses'
 
 import { Decimal } from 'decimal.js'
@@ -17,7 +17,6 @@ export default function UpdateExpense ({
   onShowRemove
 }) {
   const dispatch = useDispatch()
-  const members = useSelector((state) => state.members.items)
 
   const [displayRemoveExpense, setDisplayRemoveExpense] = useState(false)
 
@@ -28,14 +27,10 @@ export default function UpdateExpense ({
         expense: {
           ...updatedExpense,
           amount: Decimal.mul(updatedExpense.amount, 100).round(),
-          debts: members.map((member) => {
-            return {
-              amount: Decimal.mul(updatedExpense.amount, member.share)
-                .times(100)
-                .round(),
-              member: member._id
-            }
-          }),
+          debts: updatedExpense.debts.map((debt) => ({
+            amount: Decimal.mul(debt.amount, 100).round(),
+            member: debt.member._id || debt.member
+          })),
           credits: [
             {
               amount: Decimal.mul(updatedExpense.amount, 100),

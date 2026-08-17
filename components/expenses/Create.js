@@ -1,6 +1,6 @@
 'use client'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { createExpense } from '@/lib/store/slices/expenses'
 import { fetchMembers } from '@/lib/store/slices/members'
 
@@ -21,8 +21,6 @@ export default function CreateExpense ({ groupId, onExpenseCreated }) {
     member: ''
   })
 
-  const members = useSelector((state) => state.members.items)
-
   useEffect(() => {
     if (groupId) {
       dispatch(fetchMembers({ groupId }))
@@ -36,11 +34,9 @@ export default function CreateExpense ({ groupId, onExpenseCreated }) {
         expense: {
           name: updatedExpense.name,
           amount: Decimal.mul(updatedExpense.amount, 100),
-          debts: members.map((member) => ({
-            amount: Decimal.mul(updatedExpense.amount, member.share)
-              .times(100)
-              .round(),
-            member: member._id
+          debts: updatedExpense.debts.map((debt) => ({
+            amount: Decimal.mul(debt.amount, 100).round(),
+            member: debt.member._id || debt.member
           })),
           credits: [
             {
