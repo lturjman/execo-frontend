@@ -6,6 +6,8 @@ import Parameters from '@/components/groups/CardParameters'
 
 import MembersGroupClient from '@/components/members/MembersGroupClient'
 
+import Notes from '@/components/notes/Notes'
+
 export default async function GroupPage ({ params }) {
   const { groupId } = await params
 
@@ -22,17 +24,23 @@ export default async function GroupPage ({ params }) {
         </Link>
       </div> */}
 
-      <div className='space-y-6 max-w-[70vh] mx-auto mt-10 md:mt-0'>
-        <div className=' bg-white rounded-2xl shadow-lg overflow-hidden'>
-          {/* Retour */}
-          <Button href='/groups' rounded='true' className='absolute'>
-            <ArrowLeftIcon className='size-5 text-white' />
-          </Button>
+      <div className='max-w-5xl mx-auto mt-10 md:mt-0 flex flex-col md:flex-row md:items-start gap-6'>
+        <div className='flex-1 space-y-6'>
+          <div className=' bg-white rounded-2xl shadow-lg overflow-hidden'>
+            {/* Retour */}
+            <Button href='/groups' rounded='true' className='absolute'>
+              <ArrowLeftIcon className='size-5 text-white' />
+            </Button>
 
-          <Parameters />
+            <Parameters />
+          </div>
+
+          <MembersGroupClient groupId={groupId} />
         </div>
 
-        <MembersGroupClient groupId={groupId} />
+        <aside className='w-full md:w-1/3 shrink-0'>
+          <Notes groupId={groupId} />
+        </aside>
       </div>
     </div>
   )
