@@ -2,8 +2,8 @@ import MembersList from "@/components/members/List";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Button from "@/components/Button";
 
-export default function MembersPage({ params }) {
-  const groupId = params.groupId;
+export default async function MembersPage({ params }) {
+  const { groupId } = await params;
   return (
     <div className="min-h-screen bg-zinc-200 dark:bg-zinc-600 p-4 flex flex-col items-center relative">
       <Button

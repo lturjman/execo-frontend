@@ -1,17 +1,17 @@
-"use client";
+'use client'
 
-import { useRouter } from "next/navigation";
-import CreateExpense from "@/components/expenses/Create";
+import { useRouter } from 'next/navigation'
+import CreateExpense from '@/components/expenses/Create'
 
-export default function NewExpenseClient({ groupId }) {
-  const router = useRouter();
+export default function NewExpenseClient ({ groupId }) {
+  const router = useRouter()
 
   return (
     <CreateExpense
       groupId={groupId}
       onExpenseCreated={() => {
-        router.push(`/groups/${groupId}`);
+        router.push(`/groups/${groupId}`)
       }}
     />
-  );
+  )
 }

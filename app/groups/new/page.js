@@ -10,11 +10,11 @@ export default function NewGroupPage() {
   const dispatch = useDispatch();
 
   return (
-    <div className="p-6 max-w-2xl mx-auto my-[20vh]">
-      <Button href={`/groups`} rounded="true" className="absolute">
+    <div className="p-6 max-w-4xl mx-auto my-[10vh]">
+      <Button href="/groups" rounded="true" className="absolute">
         <ArrowLeftIcon className="size-5 text-white" />
       </Button>
-      <h1 className="text-2xl font-bold mb-6">Ajouter un nouveau Groupe</h1>
+      <h1 className="text-2xl font-bold mb-6">Ajouter un nouveau groupe</h1>
 
       <CreateGroup onGroupCreated={() => dispatch(fetchGroups())} />
     </div>

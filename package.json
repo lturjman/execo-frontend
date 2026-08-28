@@ -3,29 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p 3001",
+    "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "standard"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
     "@reduxjs/toolkit": "^2.8.2",
     "decimal.js": "^10.5.0",
-    "next": "15.3.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "react-number-format": "^5.4.4",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0",
     "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.3",
-    "tailwindcss": "^4"
+    "standard": "^17.1.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "standard": {
+    "envs": ["node", "browser"],
+    "ignore": [".next/**", "out/**", "build/**", "next-env.d.ts"]
   }
 }
