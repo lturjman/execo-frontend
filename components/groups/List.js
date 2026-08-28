@@ -82,15 +82,15 @@ export default function groupsList() {
             <div className="hidden sm:flex h-full w-full flex-col items-center justify-center rounded-lg gap-4">
               <Button
                 href="/groups/new"
-                className=" hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300  hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4"
+                className=" hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300  hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4 uppercase"
               >
-                CRÉER UN GROUPE
+                Créer un groupe
               </Button>
               <Button
                 href="/groups/join"
-                className="hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300 hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4"
+                className="hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300 hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4 uppercase"
               >
-                REJOINDRE UN GROUPE
+                Rejoindre un groupe
               </Button>
             </div>
           </div>
@@ -112,15 +112,15 @@ export default function groupsList() {
           <div className="flex flex-col">
             <Link
               href="/groups/new"
-              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600"
+              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 uppercase"
             >
-              CRÉER UN GROUPE
+              Créer un groupe
             </Link>
             <Link
               href="/groups/join"
-              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 border-t border-zinc-200 dark:border-zinc-600"
+              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 border-t border-zinc-200 dark:border-zinc-600 uppercase"
             >
-              REJOINDRE UN GROUPE
+              Rejoindre un groupe
             </Link>
           </div>
         </PopoverPanel>
