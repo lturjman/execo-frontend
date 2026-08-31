@@ -10,7 +10,6 @@ import { updateGroup, fetchGroup } from '@/lib/store/slices/groups'
 
 import { validateGroup } from '@/utils/validateGroup'
 
-import { Dialog, DialogPanel, DialogBackdrop } from '@headlessui/react'
 import { groupImages } from '@/utils/groupImage'
 
 export default function GroupParameters ({ onClose, groupId }) {
@@ -118,21 +117,12 @@ export default function GroupParameters ({ onClose, groupId }) {
         </Button>
       </div>
 
-      <Dialog
-        open={displayRemoveGroup}
-        onClose={() => setDisplayRemoveGroup(false)}
-        className='fixed inset-0 flex w-screen items-center justify-center bg-black/30 dark:bg-black/70 p-4 z-50'
-      >
-        <DialogBackdrop className='fixed inset-0' />
-        <div className='fixed p-4 w-full flex justify-center'>
-          <DialogPanel className='bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-700'>
-            <RemoveGroup
-              group={group}
-              onClose={() => setDisplayRemoveGroup(false)}
-            />
-          </DialogPanel>
-        </div>
-      </Dialog>
+      {displayRemoveGroup && (
+        <RemoveGroup
+          group={group}
+          onClose={() => setDisplayRemoveGroup(false)}
+        />
+      )}
     </div>
   )
 }

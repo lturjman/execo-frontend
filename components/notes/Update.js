@@ -1,6 +1,7 @@
 'use client'
 
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { useEffect, useRef } from 'react'
+import { CheckIcon } from '@heroicons/react/24/solid'
 import { useDispatch } from 'react-redux'
 import { updateNote } from '@/lib/store/slices/notes'
 
@@ -11,9 +12,22 @@ export default function NoteUpdate ({
   editMessage,
   onEditMessageChange,
   onCancelEdit,
+  onClick,
   colors
 }) {
   const dispatch = useDispatch()
+  const formRef = useRef(null)
+
+  useEffect(() => {
+    if (!isEditing) return
+    function handleClickOutside (e) {
+      if (formRef.current && !formRef.current.contains(e.target)) {
+        onCancelEdit()
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isEditing, onCancelEdit])
 
   async function handleUpdate (e) {
     e.preventDefault()
@@ -29,7 +43,11 @@ export default function NoteUpdate ({
 
   if (isEditing) {
     return (
-      <form onSubmit={handleUpdate} className='flex items-center gap-1'>
+      <form
+        ref={formRef}
+        onSubmit={handleUpdate}
+        className='flex items-center gap-1'
+      >
         <input
           type='text'
           value={editMessage}
@@ -44,20 +62,15 @@ export default function NoteUpdate ({
         >
           <CheckIcon className={`size-5 ${colors.icon}`} />
         </button>
-        <button
-          type='button'
-          onClick={onCancelEdit}
-          title='Annuler'
-          className='cursor-pointer opacity-80 hover:opacity-100'
-        >
-          <XMarkIcon className={`size-5 ${colors.icon}`} />
-        </button>
       </form>
     )
   }
 
   return (
-    <p className='text-sm text-zinc-800 dark:text-zinc-100 break-words whitespace-pre-wrap leading-relaxed'>
+    <p
+      onClick={onClick}
+      className='text-sm text-zinc-800 dark:text-zinc-100 break-words whitespace-pre-wrap leading-relaxed cursor-pointer'
+    >
       {note.message}
     </p>
   )

@@ -1,14 +1,12 @@
 'use client'
 
-import Button from '@/components/Button'
 import { useRouter } from 'next/navigation'
-
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteGroup } from '@/lib/store/slices/groups'
+import ValidationModal from '@/components/ValidationModal'
 
 export default function RemoveGroup ({ group, onClose }) {
   const router = useRouter()
-
   const dispatch = useDispatch()
   const loading = useSelector((state) => state.groups.loading)
 
@@ -19,30 +17,13 @@ export default function RemoveGroup ({ group, onClose }) {
   }
 
   return (
-    <div className='space-y-4 p-2'>
-      <h2 className='block font-bold text-xl'>
-        Êtes vous sûr de vouloir supprimer le groupe ?
-      </h2>
-      <div>
-        Pour rappel, cette action est irréversible et toutes les dépenses seront
-        perdues
-      </div>
-      <div className='flex gap-4 '>
-        <Button
-          onClick={handleDeleteGroup}
-          loading={loading}
-          className=' bg-red-400 hover:bg-red-500 active:bg-red-600'
-        >
-          Oui, Supprimer
-        </Button>
-
-        <Button
-          className='bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600'
-          onClick={onClose}
-        >
-          Non, Annuler
-        </Button>
-      </div>
-    </div>
+    <ValidationModal
+      open
+      onClose={onClose}
+      onConfirm={handleDeleteGroup}
+      loading={loading}
+      title='Êtes-vous sûr de vouloir supprimer le groupe ?'
+      description='Pour rappel, cette action est irréversible et toutes les dépenses seront perdues.'
+    />
   )
 }

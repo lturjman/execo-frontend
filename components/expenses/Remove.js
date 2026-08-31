@@ -1,9 +1,8 @@
 'use client'
 
-import Button from '@/components/Button'
-
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteExpense } from '@/lib/store/slices/expenses'
+import ValidationModal from '@/components/ValidationModal'
 
 export default function RemoveExpense ({ onClose, expense, onExpenseDeleted }) {
   const dispatch = useDispatch()
@@ -15,31 +14,13 @@ export default function RemoveExpense ({ onClose, expense, onExpenseDeleted }) {
   }
 
   return (
-    <div className='p-4'>
-      <h2 className='block mb-2 font-bold text-2xl text-center'>
-        Êtes vous sûr de vouloir supprimer la dépense ?
-      </h2>
-
-      <div>
-        Pour rappel, cette action est irréversible et les dépenses en cours
-        seront reréparties entre les autres membres du groupe
-      </div>
-      <div>
-        <Button
-          onClick={handleDeleteExpense}
-          loading={loading}
-          className='my-6 bg-red-400 hover:bg-red-500 active:bg-red-600'
-        >
-          Oui, Supprimer
-        </Button>
-
-        <Button
-          className='bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600'
-          onClick={onClose}
-        >
-          Non, Annuler
-        </Button>
-      </div>
-    </div>
+    <ValidationModal
+      open
+      onClose={onClose}
+      onConfirm={handleDeleteExpense}
+      loading={loading}
+      title='Êtes-vous sûr de vouloir supprimer la dépense ?'
+      description='Pour rappel, cette action est irréversible et les dépenses en cours seront réparties entre les autres membres du groupe.'
+    />
   )
 }

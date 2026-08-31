@@ -1,33 +1,26 @@
 'use client'
 
-import Button from '@/components/Button'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteNote } from '@/lib/store/slices/notes'
+import ValidationModal from '@/components/ValidationModal'
 
-export default function NoteRemove ({ groupId, note, onEdit, onMenuClose }) {
+export default function NoteRemove ({ groupId, note, open, onClose }) {
   const dispatch = useDispatch()
   const loading = useSelector((state) => state.notes.loading)
 
   function handleDelete () {
-    onMenuClose()
     dispatch(deleteNote({ groupId, noteId: note._id }))
+    onClose()
   }
 
   return (
-    <div className='absolute bottom-3 right-3 flex gap-2'>
-      <button
-        onClick={() => onEdit(note)}
-        className='flex items-center gap-1 text-sm bg-white/90 dark:bg-zinc-700/90 text-zinc-800 dark:text-zinc-200 rounded-full px-3 py-1.5 cursor-pointer hover:bg-white dark:hover:bg-zinc-700'
-      >
-        Modifier
-      </button>
-      <Button
-        onClick={handleDelete}
-        loading={loading}
-        className='text-sm bg-red-500 px-3 py-1.5 rounded-full hover:bg-red-600'
-      >
-        Supprimer
-      </Button>
-    </div>
+    <ValidationModal
+      open={open}
+      onClose={onClose}
+      onConfirm={handleDelete}
+      loading={loading}
+      title='Êtes-vous sûr de vouloir supprimer la note ?'
+      description='Pour rappel, cette action est irréversible.'
+    />
   )
 }

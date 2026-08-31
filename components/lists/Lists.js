@@ -26,12 +26,10 @@ export default function Lists ({ groupId }) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeListId, setActiveListId] = useState(null)
   const [showNewListInput, setShowNewListInput] = useState(false)
-  const [menuListId, setMenuListId] = useState(null)
   const [editingListId, setEditingListId] = useState(null)
   const [editingItemId, setEditingItemId] = useState(null)
   const [editItemText, setEditItemText] = useState('')
 
-  const menuRef = useRef(null)
   const listEndRef = useRef(null)
   const prevItemCountRef = useRef(0)
 
@@ -64,18 +62,6 @@ export default function Lists ({ groupId }) {
     prevItemCountRef.current = currentCount
   }, [activeList?.items.length])
 
-  useEffect(() => {
-    function handleClickOutside (e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuListId(null)
-      }
-    }
-    if (menuListId) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [menuListId])
-
   function toggleOpen () {
     setIsOpen((open) => !open)
   }
@@ -87,17 +73,11 @@ export default function Lists ({ groupId }) {
 
   function handleSelectList (listId) {
     setActiveListId(listId)
-    setMenuListId(null)
     setEditingItemId(null)
-  }
-
-  function handleToggleMenu (listId) {
-    setMenuListId((prev) => (prev === listId ? null : listId))
   }
 
   function handleStartEditList (list) {
     setEditingListId(list._id)
-    setMenuListId(null)
   }
 
   function handleCancelEditList () {
@@ -105,7 +85,6 @@ export default function Lists ({ groupId }) {
   }
 
   function handleListDeleted (list) {
-    setMenuListId(null)
     if (activeListId === list._id) setActiveListId(null)
   }
 
@@ -169,12 +148,9 @@ export default function Lists ({ groupId }) {
               groupId={groupId}
               list={activeList}
               colors={LIST_COLORS}
-              menuRef={menuRef}
               editingListId={editingListId}
               onStartEditList={handleStartEditList}
               onCancelEditList={handleCancelEditList}
-              onToggleMenu={handleToggleMenu}
-              menuListId={menuListId}
               onListDeleted={handleListDeleted}
               listEndRef={listEndRef}
               editingItemId={editingItemId}
