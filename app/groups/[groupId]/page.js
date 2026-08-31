@@ -1,36 +1,25 @@
-import Button from '@/components/Button'
+import Button from "@/components/Button";
 
-import { ArrowLeftIcon } from '@heroicons/react/24/solid'
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 
-import Parameters from '@/components/groups/CardParameters'
+import Parameters from "@/components/groups/CardParameters";
 
-import MembersGroupClient from '@/components/members/MembersGroupClient'
+import MembersGroupClient from "@/components/members/MembersGroupClient";
 
-import Notes from '@/components/notes/Notes'
-import Lists from '@/components/lists/Lists'
+import Notes from "@/components/notes/Notes";
+import Lists from "@/components/lists/Lists";
 
-export default async function GroupPage ({ params }) {
-  const { groupId } = await params
+export default async function GroupPage({ params }) {
+  const { groupId } = await params;
 
   return (
-    <div className='p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600'>
-      {/* <div className="hidden md:block fixed">
-        <Link href="/groups">
-          <Image
-            src="/images/LOGO01.png"
-            alt="Logo Execo"
-            width={100}
-            height={100}
-          />
-        </Link>
-      </div> */}
-
-      <div className='max-w-5xl mx-auto mt-10 md:mt-0 flex flex-col md:flex-row md:items-start gap-6'>
-        <div className='flex-1 space-y-6'>
-          <div className=' bg-white rounded-2xl shadow-lg overflow-hidden'>
+    <div className="p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600">
+      <div className="max-w-5xl mx-auto mt-10 md:mt-0 flex flex-col md:flex-row md:items-start gap-6">
+        <div className="flex-1 space-y-6">
+          <div className=" bg-white rounded-2xl shadow-lg overflow-hidden">
             {/* Retour */}
-            <Button href='/groups' rounded='true' className='absolute'>
-              <ArrowLeftIcon className='size-5 text-white' />
+            <Button href="/groups" rounded="true" className="absolute">
+              <ArrowLeftIcon className="size-5 text-white" />
             </Button>
 
             <Parameters />
@@ -39,11 +28,11 @@ export default async function GroupPage ({ params }) {
           <MembersGroupClient groupId={groupId} />
         </div>
 
-        <aside className='w-full md:w-1/3 shrink-0 space-y-4'>
+        <aside className="w-full md:w-1/3 shrink-0 space-y-4">
           <Notes groupId={groupId} />
           <Lists groupId={groupId} />
         </aside>
       </div>
     </div>
-  )
+  );
 }
