@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGroup } from "@/lib/store/slices/groups";
+import Button from "../Button";
 
 export default function GroupShare({ groupId, onClose }) {
   const dispatch = useDispatch();
@@ -10,6 +11,12 @@ export default function GroupShare({ groupId, onClose }) {
   const group = useSelector((state) =>
     state.groups.items?.find((group) => group._id === groupId),
   );
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(group?.code);
+    setCopied(true);
+  };
 
   useEffect(() => {
     dispatch(fetchGroup(groupId));
@@ -41,6 +48,16 @@ export default function GroupShare({ groupId, onClose }) {
             </div>
           ))}
         </div>
+
+        <Button onClick={handleCopy} className="mt-7">
+          Copier le code
+        </Button>
+
+        {copied && (
+          <p className="mt-3 text-sm font-medium text-zinc-800">
+            ✅ Le code a bien été copié
+          </p>
+        )}
       </div>
     </div>
   );
