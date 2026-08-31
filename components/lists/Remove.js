@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import Button from '@/components/Button'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteList } from '@/lib/store/slices/lists'
 
 export default function ListRemove ({ groupId, list, onDeleted }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.lists.loading)
   const [confirming, setConfirming] = useState(false)
 
   function handleDeleteList () {
@@ -19,12 +21,13 @@ export default function ListRemove ({ groupId, list, onDeleted }) {
       {confirming
         ? (
           <div className='flex items-center gap-2'>
-            <button
+            <Button
               onClick={handleDeleteList}
-className='text-sm bg-red-500 text-white rounded-full px-3 py-1.5 cursor-pointer hover:bg-red-600'
+              loading={loading}
+              className='w-auto text-sm bg-red-500 px-3 py-1.5 rounded-full hover:bg-red-600'
             >
               Confirmer
-            </button>
+            </Button>
             <button
               onClick={() => setConfirming(false)}
               className='text-sm bg-zinc-200 dark:bg-zinc-600 text-zinc-700 dark:text-zinc-300 rounded-full px-3 py-1.5 cursor-pointer hover:bg-zinc-300 dark:hover:bg-zinc-500'

@@ -130,8 +130,8 @@ export default function ProfileForm () {
           La mise à jour a bien été prise en compte.
         </p>
       )}
-      <Button type='submit' disabled={loading}>
-        {loading ? 'Mise à jour...' : 'Mettre à jour'}
+      <Button type='submit' loading={loading}>
+        Mettre à jour
       </Button>
     </form>
   )

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import RemoveMember from './Remove'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateMember } from '../../lib/store/slices/members'
 
 import { validateMember } from '../../utils/validateMember'
@@ -17,6 +17,7 @@ export default function UpdateMember ({
   onMemberUpdatedOrDeleted
 }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.members.loading)
 
   const [editableMember, setEditableMember] = useState({ ...member })
   const [displayRemoveMember, setDisplayRemoveMember] = useState(false)
@@ -81,7 +82,7 @@ export default function UpdateMember ({
         )}
 
         <div>Part : {(member.share * 100).toFixed(2) + '%'}</div>
-        <Button className='my-4' onClick={handleUpdateMember}>
+        <Button className='my-4' onClick={handleUpdateMember} loading={loading}>
           Mettre à jour le membre
         </Button>
       </div>

@@ -419,8 +419,8 @@ export default function ExpenseForm({
       </div>
       {errors.debts && <p className="text-red-500 text-sm">{errors.debts}</p>}
 
-      <Button className="my-4" disabled={loading}>
-        {loading ? "En cours de chargement..." : submitLabel}
+      <Button className="my-4" loading={loading}>
+        {submitLabel}
       </Button>
     </form>
   );

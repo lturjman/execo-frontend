@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-export default function InfoModal() {
+export default function InfoModal({
+  title,
+  children,
+  label,
+  variant = "link",
+}) {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
 
@@ -21,14 +26,19 @@ export default function InfoModal() {
     }, 200);
   };
 
+  const triggerClassName =
+    variant === "icon"
+      ? "inline-flex items-center justify-center w-4 h-4 rounded-full bg-zinc-400 hover:bg-purple-400 text-white text-xs font-bold cursor-pointer ml-1 align-middle"
+      : "underline cursor-pointer";
+
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="underline cursor-pointer"
+        className={triggerClassName}
       >
-        reste à vivre
+        {label}
       </button>
 
       {open && (
@@ -49,7 +59,7 @@ export default function InfoModal() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-3">
-              <div className="text-lg font-bold">Votre reste à vivre 💛</div>
+              <div className="text-lg font-bold">{title}</div>
               <button
                 type="button"
                 onClick={closeInfo}
@@ -59,12 +69,7 @@ export default function InfoModal() {
                 ×
               </button>
             </div>
-            <div className="text-sm">
-              C’est ce qu’il vous reste chaque mois après avoir déduit vos
-              charges fixes incompressibles de vos revenus. Il permet de mieux
-              refléter les possibilités de chacun pour partager les dépenses
-              communes.
-            </div>
+            <div className="text-sm">{children}</div>
           </div>
         </div>
       )}

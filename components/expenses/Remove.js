@@ -2,11 +2,12 @@
 
 import Button from '@/components/Button'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteExpense } from '@/lib/store/slices/expenses'
 
 export default function RemoveExpense ({ onClose, expense, onExpenseDeleted }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.expenses.loading)
 
   const handleDeleteExpense = async () => {
     await dispatch(deleteExpense({ groupId: expense.group, expense }))
@@ -26,6 +27,7 @@ export default function RemoveExpense ({ onClose, expense, onExpenseDeleted }) {
       <div>
         <Button
           onClick={handleDeleteExpense}
+          loading={loading}
           className='my-6 bg-red-400 hover:bg-red-500 active:bg-red-600'
         >
           Oui, Supprimer

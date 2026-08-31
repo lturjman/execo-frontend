@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { createNote } from '@/lib/store/slices/notes'
 
@@ -9,6 +9,7 @@ import Button from '@/components/Button'
 
 export default function NoteCreate ({ groupId, currentMember }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.notes.loading)
   const [message, setMessage] = useState('')
 
   async function handleSubmit (e) {
@@ -32,7 +33,7 @@ export default function NoteCreate ({ groupId, currentMember }) {
         placeholder='Ajouter un pense-bête...'
         className='px-4 appearance-none grow p-2.5 focus:border rounded-full bg-zinc-100 text-zinc-800 focus:outline-none focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200'
       />
-      <Button rounded='true'>
+      <Button rounded='true' loading={loading}>
         <CheckIcon className='size-5 text-white' />
       </Button>
     </form>

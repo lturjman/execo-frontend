@@ -45,8 +45,8 @@ export default function CreateMember ({ onMemberCreated, onClose, groupId }) {
         <p className='text-red-500 text-sm mb-2'>{errors.nickname}</p>
       )}
 
-      <Button onClick={handleCreateMember} disabled={loading} className='mt-4'>
-        {loading ? 'En cours de chargement...' : 'Ajouter au groupe'}
+      <Button onClick={handleCreateMember} loading={loading} className='mt-4'>
+        Ajouter au groupe
       </Button>
       <Button
         onClick={onClose}

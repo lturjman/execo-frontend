@@ -1,10 +1,12 @@
 'use client'
 
-import { useDispatch } from 'react-redux'
+import Button from '@/components/Button'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteNote } from '@/lib/store/slices/notes'
 
 export default function NoteRemove ({ groupId, note, onEdit, onMenuClose }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.notes.loading)
 
   function handleDelete () {
     onMenuClose()
@@ -19,12 +21,13 @@ export default function NoteRemove ({ groupId, note, onEdit, onMenuClose }) {
       >
         Modifier
       </button>
-      <button
+      <Button
         onClick={handleDelete}
-        className='flex items-center gap-1 text-sm bg-red-500 text-white rounded-full px-3 py-1.5 cursor-pointer hover:bg-red-600'
+        loading={loading}
+        className='text-sm bg-red-500 px-3 py-1.5 rounded-full hover:bg-red-600'
       >
         Supprimer
-      </button>
+      </Button>
     </div>
   )
 }

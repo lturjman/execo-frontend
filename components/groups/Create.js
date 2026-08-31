@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createGroup } from "@/lib/store/slices/groups";
 
 import Button from "@/components/Button";
@@ -14,6 +14,7 @@ import { groupImages } from "@/utils/groupImage";
 export default function CreateGroup() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const loading = useSelector((state) => state.groups.loading);
   const [group, setGroup] = useState({
     name: "",
     imageUrl: groupImages[0],
@@ -70,7 +71,7 @@ export default function CreateGroup() {
         ))}
       </div>
 
-      <Button onClick={handleCreateGroup} className="my-4">
+      <Button onClick={handleCreateGroup} loading={loading} className="my-4">
         Créer le groupe
       </Button>
     </div>

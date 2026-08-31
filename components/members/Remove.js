@@ -2,7 +2,7 @@
 
 import Button from '@/components/Button'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteMember } from '../../lib/store/slices/members'
 
 export default function RemoveMember ({
@@ -12,6 +12,7 @@ export default function RemoveMember ({
   member
 }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.members.loading)
 
   const handleDeleteMember = async () => {
     const action = await dispatch(deleteMember({ groupId, member }))
@@ -36,6 +37,7 @@ export default function RemoveMember ({
       <div>
         <Button
           onClick={handleDeleteMember}
+          loading={loading}
           className='my-4 bg-red-400 hover:bg-red-500 active:bg-red-600'
         >
           Oui, Supprimer

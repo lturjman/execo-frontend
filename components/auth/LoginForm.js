@@ -12,6 +12,7 @@ export default function LoginForm () {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({ email: '', password: '' })
+  const [loading, setLoading] = useState(false)
 
   const validateForm = () => {
     let valid = true
@@ -36,6 +37,8 @@ export default function LoginForm () {
     e.preventDefault()
     if (!validateForm()) return
 
+    setLoading(true)
+
     const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
       method: 'POST',
       headers: {
@@ -47,6 +50,7 @@ export default function LoginForm () {
     const data = await res.json()
 
     if (!res.ok) {
+      setLoading(false)
       setErrors({
         email: "L'email n'est pas valide",
         password: "Le mot de passe n'est pas valide"
@@ -100,7 +104,7 @@ export default function LoginForm () {
           )}
         </div>
 
-        <Button type='submit'>Se connecter</Button>
+        <Button type='submit' loading={loading}>Se connecter</Button>
       </form>
 
       <Button

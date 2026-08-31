@@ -86,9 +86,8 @@ export default function GroupParameters ({ onClose, groupId }) {
       </div>
 
       <div>
-        <Button onClick={handleUpdateGroup} disabled={loading}>
-          {' '}
-          {loading ? 'Mise à jour...' : 'Mettre à jour'}
+        <Button onClick={handleUpdateGroup} loading={loading}>
+          Mettre à jour
         </Button>
         {success && (
           <p className='text-zinc-600 dark:text-zinc-300 text-sm text-center mt-2'>

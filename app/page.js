@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Button from "@/components/Button";
-import Link from "next/link";
 import InfoModal from "@/components/InfoModal";
+import LoginButton from "@/components/auth/LoginButton";
+import RegisterButton from "@/components/auth/RegisterButton";
 
 export default function Home() {
   return (
@@ -34,7 +34,7 @@ export default function Home() {
             Coliving, couples, amis, colocs, dépenses de vacances, familles
             recomposées, familles aidantes : enfin un partage qui respecte votre
             réalité. <strong>Pas de 50/50 par défaut</strong> : chacun contribue
-            selon ses possibilités, en fonction de son <InfoModal />. Vos
+            selon ses possibilités, en fonction de son <InfoModal label="reste à vivre" title="Votre reste à vivre 💛">C'est ce qu'il vous reste chaque mois après avoir déduit vos charges fixes incompressibles de vos revenus. Il permet de mieux refléter les possibilités de chacun pour partager les dépenses communes.</InfoModal>. Vos
             revenus et charges servent uniquement à calculer cette répartition
             et restent au sein de vos groupes.{" "}
             <strong>
@@ -44,16 +44,8 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-col gap-4 w-full">
-          <Link href="/auth/login">
-            <Button className="p-5 text-xl bg-zinc-800 hover:bg-zinc-700 dark:bg-white hover:dark:bg-zinc-100 dark:text-zinc-800">
-              Se connecter
-            </Button>
-          </Link>
-          <Link href="/auth/register">
-            <Button className="p-5 text-xl text-zinc-800 bg-white hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white">
-              Créer un compte
-            </Button>
-          </Link>
+          <LoginButton />
+          <RegisterButton />
         </div>
       </div>
     </div>
