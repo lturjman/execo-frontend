@@ -85,10 +85,8 @@ export default function ExpenseForm({
 
   const [percentages, setPercentages] = useState({});
   const [checkedIds, setCheckedIds] = useState(() => {
-    if (Array.isArray(expense?.debts)) {
-      return expense.debts
-        .map((d) => d.member?._id || d.member)
-        .filter(Boolean);
+    if (Array.isArray(members) && members.length > 0) {
+      return members.map((m) => m._id);
     }
     return [];
   });
@@ -104,28 +102,21 @@ export default function ExpenseForm({
 
   useEffect(() => {
     if (members.length > 0) {
+      const totalShare = members.reduce(
+        (sum, m) => sum + (m.share || 0),
+        0,
+      );
+
       const pcts = {};
       members.forEach((m) => {
-        pcts[m._id] = 0;
+        pcts[m._id] =
+          totalShare > 0
+            ? new Decimal(m.share || 0).div(totalShare).mul(100).toNumber()
+            : 0;
       });
 
-      if (
-        Array.isArray(expense?.debts) &&
-        expense.debts.length > 0 &&
-        expense.amount > 0
-      ) {
-        expense.debts.forEach((debt) => {
-          const memberId = debt.member?._id || debt.member;
-          if (memberId) {
-            pcts[memberId] = new Decimal(debt.amount)
-              .div(expense.amount)
-              .mul(100)
-              .toNumber();
-          }
-        });
-      }
-
       setPercentages(pcts);
+      setCheckedIds(members.map((m) => m._id));
     }
   }, [members, expense]);
 
