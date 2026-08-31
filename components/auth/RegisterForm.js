@@ -100,19 +100,12 @@ export default function RegisterForm() {
           monthlyCharges: "",
         };
 
-        if (data?.field === "username") {
-          newErrors.username = "Ce nom d'utilisateur n'est pas valide";
-        } else if (data?.field === "email") {
-          newErrors.email = "Cet email n'est pas valide";
-        } else if (data?.field === "monthlyRevenues") {
-          newErrors.monthlyRevenues = "Ces revenus mensuels se sont pas valides";
-        } else if (data?.field === "monthlyCharges") {
-          newErrors.monthlyCharges = "Ces charges mensuelles se sont pas valides";
+        if (data?.field === "email") {
+          newErrors.email =
+            data?.msg ||
+            "Cette adresse e-mail est déjà utilisée pour un autre compte. Veuillez utiliser une autre adresse e-mail.";
         } else {
-          newErrors.email = "L'email n'est pas valide";
-          newErrors.password = "Le mot de passe n'est pas valide";
-          newErrors.monthlyRevenues = "Les revenus mensuels ne sont pas valides";
-          newErrors.monthlyCharges = "Les charges mensuelles ne sont pas valides";
+          newErrors.email = data?.msg || "Une erreur est survenue";
         }
 
         setErrors(newErrors);
