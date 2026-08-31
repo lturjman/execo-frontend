@@ -81,10 +81,6 @@ export default function ExpenseForm({
 
   const [editableExpense, setEditableExpense] = useState(() => ({
     ...expense,
-    amount:
-      expense?.amount != null
-        ? Decimal.div(expense.amount, 100).toString()
-        : "",
   }));
 
   const [percentages, setPercentages] = useState({});
@@ -99,17 +95,6 @@ export default function ExpenseForm({
 
   const [errors, setErrors] = useState({});
   const allWereUncheckedRef = useRef(false);
-
-  useEffect(() => {
-    if (expense) {
-      setEditableExpense({
-        ...expense,
-        amount: Decimal.div(expense.amount, 100).toString(),
-        member:
-          (expense.credits && expense.credits[0].member?._id) || expense.member,
-      });
-    }
-  }, [expense]);
 
   useEffect(() => {
     if (expense?.group) {
@@ -389,7 +374,7 @@ export default function ExpenseForm({
                   </td>
                   <td className="p-4 text-right">
                     <NumericFormat
-                      value={debt?.amount || 0}
+                      value={debt?.amount || "0"}
                       decimalScale={2}
                       decimalSeparator=","
                       thousandSeparator=" "
