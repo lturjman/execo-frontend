@@ -4,6 +4,7 @@ import RemoveGroup from './Remove'
 
 import Button from '@/components/Button'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { updateGroup, fetchGroup } from '@/lib/store/slices/groups'
@@ -14,6 +15,7 @@ import { groupImages } from '@/utils/groupImage'
 
 export default function GroupParameters ({ onClose, groupId }) {
   const dispatch = useDispatch()
+  const router = useRouter()
   const loading = useSelector((state) => state.groups.loading)
   const group = useSelector((state) =>
     state.groups.items?.find((group) => group._id === groupId)
@@ -39,6 +41,7 @@ export default function GroupParameters ({ onClose, groupId }) {
       if (updateGroup.fulfilled.match(action)) {
         setSuccess(true)
         if (onClose) onClose()
+        else router.push(`/groups/${groupId}`)
       }
     }
   }
