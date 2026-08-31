@@ -18,22 +18,29 @@ export default function LogoutForm () {
     e.preventDefault()
     setLoading(true)
 
-    const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/logout`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+    try {
+      const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+
+      if (!res.ok) {
+        return
       }
-    })
 
-    if (!res.ok) {
+      localStorage.removeItem('token')
+
+      router.push('/auth/login')
+    } catch {
+      // Erreur réseau, on déconnecte quand même côté client
+      localStorage.removeItem('token')
+      router.push('/auth/login')
+    } finally {
       setLoading(false)
-      return
     }
-
-    localStorage.removeItem('token')
-
-    router.push('/auth/login')
   }
 
   return (

@@ -75,54 +75,65 @@ export default function RegisterForm() {
 
     setLoading(true);
 
-    const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        monthlyRevenues,
-        monthlyCharges,
-      }),
-    });
-    const data = await res.json();
+    try {
+      const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          monthlyRevenues,
+          monthlyCharges,
+        }),
+      });
+      const data = await res.json();
 
-    if (!res.ok) {
-      setLoading(false);
-      const newErrors = {
+      if (!res.ok) {
+        const newErrors = {
+          username: "",
+          email: "",
+          password: "",
+          monthlyRevenues: "",
+          monthlyCharges: "",
+        };
+
+        if (data?.field === "username") {
+          newErrors.username = "Ce nom d'utilisateur n'est pas valide";
+        } else if (data?.field === "email") {
+          newErrors.email = "Cet email n'est pas valide";
+        } else if (data?.field === "monthlyRevenues") {
+          newErrors.monthlyRevenues = "Ces revenus mensuels se sont pas valides";
+        } else if (data?.field === "monthlyCharges") {
+          newErrors.monthlyCharges = "Ces charges mensuelles se sont pas valides";
+        } else {
+          newErrors.email = "L'email n'est pas valide";
+          newErrors.password = "Le mot de passe n'est pas valide";
+          newErrors.monthlyRevenues = "Les revenus mensuels ne sont pas valides";
+          newErrors.monthlyCharges = "Les charges mensuelles ne sont pas valides";
+        }
+
+        setErrors(newErrors);
+        return;
+      }
+
+      // Stocker le token
+      localStorage.setItem("token", data.token);
+
+      router.push("/groups");
+    } catch {
+      setErrors({
         username: "",
-        email: "",
+        email: "Une erreur est survenue, veuillez réessayer",
         password: "",
         monthlyRevenues: "",
         monthlyCharges: "",
-      };
-
-      if (data?.field === "username") {
-        newErrors.username = "Ce nom d'utilisateur n'est pas valide";
-      } else if (data?.field === "email") {
-        newErrors.email = "Cet email n'est pas valide";
-      } else if (data?.field === "monthlyRevenues") {
-        newErrors.monthlyRevenues = "Ces revenus mensuels se sont pas valides";
-      } else if (data?.field === "monthlyCharges") {
-        newErrors.monthlyCharges = "Ces charges mensuelles se sont pas valides";
-      } else {
-        newErrors.email = "L'email n'est pas valide";
-        newErrors.password = "Le mot de passe n'est pas valide";
-        newErrors.monthlyRevenues = "Les revenus mensuels ne sont pas valides";
-        newErrors.monthlyCharges = "Les charges mensuelles ne sont pas valides";
-      }
-
-      setErrors(newErrors);
-      return;
+      });
+    } finally {
+      setLoading(false);
     }
-
-    // Stocker le token
-    localStorage.setItem("token", data.token);
-
-    router.push("/groups");
   };
 
   return (

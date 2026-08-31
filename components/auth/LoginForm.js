@@ -39,28 +39,36 @@ export default function LoginForm () {
 
     setLoading(true)
 
-    const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email, password })
-    })
-
-    const data = await res.json()
-
-    if (!res.ok) {
-      setLoading(false)
-      setErrors({
-        email: "L'email n'est pas valide",
-        password: "Le mot de passe n'est pas valide"
+    try {
+      const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
       })
-      return
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setErrors({
+          email: "L'email n'est pas valide",
+          password: "Le mot de passe n'est pas valide"
+        })
+        return
+      }
+
+      localStorage.setItem('token', data.token)
+
+      router.push('/groups')
+    } catch {
+      setErrors({
+        email: "Une erreur est survenue, veuillez réessayer",
+        password: ''
+      })
+    } finally {
+      setLoading(false)
     }
-
-    localStorage.setItem('token', data.token)
-
-    router.push('/groups')
   }
 
   return (
