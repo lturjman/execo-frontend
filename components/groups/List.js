@@ -41,9 +41,7 @@ export default function groupsList() {
             </li>
             <li className="flex">
               <div className=" font-bold text-purple-400 ">2</div>{" "}
-              <div className="ml-5 ">
-                Ajoutez des membres, leurs revenus et charges fixes
-              </div>
+              <div className="ml-5 ">Ajoutez des membres</div>
             </li>
             <li className="flex">
               <div className=" font-bold text-purple-400 ">3</div>{" "}
