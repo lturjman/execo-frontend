@@ -14,8 +14,6 @@ import ListTabs from './ListTabs'
 import EmptyListState from './EmptyListState'
 import ActiveListCard from './ActiveListCard'
 
-const POLLING_INTERVAL = 3000
-
 export default function Lists ({ groupId }) {
   const dispatch = useDispatch()
 
@@ -42,12 +40,6 @@ export default function Lists ({ groupId }) {
     dispatch(fetchMe())
     dispatch(fetchMembers({ groupId }))
     dispatch(fetchLists({ groupId }))
-
-    const interval = setInterval(() => {
-      dispatch(fetchLists({ groupId }))
-    }, POLLING_INTERVAL)
-
-    return () => clearInterval(interval)
   }, [dispatch, groupId])
 
   useEffect(() => {

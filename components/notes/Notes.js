@@ -17,7 +17,6 @@ import NoteUpdate from "./Update";
 import NoteRemove from "./Remove";
 import { MEMBER_COLORS } from "./NoteColors";
 
-const POLLING_INTERVAL = 3000;
 const SEEN_NOTE_IDS_KEY = "execo:seen-note-ids";
 
 function getMemberColor(members, memberId) {
@@ -73,12 +72,6 @@ export default function Notes({ groupId }) {
     dispatch(fetchMe());
     dispatch(fetchMembers({ groupId }));
     dispatch(fetchNotes({ groupId }));
-
-    const interval = setInterval(() => {
-      dispatch(fetchNotes({ groupId }));
-    }, POLLING_INTERVAL);
-
-    return () => clearInterval(interval);
   }, [dispatch, groupId]);
 
   useEffect(() => {
