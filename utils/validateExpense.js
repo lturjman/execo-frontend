@@ -15,8 +15,19 @@ export function validateExpense (expense, setErrors) {
     newErrors.amount = 'Veuillez entrer un montant valide.'
   }
 
-  if (!expense.member) {
-    newErrors.member = 'Veuillez sélectionner un membre.'
+  let creditsTotal = 0
+  if (expense.credits) {
+    creditsTotal = expense.credits.reduce(
+      (sum, credit) => sum + Number(credit.amount || 0),
+      0
+    )
+  }
+
+  if (!expense.credits || expense.credits.length === 0) {
+    newErrors.credits = 'Veuillez sélectionner au moins un payeur.'
+  } else if (Math.abs(creditsTotal - Number(expense.amount)) > 0.001) {
+    newErrors.credits =
+      'La somme des montants payés doit correspondre au montant total de la dépense.'
   }
 
   if (!expense.debts || expense.debts.length === 0) {

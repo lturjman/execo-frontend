@@ -31,12 +31,10 @@ export default function UpdateExpense ({
             amount: Decimal.mul(debt.amount, 100).round(),
             member: debt.member._id || debt.member
           })),
-          credits: [
-            {
-              amount: Decimal.mul(updatedExpense.amount, 100),
-              member: updatedExpense.member
-            }
-          ]
+          credits: updatedExpense.credits.map((credit) => ({
+            amount: Decimal.mul(credit.amount, 100).round(),
+            member: credit.member._id || credit.member
+          }))
         }
       })
     )
@@ -62,7 +60,10 @@ export default function UpdateExpense ({
       <h2 className='block mb-2 font-bold text-xl'> Modifier la dépense :</h2>
 
       <ExpenseForm
-        expense={expense}
+        expense={{
+          ...expense,
+          amount: new Decimal(expense.amount || 0).div(100).toNumber(),
+        }}
         handleSubmit={handleUpdateExpense}
       />
 

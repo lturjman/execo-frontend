@@ -6,7 +6,9 @@ import { NumericFormat } from "react-number-format";
 import { Decimal } from "decimal.js";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMembers } from "@/lib/store/slices/members";
-import { Checkbox } from "@headlessui/react";
+import { Checkbox, Listbox } from "@headlessui/react";
+import { TrashIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { validateExpense } from "@/utils/validateExpense";
 
 function rescaleTo100(pcts, ids) {
@@ -70,6 +72,43 @@ function computeDebtsFromPercentages(pcts, totalAmount, checkedMembers) {
   });
 }
 
+function redistribute(others, remainingCents) {
+  const weights = others.map((p) => ({
+    ...p,
+    weight: Math.round(p.amount * 100),
+  }));
+  const weightTotal = weights.reduce((sum, p) => sum + p.weight, 0);
+
+  if (weightTotal <= 0) {
+    const base = Math.floor(remainingCents / weights.length);
+    const remainder = remainingCents - base * weights.length;
+    return weights.map((p, i) => ({
+      ...p,
+      amount: (base + (i < remainder ? 1 : 0)) / 100,
+    }));
+  }
+
+  const raw = weights.map((p) => p.weight * (remainingCents / weightTotal));
+  let assigned = 0;
+
+  const base = raw.map((v) => {
+    const floor = Math.floor(v);
+    assigned += floor;
+    return { v, floor };
+  });
+
+  let rest = remainingCents - assigned;
+  const sorted = raw
+    .map((v, i) => ({ i, frac: v - Math.floor(v) }))
+    .sort((a, b) => b.frac - a.frac);
+
+  for (let k = 0; k < sorted.length && rest > 0; k++, rest--) {
+    base[sorted[k].i].floor += 1;
+  }
+
+  return weights.map((p, i) => ({ ...p, amount: base[i].floor / 100 }));
+}
+
 export default function ExpenseForm({
   expense,
   handleSubmit,
@@ -91,6 +130,9 @@ export default function ExpenseForm({
     return [];
   });
 
+  const [payers, setPayers] = useState(() => []);
+  const [selectedPayerId, setSelectedPayerId] = useState("");
+
   const [errors, setErrors] = useState({});
   const allWereUncheckedRef = useRef(false);
 
@@ -101,11 +143,32 @@ export default function ExpenseForm({
   }, [dispatch, expense?.group]);
 
   useEffect(() => {
-    if (members.length > 0) {
-      const totalShare = members.reduce(
-        (sum, m) => sum + (m.share || 0),
-        0,
+    if (members.length === 0) return;
+
+    if (Array.isArray(expense?.credits) && expense.credits.length > 0) {
+      setPayers(
+        expense.credits.map((credit) => ({
+          memberId: credit.member?._id || credit.member,
+          amount: new Decimal(credit.amount || 0).div(100).toNumber(),
+        })),
       );
+    } else {
+      setPayers([]);
+    }
+  }, [members, expense]);
+
+  useEffect(() => {
+    if (payers.length > 0) {
+      const totalCents = Math.round(
+        (Number(editableExpense.amount) || 0) * 100,
+      );
+      setPayers((prev) => redistribute(prev, totalCents));
+    }
+  }, [editableExpense.amount]);
+
+  useEffect(() => {
+    if (members.length > 0) {
+      const totalShare = members.reduce((sum, m) => sum + (m.share || 0), 0);
 
       const pcts = {};
       members.forEach((m) => {
@@ -126,6 +189,73 @@ export default function ExpenseForm({
     editableExpense.amount,
     checkedMembers,
   );
+
+  const payerMemberIds = payers.map((p) => p.memberId);
+  const credits = payers.map((payer) => ({
+    amount: String(payer.amount ?? 0),
+    member: members.find((m) => m._id === payer.memberId),
+  }));
+
+  const availablePayerMembers = members.filter(
+    (m) => !payerMemberIds.includes(m._id),
+  );
+
+  const addPayer = (memberId) => {
+    if (!memberId || payerMemberIds.includes(memberId)) return;
+    setPayers((prev) => {
+      const newPayers = [...prev, { memberId, amount: 0 }];
+      const totalCents = Math.round(
+        (Number(editableExpense.amount) || 0) * 100,
+      );
+      const base = Math.floor(totalCents / newPayers.length);
+      const remainder = totalCents - base * newPayers.length;
+      return newPayers.map((p, i) => ({
+        ...p,
+        amount: (base + (i < remainder ? 1 : 0)) / 100,
+      }));
+    });
+    setSelectedPayerId("");
+  };
+
+  const removePayer = (memberId) => {
+    setPayers((prev) => {
+      const removed = prev.find((p) => p.memberId === memberId);
+      const others = prev.filter((p) => p.memberId !== memberId);
+
+      if (!removed || others.length === 0) {
+        return others;
+      }
+
+      const totalCents = Math.round(
+        (Number(editableExpense.amount) || 0) * 100,
+      );
+
+      return redistribute(others, totalCents);
+    });
+  };
+
+  const handlePayerAmountChange = (memberId, value) => {
+    if (value === undefined || value < 0) return;
+
+    setPayers((prev) => {
+      const others = prev.filter((p) => p.memberId !== memberId);
+      const editedAmount = Number(value) || 0;
+
+      if (others.length === 0) {
+        return prev.map((p) =>
+          p.memberId === memberId ? { ...p, amount: editedAmount } : p,
+        );
+      }
+
+      const totalCents = Math.round(
+        (Number(editableExpense.amount) || 0) * 100,
+      );
+      const remainingCents = totalCents - Math.round(editedAmount * 100);
+      const newOthers = redistribute(others, remainingCents);
+
+      return [...newOthers, { memberId, amount: editedAmount }];
+    });
+  };
 
   const toggleBeneficiary = (member) => {
     const isChecked = checkedIds.includes(member._id);
@@ -222,9 +352,12 @@ export default function ExpenseForm({
 
   const submitForm = (event) => {
     event.preventDefault();
-    const isValid = validateExpense({ ...editableExpense, debts }, setErrors);
+    const isValid = validateExpense(
+      { ...editableExpense, debts, credits },
+      setErrors,
+    );
     if (!isValid) return;
-    handleSubmit({ ...editableExpense, debts });
+    handleSubmit({ ...editableExpense, debts, credits });
   };
 
   return (
@@ -275,29 +408,160 @@ export default function ExpenseForm({
           <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
         )}
       </div>
-      <div>
-        <label htmlFor="member">Payé par :</label>
-        <select
-          value={editableExpense?.member}
-          name="member"
-          onChange={(e) =>
-            setEditableExpense({ ...editableExpense, member: e.target.value })
-          }
-          className="appearance-none w-full p-2 border border-zinc-300 rounded-md
-             bg-white text-zinc-800 focus:outline-none
-             focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-        >
-          <option value="">-- Choisir un membre --</option>
-          {members.map((member) => (
-            <option key={member._id} value={member._id}>
-              {member.nickname}
-            </option>
-          ))}
-        </select>
-        {errors.member && (
-          <p className="text-red-500 text-sm mt-1">{errors.member}</p>
+      <h3 className="text-lg font-semibold">Payé par :</h3>
+
+      <div className="space-y-2">
+        {availablePayerMembers.length > 0 && (
+          <Listbox
+            value={selectedPayerId}
+            onChange={addPayer}
+          >
+            <div className="relative">
+              <Listbox.Button
+                className="relative w-full p-2 px-4 pr-10 text-left rounded-md
+                   bg-zinc-100 focus:outline-none cursor-pointer
+                   focus:ring-1 focus:ring-purple-400 focus:border-purple-400
+                   dark:bg-zinc-600 dark:text-zinc-200"
+              >
+                <span className="block truncate text-zinc-500 dark:text-zinc-300">
+                  Ajouter un.e ou des payeur.se.s
+                </span>
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <ChevronDownIcon className="size-5 text-zinc-500 dark:text-zinc-300" />
+                </span>
+              </Listbox.Button>
+              <Listbox.Options
+                className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md
+                   border border-zinc-200 bg-white py-1 shadow-lg
+                   dark:border-zinc-600 dark:bg-zinc-800"
+              >
+                {availablePayerMembers.map((member) => (
+                  <Listbox.Option
+                    key={member._id}
+                    value={member._id}
+                    className="cursor-pointer select-none py-2 pl-3 pr-9 text-sm
+                       text-zinc-800 data-[focus]:bg-purple-100 data-[focus]:text-purple-900
+                       dark:text-zinc-200 dark:data-[focus]:bg-purple-900 dark:data-[focus]:text-purple-100"
+                  >
+                    {member.nickname}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </Listbox>
         )}
+
+        {payers.map((payer) => {
+          const member = members.find((m) => m._id === payer.memberId);
+          const exceedsTotal =
+            Number(editableExpense.amount) > 0 &&
+            payer.amount > Number(editableExpense.amount);
+
+          return (
+            <div
+              key={payer.memberId}
+              className="flex items-center gap-2 rounded-md bg-white shadow-sm dark:bg-zinc-800 dark:border dark:border-zinc-500 p-2"
+            >
+              <span className="min-w-0 flex-1 text-zinc-800 dark:text-zinc-200">
+                {member?.nickname || ""}
+              </span>
+              <NumericFormat
+                value={payer.amount}
+                decimalScale={2}
+                decimalSeparator=","
+                thousandSeparator=" "
+                fixedDecimalScale
+                suffix=" €"
+                allowNegative={false}
+                onValueChange={({ floatValue }) => {
+                  setPayers((prev) =>
+                    prev.map((p) =>
+                      p.memberId === payer.memberId
+                        ? { ...p, amount: Number(floatValue) || 0 }
+                        : p,
+                    ),
+                  );
+                }}
+                onBlur={() => {
+                  setPayers((prev) => {
+                    const edited = prev.find(
+                      (p) => p.memberId === payer.memberId,
+                    );
+                    if (!edited) return prev;
+
+                    const others = prev.filter(
+                      (p) => p.memberId !== payer.memberId,
+                    );
+                    if (others.length === 0) return prev;
+
+                    const totalCents = Math.round(
+                      (Number(editableExpense.amount) || 0) * 100,
+                    );
+                    const remainingCents =
+                      totalCents - Math.round(edited.amount * 100);
+                    const newOthers = redistribute(others, remainingCents);
+
+                    return [...newOthers, edited];
+                  });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    setPayers((prev) => {
+                      const edited = prev.find(
+                        (p) => p.memberId === payer.memberId,
+                      );
+                      if (!edited) return prev;
+
+                      const others = prev.filter(
+                        (p) => p.memberId !== payer.memberId,
+                      );
+                      if (others.length === 0) return prev;
+
+                      const totalCents = Math.round(
+                        (Number(editableExpense.amount) || 0) * 100,
+                      );
+                      const remainingCents =
+                        totalCents - Math.round(edited.amount * 100);
+                      const newOthers = redistribute(others, remainingCents);
+
+                      return [...newOthers, edited];
+                    });
+                  }
+                }}
+                className={`w-32 p-1 text-right rounded-md border
+                   bg-white text-zinc-800 focus:outline-none
+                   focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200 ${
+                     exceedsTotal
+                       ? "border-red-500 focus:ring-red-400 focus:border-red-400"
+                       : "border-zinc-300"
+                   }`}
+                name="amount"
+              />
+              <button
+                type="button"
+                onClick={() => removePayer(payer.memberId)}
+                className="text-zinc-400 hover:text-red-500"
+                aria-label="Supprimer le payeur"
+              >
+                <TrashIcon className="size-5" />
+              </button>
+            </div>
+          );
+        })}
       </div>
+      {errors.credits && (
+        <p className="text-red-500 text-sm">{errors.credits}</p>
+      )}
+      {payers.some(
+        (p) =>
+          Number(editableExpense.amount) > 0 &&
+          p.amount > Number(editableExpense.amount),
+      ) && (
+        <p className="text-red-500 text-sm">
+          Le montant d'un payeur ne peut pas dépasser le montant de la dépense.
+        </p>
+      )}
 
       <h3 className="text-lg font-semibold">Bénéficiaires :</h3>
 

@@ -54,7 +54,9 @@ export default function expensesList() {
 
       <td className="p-2 text-right">{amountToCurrency(expense.amount)}</td>
 
-      <td className="p-2 text-right">{expense.credits[0].member.nickname}</td>
+      <td className="p-2 text-right">
+        {expense.credits.map((credit) => credit.member.nickname).join(", ")}
+      </td>
 
       <td className="p-2">
         <button
