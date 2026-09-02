@@ -139,7 +139,7 @@ export default function Notes({ groupId }) {
           </span>
         )}
         <span className="text-lg font-semibold text-zinc-800 dark:text-zinc-100 grow">
-          Notes du groupe
+          Post-it
         </span>
         {isOpen ? (
           <ChevronUpIcon className="size-5 text-zinc-500 dark:text-zinc-400" />
