@@ -14,21 +14,9 @@ export default async function GroupPage ({ params }) {
 
   return (
     <div className='p-4  bg-zinc-200 w-full min-h-screen dark:bg-zinc-600'>
-      {/* <div className="hidden md:block fixed">
-        <Link href="/groups">
-          <Image
-            src="/images/LOGO01.png"
-            alt="Logo Execo"
-            width={100}
-            height={100}
-          />
-        </Link>
-      </div> */}
-
       <div className='max-w-5xl mx-auto mt-10 md:mt-0 flex flex-col md:flex-row md:items-start gap-6'>
         <div className='flex-1 space-y-6'>
           <div className=' bg-white rounded-2xl shadow-lg overflow-hidden'>
-            {/* Retour */}
             <Button href='/groups' rounded='true' className='absolute'>
               <ArrowLeftIcon className='size-5 text-white' />
             </Button>

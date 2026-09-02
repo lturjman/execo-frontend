@@ -203,8 +203,8 @@ export default function JoinGroup () {
             Demandez le code à un membre du groupe pour le rejoindre.
           </p>
           {error && <p className='text-red-500 text-sm'>{error}</p>}
-          <Button onClick={handleLookup} disabled={loading}>
-            {loading ? 'Vérification...' : 'Continuer'}
+          <Button onClick={handleLookup} loading={loading}>
+            Continuer
           </Button>
         </>
       )}
@@ -222,7 +222,7 @@ export default function JoinGroup () {
               <Button
                 key={member._id}
                 onClick={() => handleLink(member._id)}
-                disabled={loading}
+                loading={loading}
               >
                 {member.nickname}
               </Button>
@@ -263,8 +263,8 @@ export default function JoinGroup () {
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200'
           />
           {error && <p className='text-red-500 text-sm'>{error}</p>}
-          <Button onClick={handleCreateMember} disabled={loading}>
-            {loading ? 'Adhésion...' : 'Rejoindre le groupe'}
+          <Button onClick={handleCreateMember} loading={loading}>
+            Rejoindre le groupe
           </Button>
           <Button
             onClick={() => {

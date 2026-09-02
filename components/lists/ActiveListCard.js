@@ -1,20 +1,20 @@
 'use client'
 
-import { XMarkIcon } from '@heroicons/react/24/solid'
+import { useState } from 'react'
+import { TrashIcon } from '@heroicons/react/24/solid'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteList } from '@/lib/store/slices/lists'
+import ValidationModal from '@/components/ValidationModal'
 import ListUpdate from './Update'
-import ListRemove from './Remove'
 import ItemList from '@/components/listItems/ItemList'
 
 export default function ActiveListCard ({
   groupId,
   list,
   colors,
-  menuRef,
   editingListId,
   onStartEditList,
   onCancelEditList,
-  onToggleMenu,
-  menuListId,
   onListDeleted,
   listEndRef,
   editingItemId,
@@ -23,16 +23,21 @@ export default function ActiveListCard ({
   onStartEditItem,
   onCancelEditItem
 }) {
+  const dispatch = useDispatch()
+  const loading = useSelector((state) => state.lists.loading)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  function handleDeleteList () {
+    dispatch(deleteList({ groupId, listId: list._id }))
+    setShowDeleteModal(false)
+    onListDeleted(list)
+  }
+
   return (
-    <div
-      ref={menuRef}
-      className={`relative border-2 rounded-lg p-4 ${colors.card}`}
-    >
+    <div className={`relative border-2 rounded-lg p-4 ${colors.card}`}>
       <div className='flex items-center justify-between mb-1'>
         {editingListId === list._id
-          ? (
-            <ListUpdate groupId={groupId} list={list} onDone={onCancelEditList} />
-            )
+          ? <ListUpdate groupId={groupId} list={list} onDone={onCancelEditList} />
           : (
             <p
               onClick={() => onStartEditList(list)}
@@ -43,10 +48,10 @@ export default function ActiveListCard ({
             )}
         <button
           type='button'
-          onClick={() => onToggleMenu(list._id)}
+          onClick={() => setShowDeleteModal(true)}
           className='shrink-0 cursor-pointer opacity-70 hover:opacity-100'
         >
-          <XMarkIcon className={`size-4 ${colors.icon}`} />
+          <TrashIcon className={`size-4 ${colors.icon}`} />
         </button>
       </div>
 
@@ -63,13 +68,14 @@ export default function ActiveListCard ({
         onCancelEditItem={onCancelEditItem}
       />
 
-      {menuListId === list._id && (
-        <ListRemove
-          groupId={groupId}
-          list={list}
-          onDeleted={() => onListDeleted(list)}
-        />
-      )}
+      <ValidationModal
+        open={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteList}
+        loading={loading}
+        title='Êtes-vous sûr de vouloir supprimer la liste ?'
+        description='Pour rappel, cette action est irréversible et tous les items de la liste seront supprimés.'
+      />
     </div>
   )
 }

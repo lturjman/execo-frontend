@@ -8,7 +8,8 @@ export default function Button ({
   rounded,
   className,
   href,
-  disabled
+  disabled,
+  loading
 }) {
   function getClassName () {
     return twMerge(
@@ -26,9 +27,16 @@ export default function Button ({
     )
   }
 
+  const isLoading = disabled || loading
+
   return (
-    <button onClick={onClick} className={getClassName()} disabled={disabled}>
-      {disabled && <ArrowPathIcon className='w-4 h-4 animate-spin mr-2' />}
+    <button
+      onClick={onClick}
+      className={getClassName()}
+      disabled={isLoading}
+      aria-busy={isLoading}
+    >
+      {isLoading && <ArrowPathIcon className='w-4 h-4 animate-spin mr-2' />}
       {children}
     </button>
   )

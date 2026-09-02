@@ -1,6 +1,6 @@
 'use client'
 
-import { CheckIcon, PencilIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { CheckIcon } from '@heroicons/react/24/solid'
 import { useDispatch } from 'react-redux'
 import { updateItem } from '@/lib/store/slices/lists'
 
@@ -28,8 +28,11 @@ export default function ItemUpdate ({
   }
 
   async function handleUpdateItem (e) {
-    e.preventDefault()
-    if (!editText.trim()) return
+    if (e) e.preventDefault()
+    if (!editText.trim()) {
+      onCancelEdit()
+      return
+    }
     await dispatch(
       updateItem({
         groupId,
@@ -50,6 +53,7 @@ export default function ItemUpdate ({
           type='text'
           value={editText}
           onChange={(e) => onEditTextChange(e.target.value)}
+          onBlur={handleUpdateItem}
           autoFocus
           className='grow min-w-0 px-2 py-1 text-sm rounded bg-white/80 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-400'
         />
@@ -59,13 +63,6 @@ export default function ItemUpdate ({
           className='cursor-pointer opacity-80 hover:opacity-100 disabled:opacity-30'
         >
           <CheckIcon className={`size-4 ${colors.icon}`} />
-        </button>
-        <button
-          type='button'
-          onClick={onCancelEdit}
-          className='cursor-pointer opacity-80 hover:opacity-100'
-        >
-          <XMarkIcon className={`size-4 ${colors.icon}`} />
         </button>
       </form>
     )
@@ -86,7 +83,8 @@ export default function ItemUpdate ({
       </button>
 
       <span
-        className={`grow text-sm break-words ${
+        onClick={() => onStartEdit(item)}
+        className={`grow text-sm break-words cursor-pointer ${
           item.checked
             ? 'line-through text-zinc-400 dark:text-zinc-500'
             : 'text-zinc-800 dark:text-zinc-200'
@@ -94,16 +92,6 @@ export default function ItemUpdate ({
       >
         {item.text}
       </span>
-
-      <div className='flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0'>
-        <button
-          type='button'
-          onClick={() => onStartEdit(item)}
-          className='cursor-pointer'
-        >
-          <PencilIcon className={`size-4 ${colors.icon}`} />
-        </button>
-      </div>
     </>
   )
 }

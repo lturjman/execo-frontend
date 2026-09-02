@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createGroup } from "@/lib/store/slices/groups";
 
 import Button from "@/components/Button";
@@ -11,9 +11,10 @@ import { useState } from "react";
 import { validateGroup } from "@/utils/validateGroup";
 import { groupImages } from "@/utils/groupImage";
 
-export default function CreateGroup() {
+export default function CreateGroup({ onGroupCreated }) {
   const dispatch = useDispatch();
   const router = useRouter();
+  const loading = useSelector((state) => state.groups.loading);
   const [group, setGroup] = useState({
     name: "",
     imageUrl: groupImages[0],
@@ -21,11 +22,11 @@ export default function CreateGroup() {
   const [errors, setErrors] = useState({});
 
   const handleCreateGroup = async () => {
-    const isValid = await validateGroup(group, setErrors);
-    if (isValid) {
+    if (validateGroup(group, setErrors)) {
       const action = await dispatch(createGroup(group));
       if (createGroup.fulfilled.match(action)) {
         router.push(`/groups/${action.payload._id}`);
+        if (onGroupCreated) onGroupCreated();
       }
     }
   };
@@ -70,7 +71,7 @@ export default function CreateGroup() {
         ))}
       </div>
 
-      <Button onClick={handleCreateGroup} className="my-4">
+      <Button onClick={handleCreateGroup} loading={loading} className="my-4">
         Créer le groupe
       </Button>
     </div>

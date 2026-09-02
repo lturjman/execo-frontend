@@ -4,17 +4,18 @@ import RemoveGroup from './Remove'
 
 import Button from '@/components/Button'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { updateGroup, fetchGroup } from '@/lib/store/slices/groups'
 
 import { validateGroup } from '@/utils/validateGroup'
 
-import { Dialog, DialogPanel, DialogBackdrop } from '@headlessui/react'
 import { groupImages } from '@/utils/groupImage'
 
 export default function GroupParameters ({ onClose, groupId }) {
   const dispatch = useDispatch()
+  const router = useRouter()
   const loading = useSelector((state) => state.groups.loading)
   const group = useSelector((state) =>
     state.groups.items?.find((group) => group._id === groupId)
@@ -40,6 +41,7 @@ export default function GroupParameters ({ onClose, groupId }) {
       if (updateGroup.fulfilled.match(action)) {
         setSuccess(true)
         if (onClose) onClose()
+        else router.push(`/groups/${groupId}`)
       }
     }
   }
@@ -86,9 +88,8 @@ export default function GroupParameters ({ onClose, groupId }) {
       </div>
 
       <div>
-        <Button onClick={handleUpdateGroup} disabled={loading}>
-          {' '}
-          {loading ? 'Mise à jour...' : 'Mettre à jour'}
+        <Button onClick={handleUpdateGroup} loading={loading}>
+          Mettre à jour
         </Button>
         {success && (
           <p className='text-zinc-600 dark:text-zinc-300 text-sm text-center mt-2'>
@@ -119,21 +120,12 @@ export default function GroupParameters ({ onClose, groupId }) {
         </Button>
       </div>
 
-      <Dialog
-        open={displayRemoveGroup}
-        onClose={() => setDisplayRemoveGroup(false)}
-        className='fixed inset-0 flex w-screen items-center justify-center bg-black/30 dark:bg-black/70 p-4 z-50'
-      >
-        <DialogBackdrop className='fixed inset-0' />
-        <div className='fixed p-4 w-full flex justify-center'>
-          <DialogPanel className='bg-white rounded-2xl shadow-lg overflow-hidden p-4 dark:bg-zinc-700'>
-            <RemoveGroup
-              group={group}
-              onClose={() => setDisplayRemoveGroup(false)}
-            />
-          </DialogPanel>
-        </div>
-      </Dialog>
+      {displayRemoveGroup && (
+        <RemoveGroup
+          group={group}
+          onClose={() => setDisplayRemoveGroup(false)}
+        />
+      )}
     </div>
   )
 }

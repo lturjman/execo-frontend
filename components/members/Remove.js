@@ -1,9 +1,8 @@
 'use client'
 
-import Button from '@/components/Button'
-
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { deleteMember } from '../../lib/store/slices/members'
+import ValidationModal from '@/components/ValidationModal'
 
 export default function RemoveMember ({
   onClose,
@@ -12,6 +11,7 @@ export default function RemoveMember ({
   member
 }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.members.loading)
 
   const handleDeleteMember = async () => {
     const action = await dispatch(deleteMember({ groupId, member }))
@@ -24,30 +24,13 @@ export default function RemoveMember ({
   }
 
   return (
-    <div>
-      <h2 className='block mb-2 font-bold text-xl text-center'>
-        Êtes vous sûr de vouloir supprimer le membre ?
-      </h2>
-
-      <div>
-        Pour rappel, cette action est irréversible et les dépenses en cours
-        seront reréparties entre les autres membres du groupe
-      </div>
-      <div>
-        <Button
-          onClick={handleDeleteMember}
-          className='my-4 bg-red-400 hover:bg-red-500 active:bg-red-600'
-        >
-          Oui, Supprimer
-        </Button>
-
-        <Button
-          className='bg-zinc-400 hover:bg-zinc-500 active:bg-zinc-600'
-          onClick={onClose}
-        >
-          Non, Annuler
-        </Button>
-      </div>
-    </div>
+    <ValidationModal
+      open
+      onClose={onClose}
+      onConfirm={handleDeleteMember}
+      loading={loading}
+      title='Êtes-vous sûr de vouloir supprimer le membre ?'
+      description='Pour rappel, cette action est irréversible et les dépenses en cours seront réparties entre les autres membres du groupe.'
+    />
   )
 }

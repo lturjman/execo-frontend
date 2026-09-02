@@ -1,23 +1,10 @@
-import Image from 'next/image'
-import LoginForm from '@/components/auth/LoginForm'
-import Link from 'next/link'
+import AuthShell from "@/components/auth/AuthShell";
+import LoginForm from "@/components/auth/LoginForm";
 
-export default function Login () {
+export default function Login() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 space-y-6 bg-zinc-50 bg-cover bg-center bg-no-repeat  bg-[url('/images/bg-4.jpg')] dark:bg-[url('/images/bg-5.jpg')]">
-      <div className='mt-10'>
-        <Link href='/'>
-          <Image
-            src='/images/LOGO06.png'
-            alt='Logo Execo'
-            width={300}
-            height={100}
-          />
-        </Link>
-      </div>
-
-      <h1 className='text-xl font-bold'>Connexion</h1>
+    <AuthShell title="Connexion">
       <LoginForm />
-    </main>
-  )
+    </AuthShell>
+  );
 }

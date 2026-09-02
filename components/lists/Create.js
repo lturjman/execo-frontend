@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import Button from '@/components/Button'
+import { useDispatch, useSelector } from 'react-redux'
 import { createList } from '@/lib/store/slices/lists'
 
 export default function ListCreate ({ groupId, currentMember, onCreated }) {
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.lists.loading)
   const [title, setTitle] = useState('')
 
   async function handleCreateList (e) {
@@ -33,13 +35,13 @@ export default function ListCreate ({ groupId, currentMember, onCreated }) {
         autoFocus
         className='px-4 grow p-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-purple-400'
       />
-      <button
+      <Button
         type='submit'
-        disabled={!title.trim()}
-        className='px-3 py-2 text-sm rounded-full bg-purple-600 text-white cursor-pointer hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity'
+        loading={loading}
+        className='w-auto px-3 py-2 text-sm rounded-full bg-purple-600 hover:bg-purple-700'
       >
         Créer
-      </button>
+      </Button>
     </form>
   )
 }
