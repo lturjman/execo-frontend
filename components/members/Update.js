@@ -65,7 +65,7 @@ export default function UpdateMember({
         <label htmlFor="nickname">Nom du membre</label>
         <input
           type="text"
-          nickname="nickname"
+          id="nickname"
           className="w-full p-2 mb-4 rounded bg-zinc-100 focus:outline-none focus:border
              focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
           placeholder="Nom"

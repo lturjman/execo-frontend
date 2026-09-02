@@ -9,7 +9,115 @@ import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
-export default function groupsList() {
+function EmptyState() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[70vh] w-full px-6 text-white space-y-8">
+      <h1 className="text-3xl font-extrabold text-center">
+        Bienvenue sur Execo !
+      </h1>
+
+      <p className="max-w-2xl text-center text-lg leading-relaxed text-white/90">
+        Execo est une application qui permet de partager les dépenses en
+        fonction des moyens financiers de chacun de manière équitable.
+      </p>
+
+      <ul className="bg-white/90 text-zinc-800 rounded-xl shadow-md px-8 py-6 text-base w-full max-w-xl">
+        <li className="text-lg font-semibold mb-2">Pour bien démarrer :</li>
+        <li className="flex">
+          <div className="font-bold text-purple-400">1</div>
+          <div className="ml-5">Créez un groupe</div>
+        </li>
+        <li className="flex">
+          <div className="font-bold text-purple-400">2</div>
+          <div className="ml-5">Ajoutez des membres</div>
+        </li>
+        <li className="flex">
+          <div className="font-bold text-purple-400">3</div>
+          <div className="ml-5">Saisissez les dépenses partagées</div>
+        </li>
+      </ul>
+
+      <div className="hidden sm:flex gap-6">
+        <ActionCard href="/groups/new" label="Créer un groupe" />
+        <ActionCard href="/groups/join" label="Rejoindre un groupe" />
+      </div>
+    </div>
+  );
+}
+
+function ActionCard({ href, label }) {
+  return (
+    <Link href={href}>
+      <div className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out">
+        <div className="flex flex-col items-center justify-center w-64 aspect-video border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
+          <span className="font-medium text-lg">{label}</span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function GroupsGrid({ groups }) {
+  return (
+    <div className="w-full max-w-5xl mx-auto px-4">
+      <div className="grid sm:grid-cols-2 gap-6">
+        {groups.map((group) => (
+          <GroupCard key={group._id} group={group} />
+        ))}
+
+        <div className="hidden sm:flex h-full w-full flex-col items-center justify-center rounded-lg gap-4">
+          <AddGroupButton href="/groups/new" label="Créer un groupe" />
+          <AddGroupButton href="/groups/join" label="Rejoindre un groupe" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AddGroupButton({ href, label }) {
+  return (
+    <Button
+      href={href}
+      className="hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300 hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4 uppercase"
+    >
+      {label}
+    </Button>
+  );
+}
+
+function FloatingActionButton() {
+  return (
+    <Popover className="sm:hidden fixed bottom-6 right-6 z-50">
+      <PopoverButton className="flex items-center justify-center w-20 h-20 rounded-full bg-purple-400 hover:bg-purple-500 active:bg-purple-700 ring-2 ring-white shadow-lg shadow-purple-600/50 cursor-pointer focus:outline-none">
+        {({ open }) => (
+          <PlusIcon
+            className={`size-9 text-white transition-transform duration-300 ${
+              open ? "rotate-45" : ""
+            }`}
+          />
+        )}
+      </PopoverButton>
+      <PopoverPanel className="absolute bottom-24 right-0 w-70 bg-white dark:bg-zinc-700 rounded-xl shadow-lg overflow-hidden">
+        <div className="flex flex-col">
+          <Link
+            href="/groups/new"
+            className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 uppercase"
+          >
+            Créer un groupe
+          </Link>
+          <Link
+            href="/groups/join"
+            className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 border-t border-zinc-200 dark:border-zinc-600 uppercase"
+          >
+            Rejoindre un groupe
+          </Link>
+        </div>
+      </PopoverPanel>
+    </Popover>
+  );
+}
+
+export default function GroupsList() {
   const dispatch = useDispatch();
   const groups = useSelector((state) => state.groups.items);
   const loading = useSelector((state) => state.groups.loading);
@@ -19,110 +127,11 @@ export default function groupsList() {
   }, [dispatch]);
 
   if (loading) return <div>Chargement...</div>;
+
   return (
     <div className="p-4 space-y-6">
-      {groups.length === 0 ? (
-        // Cas où il n'y a aucun groupe
-        <div className="flex flex-col items-center justify-center min-h-[70vh] w-full px-6 text-white space-y-8 ">
-          <h1 className="text-3xl font-extrabold text-center">
-            Bienvenue sur Execo !
-          </h1>
-
-          <p className="max-w-2xl text-center text-lg leading-relaxed text-white/90">
-            Execo est une application qui permet de partager les dépenses en
-            fonction des moyens financiers de chacun de manière équitable.
-          </p>
-
-          <ul className="bg-white/90 text-zinc-800 rounded-xl shadow-md px-8 py-6 text-base w-full max-w-xl">
-            <li className="text-lg font-semibold mb-2">Pour bien démarrer :</li>
-            <li className="flex">
-              <div className=" font-bold  text-purple-400 ">1</div>{" "}
-              <div className="ml-5 ">Créez un groupe</div>
-            </li>
-            <li className="flex">
-              <div className=" font-bold text-purple-400 ">2</div>{" "}
-              <div className="ml-5 ">Ajoutez des membres</div>
-            </li>
-            <li className="flex">
-              <div className=" font-bold text-purple-400 ">3</div>{" "}
-              <div className="ml-5 ">Saisissez les dépenses partagées</div>
-            </li>
-          </ul>
-
-          <div className="hidden sm:flex gap-6">
-            <Link href="/groups/new">
-              <div className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out">
-                <div className="flex flex-col items-center justify-center w-64 aspect-video border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
-                  <span className="font-medium text-lg">Créer un groupe</span>
-                </div>
-              </div>
-            </Link>
-            <Link href="/groups/join">
-              <div className="cursor-pointer transition-transform hover:scale-102 duration-300 ease-in-out">
-                <div className="flex flex-col items-center justify-center w-64 aspect-video border-2 border-dashed border-white/60 backdrop-blur-md rounded-xl text-white hover:border-purple-400 hover:text-purple-200 p-6 shadow-inner">
-                  <span className="font-medium text-lg">
-                    Rejoindre un groupe
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </div>
-      ) : (
-        // Cas où il y a des groupes
-        <div className="w-full max-w-5xl mx-auto px-4">
-          <div className="grid sm:grid-cols-2 gap-6">
-            {groups.map((group) => (
-              <GroupCard key={group._id} group={group} />
-            ))}
-
-            {/* Carte d'ajout en fin de liste */}
-            <div className="hidden sm:flex h-full w-full flex-col items-center justify-center rounded-lg gap-4">
-              <Button
-                href="/groups/new"
-                className=" hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300  hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4 uppercase"
-              >
-                Créer un groupe
-              </Button>
-              <Button
-                href="/groups/join"
-                className="hidden bg-opacity-0 sm:flex h-full w-full flex-col items-center justify-center text-center border-2 border-dashed border-white/60 backdrop-blur-md rounded-lg text-white hover:border-purple-300 hover:bg-purple-400 p-6 shadow-inner transition-transform hover:scale-105 duration-300 ease-in-out gap-4 uppercase"
-              >
-                Rejoindre un groupe
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Bouton flottant */}
-      <Popover className="sm:hidden fixed bottom-6 right-6 z-50">
-        <PopoverButton className="flex items-center justify-center w-20 h-20 rounded-full bg-purple-400 hover:bg-purple-500 active:bg-purple-700 ring-2 ring-white shadow-lg shadow-purple-600/50 cursor-pointer focus:outline-none">
-          {({ open }) => (
-            <PlusIcon
-              className={`size-9 text-white transition-transform duration-300 ${
-                open ? "rotate-45" : ""
-              }`}
-            />
-          )}
-        </PopoverButton>
-        <PopoverPanel className="absolute bottom-24 right-0 w-70 bg-white dark:bg-zinc-700 rounded-xl shadow-lg overflow-hidden">
-          <div className="flex flex-col">
-            <Link
-              href="/groups/new"
-              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 uppercase"
-            >
-              Créer un groupe
-            </Link>
-            <Link
-              href="/groups/join"
-              className="px-4 py-3 text-sm font-bold text-zinc-800 dark:text-zinc-200 hover:bg-purple-100 dark:hover:bg-zinc-600 border-t border-zinc-200 dark:border-zinc-600 uppercase"
-            >
-              Rejoindre un groupe
-            </Link>
-          </div>
-        </PopoverPanel>
-      </Popover>
+      {groups.length === 0 ? <EmptyState /> : <GroupsGrid groups={groups} />}
+      <FloatingActionButton />
     </div>
   );
 }

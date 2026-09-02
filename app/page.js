@@ -34,9 +34,15 @@ export default function Home() {
             Coliving, couples, amis, colocs, dépenses de vacances, familles
             recomposées, familles aidantes : enfin un partage qui respecte votre
             réalité. <strong>Pas de 50/50 par défaut</strong> : chacun contribue
-            selon ses possibilités, en fonction de son <InfoModal label="reste à vivre" title="Votre reste à vivre 💛">C'est ce qu'il vous reste chaque mois après avoir déduit vos charges fixes incompressibles de vos revenus. Il permet de mieux refléter les possibilités de chacun pour partager les dépenses communes.</InfoModal>. Vos
-            revenus et charges servent uniquement à calculer cette répartition
-            et restent au sein de vos groupes.{" "}
+            selon ses possibilités, en fonction de son{" "}
+            <InfoModal label="reste à vivre" title="Votre reste à vivre 💛">
+              C'est ce qu'il vous reste chaque mois après avoir déduit vos
+              charges fixes incompressibles de vos revenus. Il permet de mieux
+              refléter les possibilités de chacun pour partager les dépenses
+              communes.
+            </InfoModal>
+            . Vos revenus et charges servent uniquement à calculer cette
+            répartition et restent au sein de vos groupes.{" "}
             <strong>
               Une expérimentation pour imaginer ensemble une autre façon de
               vivre, partager et contribuer 💜

@@ -7,30 +7,26 @@ import { NumericFormat } from "react-number-format";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+const EMPTY_ERRORS = {
+  username: "",
+  email: "",
+  password: "",
+  monthlyRevenues: "",
+  monthlyCharges: "",
+};
+
 export default function RegisterForm() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [monthlyRevenues, setmonthlyRevenues] = useState("");
+  const [monthlyRevenues, setMonthlyRevenues] = useState("");
   const [monthlyCharges, setMonthlyCharges] = useState("");
-  const [errors, setErrors] = useState({
-    username: "",
-    email: "",
-    password: "",
-    monthlyRevenues: "",
-    monthlyCharges: "",
-  });
+  const [errors, setErrors] = useState({ ...EMPTY_ERRORS });
   const [loading, setLoading] = useState(false);
 
   const validateForm = () => {
     let valid = true;
-    const newErrors = {
-      username: "",
-      email: "",
-      password: "",
-      monthlyRevenues: "",
-      monthlyCharges: "",
-    };
+    const newErrors = { ...EMPTY_ERRORS };
 
     if (!username) {
       newErrors.username = "Le nom d'utilisateur est obligatoire";
@@ -92,13 +88,7 @@ export default function RegisterForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        const newErrors = {
-          username: "",
-          email: "",
-          password: "",
-          monthlyRevenues: "",
-          monthlyCharges: "",
-        };
+        const newErrors = { ...EMPTY_ERRORS };
 
         if (data?.field === "email") {
           newErrors.email =
@@ -227,7 +217,7 @@ export default function RegisterForm() {
             placeholder="2 228,00 €"
             allowNegative={false}
             onValueChange={(values) =>
-              setmonthlyRevenues(
+              setMonthlyRevenues(
                 values.floatValue != null ? String(values.floatValue) : "",
               )
             }

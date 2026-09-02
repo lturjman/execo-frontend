@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";

@@ -11,7 +11,7 @@ import { useState } from "react";
 import { validateGroup } from "@/utils/validateGroup";
 import { groupImages } from "@/utils/groupImage";
 
-export default function CreateGroup() {
+export default function CreateGroup({ onGroupCreated }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const loading = useSelector((state) => state.groups.loading);
@@ -22,11 +22,11 @@ export default function CreateGroup() {
   const [errors, setErrors] = useState({});
 
   const handleCreateGroup = async () => {
-    const isValid = await validateGroup(group, setErrors);
-    if (isValid) {
+    if (validateGroup(group, setErrors)) {
       const action = await dispatch(createGroup(group));
       if (createGroup.fulfilled.match(action)) {
         router.push(`/groups/${action.payload._id}`);
+        if (onGroupCreated) onGroupCreated();
       }
     }
   };

@@ -21,7 +21,9 @@ export default function ExpenseForm({
   const loading = useSelector((state) => state.expenses.loading);
   const members = useSelector((state) => state.members.items);
 
-  const [editableExpense, setEditableExpense] = useState(() => ({ ...expense }));
+  const [editableExpense, setEditableExpense] = useState(() => ({
+    ...expense,
+  }));
   const [errors, setErrors] = useState({});
 
   const {

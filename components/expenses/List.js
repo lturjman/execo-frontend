@@ -10,7 +10,7 @@ import Button from "@/components/Button";
 
 import { fetchExpenses } from "@/lib/store/slices/expenses";
 
-export default function expensesList() {
+export default function ExpensesList() {
   const router = useRouter();
 
   const params = useParams();
@@ -97,9 +97,7 @@ export default function expensesList() {
           <div className="mt-4 flex justify-center">
             <Button
               onClick={() => setShowHistory(true)}
-              className={
-                "bg-zinc-400 hover:bg-zinc-500 dark:bg-zinc-800 max-w-[50vh]"
-              }
+              className="bg-zinc-400 hover:bg-zinc-500 dark:bg-zinc-800 max-w-[50vh]"
             >
               Voir l'historique des dépenses
             </Button>

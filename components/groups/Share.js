@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchGroup } from "@/lib/store/slices/groups";
 import Button from "../Button";
 
-export default function GroupShare({ groupId, onClose }) {
+export default function GroupShare({ groupId }) {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.groups.loading);
   const group = useSelector((state) =>

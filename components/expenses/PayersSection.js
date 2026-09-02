@@ -121,9 +121,7 @@ export default function PayersSection({
       {errors.credits && (
         <p className="text-red-500 text-sm">{errors.credits}</p>
       )}
-      {payers.some(
-        (p) => Number(amount) > 0 && p.amount > Number(amount),
-      ) && (
+      {payers.some((p) => Number(amount) > 0 && p.amount > Number(amount)) && (
         <p className="text-red-500 text-sm">
           Le montant d&apos;un payeur ne peut pas dépasser le montant de la
           dépense.
