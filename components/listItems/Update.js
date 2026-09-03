@@ -3,6 +3,7 @@
 import { CheckIcon } from '@heroicons/react/24/solid'
 import { useDispatch } from 'react-redux'
 import { updateItem } from '@/lib/store/slices/lists'
+import { useKeyboardSafePadding } from '@/hooks/useKeyboardSafePadding'
 
 export default function ItemUpdate ({
   groupId,
@@ -16,6 +17,7 @@ export default function ItemUpdate ({
   colors
 }) {
   const dispatch = useDispatch()
+  const { getKeyboardSafeStyle } = useKeyboardSafePadding()
 
   function handleToggle () {
     dispatch(
@@ -48,6 +50,7 @@ export default function ItemUpdate ({
       <form
         onSubmit={handleUpdateItem}
         className='flex items-center gap-1 grow'
+        style={getKeyboardSafeStyle()}
       >
         <input
           type='text'
