@@ -1,23 +1,23 @@
 "use client";
 
-import { PlusIcon } from '@heroicons/react/24/solid'
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { addItem } from '@/lib/store/slices/lists'
+import { PlusIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addItem } from "@/lib/store/slices/lists";
 
-export default function ItemCreate ({ groupId, listId, colors }) {
-  const dispatch = useDispatch()
-  const [text, setText] = useState('')
+export default function ItemCreate({ groupId, listId, colors }) {
+  const dispatch = useDispatch();
+  const [text, setText] = useState("");
 
-  async function handleAddItem (e) {
-    e.preventDefault()
-    if (!text.trim() || !listId) return
-    await dispatch(addItem({ groupId, listId, text: text.trim() }))
-    setText('')
+  async function handleAddItem(e) {
+    e.preventDefault();
+    if (!text.trim() || !listId) return;
+    await dispatch(addItem({ groupId, listId, text: text.trim() }));
+    setText("");
   }
 
   return (
-    <form onSubmit={handleAddItem} className='flex items-center gap-2'>
+    <form onSubmit={handleAddItem} className="flex items-center gap-2">
       <input
         type="text"
         value={text}
