@@ -22,7 +22,7 @@ export default function ItemCreate({ groupId, listId, colors }) {
         type="text"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Ajouter un item..."
+        placeholder="Ajouter un élément dans la liste..."
         className="px-3 grow py-1.5 text-sm rounded-full bg-white/60 dark:bg-zinc-800/60 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-400"
       />
       <button
