@@ -1,41 +1,34 @@
 'use client'
 
-import { useState } from 'react'
 import { TrashIcon } from '@heroicons/react/24/solid'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteItem } from '@/lib/store/slices/lists'
-import ValidationModal from '@/components/ValidationModal'
 
-export default function ItemRemove ({ groupId, listId, itemId }) {
+export default function ItemRemove ({ groupId, listId, itemId, visible }) {
   const dispatch = useDispatch()
   const loading = useSelector((state) => state.lists.loading)
-  const [open, setOpen] = useState(false)
 
-  async function handleDeleteItem () {
-    await dispatch(deleteItem({ groupId, listId, itemId }))
-    setOpen(false)
+  function handleDeleteItem (e) {
+    e.stopPropagation()
+    if (loading) return
+    dispatch(deleteItem({ groupId, listId, itemId }))
   }
 
   return (
-    <>
-      <div className='flex items-center gap-1 max-md:opacity-100 opacity-0 group-hover:opacity-100 transition-opacity shrink-0'>
-        <button
-          type='button'
-          onClick={() => setOpen(true)}
-          className='cursor-pointer text-red-400 hover:text-red-600 '
-        >
-          <TrashIcon className='size-4' />
-        </button>
-      </div>
-
-      <ValidationModal
-        open={open}
-        onClose={() => setOpen(false)}
-        onConfirm={handleDeleteItem}
-        loading={loading}
-        title='Êtes-vous sûr ?'
-        description="Cette action est irréversible. L'item sera définitivement supprimé de la liste."
-      />
-    </>
+    <div
+      className={`flex items-center gap-1 transition-opacity shrink-0 ${
+        visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <button
+        type='button'
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={handleDeleteItem}
+        disabled={loading}
+        className='cursor-pointer text-red-400 hover:text-red-600 disabled:opacity-30'
+      >
+        <TrashIcon className='size-4' />
+      </button>
+    </div>
   )
 }

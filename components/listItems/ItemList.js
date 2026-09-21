@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import ItemCreate from './Create'
 import ItemUpdate from './Update'
 import ItemRemove from './Remove'
@@ -16,9 +17,11 @@ export default function ItemList ({
   onStartEditItem,
   onCancelEditItem
 }) {
+  const [selectedItemId, setSelectedItemId] = useState(null)
   const totalCount = items.length
   const checkedCount = items.filter((i) => i.checked).length
   const progress = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0
+  const sortedItems = [...items].sort((a, b) => Number(a.checked) - Number(b.checked))
 
   return (
     <>
@@ -43,8 +46,16 @@ export default function ItemList ({
             Aucun item.
           </p>
         )}
-        {items.map((item) => (
-          <div key={item._id} className='flex items-center gap-2 group'>
+        {sortedItems.map((item) => (
+          <div
+            key={item._id}
+            onClick={() => {
+              setSelectedItemId((current) =>
+                current === item._id ? null : item._id
+              )
+            }}
+            className='flex items-center gap-2 group'
+          >
             <ItemUpdate
               groupId={groupId}
               listId={listId}
@@ -52,13 +63,19 @@ export default function ItemList ({
               isEditing={editingItemId === item._id}
               editText={editItemText}
               onEditTextChange={onEditItemTextChange}
-              onStartEdit={onStartEditItem}
+              onStartEdit={(item) => {
+                setSelectedItemId(null)
+                onStartEditItem(item)
+              }}
               onCancelEdit={onCancelEditItem}
               colors={colors}
             />
-            {editingItemId !== item._id && (
-              <ItemRemove groupId={groupId} listId={listId} itemId={item._id} />
-            )}
+            <ItemRemove
+              groupId={groupId}
+              listId={listId}
+              itemId={item._id}
+              visible={selectedItemId === item._id || editingItemId === item._id}
+            />
           </div>
         ))}
         <div ref={listEndRef} />
