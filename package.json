@@ -9,6 +9,8 @@
     "lint": "standard"
   },
   "dependencies": {
+    "@dnd-kit/dom": "^0.5.0",
+    "@dnd-kit/react": "^0.5.0",
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
     "@reduxjs/toolkit": "^2.8.2",
@@ -28,7 +30,15 @@
     "typescript": "^5"
   },
   "standard": {
-    "envs": ["node", "browser"],
-    "ignore": [".next/**", "out/**", "build/**", "next-env.d.ts"]
+    "envs": [
+      "node",
+      "browser"
+    ],
+    "ignore": [
+      ".next/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts"
+    ]
   }
 }

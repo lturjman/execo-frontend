@@ -8,6 +8,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
+import { DragDropProvider } from '@dnd-kit/react'
+import { useSortable, isSortable } from '@dnd-kit/react/sortable'
+import { PointerSensor, PointerActivationConstraints } from '@dnd-kit/dom'
 
 const GROUPS_ORDER_KEY = 'execo:groups:order'
 
@@ -72,52 +75,71 @@ function ActionCard ({ href, label }) {
   )
 }
 
-function GroupsGrid ({ groups, onReorder }) {
-  const [draggedId, setDraggedId] = useState(null)
-  const [overId, setOverId] = useState(null)
+function SortableGroupCard ({ group, index }) {
+  const { ref, isDragging, isDropTarget } = useSortable({
+    id: group._id,
+    index,
+    transition: {
+      duration: 200,
+      easing: 'ease',
+      idle: true
+    }
+  })
 
   return (
-    <div className='w-full max-w-5xl mx-auto px-4'>
-      <div className='grid sm:grid-cols-2 gap-6'>
-        {groups.map((group) => (
-          <div
-            key={group._id}
-            draggable
-            onDragStart={() => setDraggedId(group._id)}
-            onDragOver={(event) => {
-              event.preventDefault()
-              setOverId(group._id)
-            }}
-            onDrop={() => {
-              if (draggedId && overId && draggedId !== overId) {
-                onReorder(draggedId, overId)
-              }
-              setDraggedId(null)
-              setOverId(null)
-            }}
-            onDragEnd={() => {
-              setDraggedId(null)
-              setOverId(null)
-            }}
-            className={`rounded-lg cursor-grab active:cursor-grabbing transition-opacity ${
-              draggedId === group._id ? 'opacity-40' : ''
-            } ${
-              draggedId &&
-              draggedId !== group._id &&
-              overId === group._id
-                ? 'ring-2 ring-purple-400'
-                : ''
-            }`}
-          >
-            <GroupCard group={group} />
-          </div>
-        ))}
+    <div
+      ref={ref}
+      className={`rounded-lg cursor-grab active:cursor-grabbing transition-opacity ${
+        isDragging ? 'opacity-40' : ''
+      } ${isDropTarget ? 'ring-2 ring-purple-400' : ''}`}
+    >
+      <GroupCard group={group} />
+    </div>
+  )
+}
 
-        <div className='hidden sm:flex h-full w-full flex-col items-center justify-center rounded-lg gap-4'>
-          <AddGroupButton href='/groups/new' label='Créer un groupe' />
-          <AddGroupButton href='/groups/join' label='Rejoindre un groupe' />
+function GroupsGrid ({ groups, onReorder }) {
+  return (
+    <div className='w-full max-w-5xl mx-auto px-4'>
+      <DragDropProvider
+        sensors={(defaults) => [
+          ...defaults.filter((sensor) => sensor !== PointerSensor),
+          PointerSensor.configure({
+            activationConstraints (event) {
+              if (event.pointerType === 'touch') {
+                return [
+                  new PointerActivationConstraints.Delay({
+                    value: 250,
+                    tolerance: 10
+                  })
+                ]
+              }
+              return [new PointerActivationConstraints.Distance({ value: 5 })]
+            }
+          })
+        ]}
+        onDragEnd={(event) => {
+          if (event.canceled) return
+          const { source } = event.operation
+          if (isSortable(source)) {
+            const { initialIndex, index } = source
+            if (initialIndex !== index) {
+              onReorder(initialIndex, index)
+            }
+          }
+        }}
+      >
+        <div className='grid sm:grid-cols-2 gap-6'>
+          {groups.map((group, index) => (
+            <SortableGroupCard key={group._id} group={group} index={index} />
+          ))}
+
+          <div className='hidden sm:flex h-full w-full flex-col items-center justify-center rounded-lg gap-4'>
+            <AddGroupButton href='/groups/new' label='Créer un groupe' />
+            <AddGroupButton href='/groups/join' label='Rejoindre un groupe' />
+          </div>
         </div>
-      </div>
+      </DragDropProvider>
     </div>
   )
 }
@@ -186,16 +208,15 @@ export default function GroupsList () {
     })
   }, [groups, order])
 
-  const handleReorder = (fromId, toId) => {
-    setOrder((prev) => {
-      const next = [...prev]
-      const fromIndex = next.indexOf(fromId)
-      next.splice(fromIndex, 1)
-      const toIndex = next.indexOf(toId)
-      next.splice(toIndex, 0, fromId)
-      saveGroupsOrder(next)
-      return next
-    })
+  const handleReorder = (fromIndex, toIndex) => {
+    if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0) return
+
+    const currentIds = sortedGroups.map((group) => group._id)
+    const [movedId] = currentIds.splice(fromIndex, 1)
+    currentIds.splice(toIndex, 0, movedId)
+
+    setOrder(currentIds)
+    saveGroupsOrder(currentIds)
   }
 
   if (loading) return <div>Chargement...</div>
