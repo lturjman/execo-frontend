@@ -6,6 +6,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 
 import { fetchExpenses } from "@/lib/store/slices/expenses";
 import { amountToCurrency } from "@/utils/amountToCurrency";
+import { EXPENSE_CATEGORIES } from "@/utils/expenseCategories";
 
 const PIE_COLORS = [
   "#ba80f8",
@@ -101,11 +102,29 @@ export default function Statistics({ groupId }) {
   const slices = view === "total" ? totalSlices : monthSlices;
   const total = slices.reduce((sum, slice) => sum + slice.amount, 0);
 
+  const colorMap = useMemo(() => {
+    const known = [...new Set(EXPENSE_CATEGORIES)].sort();
+    const extra = [...new Set(expenses.map((e) => e.category))]
+      .filter((category) => category && !known.includes(category))
+      .sort();
+    const labels = [...known, ...extra, UNCATEGORIZED_LABEL];
+
+    const map = { [UNCATEGORIZED_LABEL]: UNCATEGORIZED_COLOR };
+    let colorIndex = 0;
+    for (const label of labels) {
+      if (label !== UNCATEGORIZED_LABEL) {
+        map[label] = PIE_COLORS[colorIndex % PIE_COLORS.length];
+        colorIndex += 1;
+      }
+    }
+    return map;
+  }, [expenses]);
+
   function computeArcs(arcSlices) {
     const circumference = 2 * Math.PI * R;
     let cumulative = 0;
 
-    return arcSlices.map((slice, index) => {
+    return arcSlices.map((slice) => {
       const fraction = total > 0 ? slice.amount / total : 0;
       const startAngle = cumulative;
       const length = circumference * fraction;
@@ -116,10 +135,7 @@ export default function Statistics({ groupId }) {
         ...slice,
         fraction,
         percent: fraction * 100,
-        color:
-          slice.label === UNCATEGORIZED_LABEL
-            ? UNCATEGORIZED_COLOR
-            : PIE_COLORS[index % PIE_COLORS.length],
+        color: colorMap[slice.label],
         startAngle,
         dash,
         circumference,
