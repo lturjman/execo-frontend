@@ -8,6 +8,7 @@ import MembersGroupClient from '@/components/members/MembersGroupClient'
 
 import Notes from '@/components/notes/Notes'
 import Lists from '@/components/lists/Lists'
+import Statistics from '@/components/statistics/Statistics'
 
 export default async function GroupPage ({ params }) {
   const { groupId } = await params
@@ -30,6 +31,7 @@ export default async function GroupPage ({ params }) {
         <aside className='w-full md:w-1/3 shrink-0 space-y-4'>
           <Notes groupId={groupId} />
           <Lists groupId={groupId} />
+          <Statistics groupId={groupId} />
         </aside>
       </div>
     </div>
