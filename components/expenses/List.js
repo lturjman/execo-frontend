@@ -55,7 +55,43 @@ export default function ExpensesList() {
         new Date(a.paymentDate || a.createdAt),
     );
 
-  const renderRow = (expense) => (
+  const renderMobileCard = (expense) => (
+    <div
+      key={expense._id}
+      className="flex items-center justify-between gap-3 py-4 border-b border-zinc-100 dark:border-zinc-700"
+    >
+      <div className="min-w-0 flex-1 space-y-1">
+        <div className="font-medium truncate">{expense.name}</div>
+        {expense.category && (
+          <div className="text-xs text-zinc-400 uppercase tracking-wide">
+            {expense.category}
+          </div>
+        )}
+        <div className="text-xs text-zinc-500 dark:text-zinc-400">
+          {formatDate(expense.paymentDate || expense.createdAt)}
+        </div>
+        <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+          Payé par {expense.credits.map((credit) => credit.member.nickname).join(", ")}
+        </div>
+      </div>
+
+      <div className="flex flex-col items-end gap-2 shrink-0">
+        <div className="font-semibold whitespace-nowrap">
+          {amountToCurrency(expense.amount)}
+        </div>
+        <button
+          onClick={() =>
+            router.push(`/groups/${expense.group}/expenses/${expense._id}`)
+          }
+          aria-label="Modifier la dépense"
+        >
+          <PencilIcon className="size-5 text-purple-400" />
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderDesktopRow = (expense) => (
     <tr key={expense._id}>
       <td className="p-2">
         <div>{expense.name}</div>
@@ -87,18 +123,20 @@ export default function ExpensesList() {
   );
 
   const renderTable = (rows) => (
-    <table className="w-full text-left">
-      <thead className="sticky top-0 bg-white dark:bg-zinc-800">
-        <tr>
-          <th className="py-2 px-4">Intitulé</th>
-          <th className="py-2 px-4">Date</th>
-          <th className="py-2 px-4 text-right">Dépenses</th>
-          <th className="py-2 px-4 text-right">Payé par</th>
-          <th />
-        </tr>
-      </thead>
-      <tbody className="divide-y">{rows}</tbody>
-    </table>
+    <div className="overflow-x-auto">
+      <table className="w-full text-left min-w-full">
+        <thead className="sticky top-0 bg-white dark:bg-zinc-800">
+          <tr>
+            <th className="py-2 px-4">Intitulé</th>
+            <th className="py-2 px-4">Date</th>
+            <th className="py-2 px-4 text-right">Dépenses</th>
+            <th className="py-2 px-4 text-right">Payé par</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody className="divide-y">{rows}</tbody>
+      </table>
+    </div>
   );
 
   return (
@@ -109,7 +147,12 @@ export default function ExpensesList() {
 
       {expenses.length > 0 && (
         <section className="w-full bg-white rounded-2xl shadow-lg overflow-hidden p-6 dark:bg-zinc-800">
-          {renderTable(sortedExpenses.slice(0, 3).map(renderRow))}
+          <div className="md:hidden divide-y">
+            {sortedExpenses.slice(0, 3).map(renderMobileCard)}
+          </div>
+          <div className="hidden md:block">
+            {renderTable(sortedExpenses.slice(0, 3).map(renderDesktopRow))}
+          </div>
 
           <div className="mt-4 flex justify-center">
             <Button
@@ -157,7 +200,12 @@ export default function ExpensesList() {
               </button>
             </div>
             <div className="overflow-y-auto max-h-[70vh]">
-              {renderTable(sortedExpenses.map(renderRow))}
+              <div className="md:hidden divide-y">
+                {sortedExpenses.map(renderMobileCard)}
+              </div>
+              <div className="hidden md:block">
+                {renderTable(sortedExpenses.map(renderDesktopRow))}
+              </div>
             </div>
           </div>
         </div>
