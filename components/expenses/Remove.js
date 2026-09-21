@@ -9,8 +9,14 @@ export default function RemoveExpense ({ onClose, expense, onExpenseDeleted }) {
   const loading = useSelector((state) => state.expenses.loading)
 
   const handleDeleteExpense = async () => {
-    await dispatch(deleteExpense({ groupId: expense.group, expense }))
-    if (onExpenseDeleted) onExpenseDeleted()
+    const action = await dispatch(
+      deleteExpense({ groupId: expense.group, expense }),
+    )
+    if (deleteExpense.fulfilled.match(action)) {
+      if (onExpenseDeleted) onExpenseDeleted()
+    } else {
+      alert("Erreur lors de la suppression de la dépense")
+    }
   }
 
   return (

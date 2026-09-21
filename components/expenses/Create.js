@@ -8,6 +8,7 @@ import { useEffect } from "react";
 
 import { Decimal } from "decimal.js";
 import ExpenseForm from "./Form";
+import { todayInputDate } from "@/utils/dateHelpers";
 
 export default function CreateExpense({ groupId, onExpenseCreated }) {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
   const expense = {
     name: "",
     amount: null,
+    paymentDate: todayInputDate(),
     credits: [],
   };
 
@@ -31,6 +33,7 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
         expense: {
           name: updatedExpense.name,
           amount: Decimal.mul(updatedExpense.amount, 100),
+          paymentDate: updatedExpense.paymentDate,
           debts: updatedExpense.debts.map((debt) => ({
             amount: Decimal.mul(debt.amount, 100).round(),
             member: debt.member._id || debt.member,

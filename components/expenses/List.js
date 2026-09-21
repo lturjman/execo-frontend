@@ -3,6 +3,7 @@
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
 import { amountToCurrency } from "@/utils/amountToCurrency";
+import { formatDate } from "@/utils/dateHelpers";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useRouter } from "next/navigation";
 
@@ -46,11 +47,19 @@ export default function ExpensesList() {
     }, 200);
   };
 
-  const sortedExpenses = expenses.slice().reverse();
+  const sortedExpenses = expenses
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(b.paymentDate || b.createdAt) -
+        new Date(a.paymentDate || a.createdAt),
+    );
 
   const renderRow = (expense) => (
     <tr key={expense._id}>
       <td className="p-2">{expense.name}</td>
+
+      <td className="p-2">{formatDate(expense.paymentDate || expense.createdAt)}</td>
 
       <td className="p-2 text-right">{amountToCurrency(expense.amount)}</td>
 
@@ -75,6 +84,7 @@ export default function ExpensesList() {
       <thead className="sticky top-0 bg-white dark:bg-zinc-800">
         <tr>
           <th className="py-2 px-4">Intitulé</th>
+          <th className="py-2 px-4">Date</th>
           <th className="py-2 px-4 text-right">Dépenses</th>
           <th className="py-2 px-4 text-right">Payé par</th>
           <th />

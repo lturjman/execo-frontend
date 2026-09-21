@@ -25,6 +25,10 @@ export default function UpdateExpenseClient ({ groupId }) {
     }
   }, [dispatch, groupId, expense])
 
+  if (!expense) {
+    return null
+  }
+
   return (
     <>
       <UpdateExpense

@@ -5,6 +5,10 @@ export function validateExpense (expense, setErrors) {
     newErrors.name = "Veuillez entrer l'intitulé de la dépense."
   }
 
+  if (!expense.paymentDate) {
+    newErrors.paymentDate = 'Veuillez entrer une date de paiement.'
+  }
+
   if (
     expense.amount === '' ||
     expense.amount === null ||
