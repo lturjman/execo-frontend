@@ -15,6 +15,9 @@ const geistMono = GeistMono({
 export const metadata = {
   title: "Execo",
   description: "Partagez les dépenses autrement.",
+  icons: {
+    icon: "/images/LOGO02.png",
+  },
 };
 
 export default function RootLayout({ children }) {

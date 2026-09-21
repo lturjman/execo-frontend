@@ -13,6 +13,7 @@ export default function UpdateExpenseClient ({ groupId }) {
   const expenseId = params.expenseId
 
   const dispatch = useDispatch()
+  const loading = useSelector((state) => state.expenses.loading)
   const expense = useSelector((state) =>
     state.expenses.items.find((e) => e._id === expenseId)
   )
@@ -20,10 +21,14 @@ export default function UpdateExpenseClient ({ groupId }) {
   const [showRemoveModal, setShowRemoveModal] = useState(false)
 
   useEffect(() => {
-    if (!expense && groupId) {
+    if (groupId) {
       dispatch(fetchExpenses({ groupId }))
     }
-  }, [dispatch, groupId, expense])
+  }, [dispatch, groupId])
+
+  if (!expense || loading) {
+    return null
+  }
 
   return (
     <>

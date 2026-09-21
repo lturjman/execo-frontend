@@ -156,7 +156,7 @@ export default function Notes({ groupId }) {
           >
             {notes.length === 0 ? (
               <p className="text-base text-zinc-500 dark:text-zinc-400 text-center py-6">
-                Aucune note pour le moment.
+                Aucun post-it pour le moment.
               </p>
             ) : (
               <div className="flex flex-col items-center gap-2">

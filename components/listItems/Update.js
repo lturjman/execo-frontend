@@ -47,6 +47,7 @@ export default function ItemUpdate ({
     return (
       <form
         onSubmit={handleUpdateItem}
+        onClick={(e) => e.stopPropagation()}
         className='flex items-center gap-1 grow'
       >
         <input
@@ -57,13 +58,6 @@ export default function ItemUpdate ({
           autoFocus
           className='grow min-w-0 px-2 py-1 text-sm rounded bg-white/80 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-400'
         />
-        <button
-          type='submit'
-          disabled={!editText.trim()}
-          className='cursor-pointer opacity-80 hover:opacity-100 disabled:opacity-30'
-        >
-          <CheckIcon className={`size-4 ${colors.icon}`} />
-        </button>
       </form>
     )
   }
@@ -83,7 +77,10 @@ export default function ItemUpdate ({
       </button>
 
       <span
-        onClick={() => onStartEdit(item)}
+        onClick={(e) => {
+          e.stopPropagation()
+          onStartEdit(item)
+        }}
         className={`grow text-sm break-words cursor-pointer ${
           item.checked
             ? 'line-through text-zinc-400 dark:text-zinc-500'
