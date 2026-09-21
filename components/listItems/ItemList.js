@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { ArrowsPointingOutIcon } from '@heroicons/react/24/solid'
+import { useDispatch } from 'react-redux'
+import { reorderItems } from '@/lib/store/slices/lists'
 import ItemCreate from './Create'
 import ItemUpdate from './Update'
 import ItemRemove from './Remove'
@@ -17,11 +20,59 @@ export default function ItemList ({
   onStartEditItem,
   onCancelEditItem
 }) {
+  const dispatch = useDispatch()
   const [selectedItemId, setSelectedItemId] = useState(null)
+  const [draggedItemId, setDraggedItemId] = useState(null)
+  const [dragOverItemId, setDragOverItemId] = useState(null)
   const totalCount = items.length
   const checkedCount = items.filter((i) => i.checked).length
   const progress = totalCount > 0 ? (checkedCount / totalCount) * 100 : 0
   const sortedItems = [...items].sort((a, b) => Number(a.checked) - Number(b.checked))
+
+  function handleDragStart (e, item) {
+    setDraggedItemId(item._id)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', item._id)
+  }
+
+  function handleDragOver (e, item) {
+    const dragged = items.find((i) => i._id === draggedItemId)
+    if (!dragged || dragged._id === item._id || dragged.checked !== item.checked) {
+      return
+    }
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverItemId(item._id)
+  }
+
+  function handleDrop (e, item) {
+    e.preventDefault()
+    const dragged = items.find((i) => i._id === draggedItemId)
+    if (!dragged || dragged._id === item._id || dragged.checked !== item.checked) {
+      handleDragEnd()
+      return
+    }
+    const reordered = [...sortedItems]
+    const from = reordered.findIndex((i) => i._id === dragged._id)
+    const to = reordered.findIndex((i) => i._id === item._id)
+    if (from !== -1 && to !== -1) {
+      const [moved] = reordered.splice(from, 1)
+      reordered.splice(to, 0, moved)
+      dispatch(
+        reorderItems({
+          groupId,
+          listId,
+          itemIds: reordered.map((i) => i._id)
+        })
+      )
+    }
+    handleDragEnd()
+  }
+
+  function handleDragEnd () {
+    setDraggedItemId(null)
+    setDragOverItemId(null)
+  }
 
   return (
     <>
@@ -54,8 +105,29 @@ export default function ItemList ({
                 current === item._id ? null : item._id
               )
             }}
-            className='flex items-center gap-2 group'
+            onDragOver={(e) => handleDragOver(e, item)}
+            onDragLeave={(e) => {
+              if (e.currentTarget.contains(e.relatedTarget)) return
+              setDragOverItemId((current) =>
+                current === item._id ? null : current
+              )
+            }}
+            onDrop={(e) => handleDrop(e, item)}
+            className={`flex items-center gap-2 group rounded transition-opacity ${
+              dragOverItemId === item._id ? 'ring-1 ring-purple-400' : ''
+            } ${draggedItemId === item._id ? 'opacity-40' : ''}`}
           >
+            <button
+              type='button'
+              draggable
+              onDragStart={(e) => handleDragStart(e, item)}
+              onDragEnd={handleDragEnd}
+              onClick={(e) => e.stopPropagation()}
+              title='Déplacer'
+              className='shrink-0 cursor-grab active:cursor-grabbing text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors'
+            >
+              <ArrowsPointingOutIcon className='size-4' />
+            </button>
             <ItemUpdate
               groupId={groupId}
               listId={listId}
