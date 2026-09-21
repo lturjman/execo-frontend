@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -11,6 +12,7 @@ export default function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
@@ -97,16 +99,30 @@ export default function LoginForm() {
 
         <div>
           <label htmlFor="password">Mot de passe :</label>
-          <input
-            type="password"
-            placeholder="************"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="appearance-none w-full p-2 focus:border rounded-md
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="************"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="appearance-none w-full p-2 pr-10 focus:border rounded-md
     bg-zinc-100 text-zinc-800 focus:outline-none
     focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200"
-          />
+            />
+            <button
+              type="button"
+              aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-0 flex items-center pr-2 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+            >
+              {showPassword ? (
+                <EyeSlashIcon className="size-5" />
+              ) : (
+                <EyeIcon className="size-5" />
+              )}
+            </button>
+          </div>
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
           )}
