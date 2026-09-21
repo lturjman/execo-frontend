@@ -27,22 +27,22 @@ export default function GroupShare({ groupId }) {
   return (
     <div className="space-y-6 p-2 text-center">
       <div>
-        <h2 className="text-xl font-semibold tracking-tight text-zinc-900">
+        <h2 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
           Groupe : {group?.name}
         </h2>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
           Partagez ce code avec vos amis pour qu'ils rejoignent le groupe.
         </p>
       </div>
 
       <div>
-        <p className="mb-3 text-md font-bold text-zinc-700 ">Code du groupe</p>
+        <p className="mb-3 text-md font-bold text-zinc-700 dark:text-zinc-200">Code du groupe</p>
 
         <div className="flex justify-center gap-2 ">
           {group?.code?.split("").map((char, index) => (
             <div
               key={index}
-              className="flex h-14 w-12 items-center justify-center rounded-xl bg-zinc-100 text-xl font-bold uppercase text-zinc-900 "
+              className="flex h-14 w-12 items-center justify-center rounded-xl bg-zinc-100 text-xl font-bold uppercase text-zinc-900 dark:bg-zinc-600 dark:text-zinc-200 "
             >
               {char}
             </div>
@@ -54,7 +54,7 @@ export default function GroupShare({ groupId }) {
         </Button>
 
         {copied && (
-          <p className="mt-3 text-sm font-medium text-zinc-800">
+          <p className="mt-3 text-sm font-medium text-zinc-800 dark:text-zinc-200">
             ✅ Le code a bien été copié
           </p>
         )}
