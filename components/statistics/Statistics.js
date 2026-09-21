@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 
@@ -26,10 +26,39 @@ const R = 80;
 const STROKE = 36;
 const GAP = 2;
 
+function expenseMonthKey(expense) {
+  const date = new Date(expense.paymentDate || expense.createdAt);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function monthLabel(monthKey) {
+  if (!monthKey) return "";
+  const [year, month] = monthKey.split("-").map(Number);
+  const label = new Date(year, month - 1, 1).toLocaleDateString("fr-FR", {
+    month: "long",
+    year: "numeric",
+  });
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+function buildSlices(expenseList) {
+  const totals = new Map();
+  for (const expense of expenseList) {
+    const label = expense.category || UNCATEGORIZED_LABEL;
+    totals.set(label, (totals.get(label) || 0) + (expense.amount || 0));
+  }
+
+  return [...totals.entries()]
+    .map(([label, amount]) => ({ label, amount }))
+    .sort((a, b) => b.amount - a.amount);
+}
+
 export default function Statistics({ groupId }) {
   const dispatch = useDispatch();
   const expenses = useSelector((state) => state.expenses.items);
   const [isOpen, setIsOpen] = useState(false);
+  const [view, setView] = useState("total");
+  const [selectedMonth, setSelectedMonth] = useState(null);
 
   useEffect(() => {
     if (groupId) {
@@ -37,23 +66,46 @@ export default function Statistics({ groupId }) {
     }
   }, [dispatch, groupId]);
 
-  const totals = new Map();
-  for (const expense of expenses) {
-    const label = expense.category || UNCATEGORIZED_LABEL;
-    totals.set(label, (totals.get(label) || 0) + (expense.amount || 0));
-  }
+  const months = useMemo(() => {
+    const buckets = new Map();
+    for (const expense of expenses) {
+      const key = expenseMonthKey(expense);
+      const bucket = buckets.get(key) || { key, expenses: [] };
+      bucket.expenses.push(expense);
+      buckets.set(key, bucket);
+    }
+    return [...buckets.values()]
+      .map((bucket) => ({
+        ...bucket,
+        total: bucket.expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0),
+      }))
+      .sort((a, b) => b.key.localeCompare(a.key));
+  }, [expenses]);
 
-  const slices = [...totals.entries()]
-    .map(([label, amount]) => ({ label, amount }))
-    .sort((a, b) => b.amount - a.amount);
+  useEffect(() => {
+    if (view === "month" && !selectedMonth && months.length > 0) {
+      setSelectedMonth(months[0].key);
+    }
+  }, [view, selectedMonth, months]);
 
+  const monthBuckets = useMemo(() => {
+    const buckets = new Map(
+      months.map((month) => [month.key, month.expenses]),
+    );
+    return buckets.get(selectedMonth) || [];
+  }, [months, selectedMonth]);
+
+  const totalSlices = useMemo(() => buildSlices(expenses), [expenses]);
+  const monthSlices = useMemo(() => buildSlices(monthBuckets), [monthBuckets]);
+
+  const slices = view === "total" ? totalSlices : monthSlices;
   const total = slices.reduce((sum, slice) => sum + slice.amount, 0);
 
-  function computeArcs() {
+  function computeArcs(arcSlices) {
     const circumference = 2 * Math.PI * R;
     let cumulative = 0;
 
-    return slices.map((slice, index) => {
+    return arcSlices.map((slice, index) => {
       const fraction = total > 0 ? slice.amount / total : 0;
       const startAngle = cumulative;
       const length = circumference * fraction;
@@ -75,8 +127,10 @@ export default function Statistics({ groupId }) {
     });
   }
 
-  const arcs = computeArcs();
+  const arcs = computeArcs(slices);
   const center = SIZE / 2;
+  const activeExpenses = view === "total" ? expenses : monthBuckets;
+  const centerLabel = view === "month" ? monthLabel(selectedMonth) : "Depuis la création";
 
   return (
     <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-lg p-4 flex flex-col">
@@ -103,6 +157,51 @@ export default function Statistics({ groupId }) {
             </p>
           ) : (
             <>
+              <div className="flex rounded-xl bg-zinc-100 dark:bg-zinc-700 p-1">
+                <button
+                  type="button"
+                  onClick={() => setView("total")}
+                  className={`flex-1 rounded-lg py-1.5 text-sm font-medium transition ${
+                    view === "total"
+                      ? "bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 shadow"
+                      : "text-zinc-500 dark:text-zinc-400"
+                  }`}
+                >
+                  Total
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView("month")}
+                  className={`flex-1 rounded-lg py-1.5 text-sm font-medium transition ${
+                    view === "month"
+                      ? "bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 shadow"
+                      : "text-zinc-500 dark:text-zinc-400"
+                  }`}
+                >
+                  Par mois
+                </button>
+              </div>
+
+              {view === "month" && months.length > 0 && (
+                <div>
+                  <label htmlFor="month-select" className="sr-only">
+                    Choisir le mois à afficher
+                  </label>
+                  <select
+                    id="month-select"
+                    value={selectedMonth || ""}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    className="w-full rounded-md bg-zinc-100 dark:bg-zinc-700 p-2 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                  >
+                    {months.map((month) => (
+                      <option key={month.key} value={month.key}>
+                        {monthLabel(month.key)} — {amountToCurrency(month.total)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="relative w-fit mx-auto">
                 <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
                   {arcs.map((arc) => (
@@ -119,9 +218,9 @@ export default function Statistics({ groupId }) {
                     />
                   ))}
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Total
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-2">
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400 text-center leading-tight">
+                    {centerLabel}
                   </span>
                   <span className="text-xl font-bold text-zinc-800 dark:text-zinc-100">
                     {amountToCurrency(total)}
@@ -129,28 +228,34 @@ export default function Statistics({ groupId }) {
                 </div>
               </div>
 
-              <ul className="space-y-2">
-                {arcs.map((arc) => (
-                  <li
-                    key={arc.label}
-                    className="flex items-center gap-2 text-sm"
-                  >
-                    <span
-                      className="size-3 rounded-full shrink-0"
-                      style={{ backgroundColor: arc.color }}
-                    />
-                    <span className="grow truncate text-zinc-700 dark:text-zinc-200">
-                      {arc.label}
-                    </span>
-                    <span className="text-zinc-500 dark:text-zinc-400">
-                      {arc.percent.toFixed(1).replace(".", ",")} %
-                    </span>
-                    <span className="font-medium text-zinc-800 dark:text-zinc-100">
-                      {amountToCurrency(arc.amount)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              {activeExpenses.length === 0 ? (
+                <p className="text-center text-zinc-500 italic dark:text-zinc-400">
+                  Aucune dépense sur cette période.
+                </p>
+              ) : (
+                <ul className="space-y-2">
+                  {arcs.map((arc) => (
+                    <li
+                      key={`${selectedMonth || "total"}-${arc.label}`}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <span
+                        className="size-3 rounded-full shrink-0"
+                        style={{ backgroundColor: arc.color }}
+                      />
+                      <span className="grow truncate text-zinc-700 dark:text-zinc-200">
+                        {arc.label}
+                      </span>
+                      <span className="text-zinc-500 dark:text-zinc-400">
+                        {arc.percent.toFixed(1).replace(".", ",")} %
+                      </span>
+                      <span className="font-medium text-zinc-800 dark:text-zinc-100">
+                        {amountToCurrency(arc.amount)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </>
           )}
         </div>

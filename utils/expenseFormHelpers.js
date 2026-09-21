@@ -1,5 +1,3 @@
-import { Decimal } from "decimal.js";
-
 export function rescaleTo100(pcts, ids) {
   const newPcts = { ...pcts };
   const total = ids.reduce((sum, id) => sum + (newPcts[id] || 0), 0);
@@ -43,7 +41,7 @@ export function computeDebtsFromPercentages(pcts, totalAmount, checkedMembers) {
     return checkedMembers.map((m) => ({ amount: "0", member: m }));
   }
 
-  const total = new Decimal(totalAmount);
+  const totalCents = Math.round(Number(totalAmount) * 100);
   const checkedTotal = checkedMembers.reduce(
     (sum, m) => sum + (pcts[m._id] || 0),
     0,
@@ -53,12 +51,23 @@ export function computeDebtsFromPercentages(pcts, totalAmount, checkedMembers) {
     return checkedMembers.map((m) => ({ amount: "0", member: m }));
   }
 
-  return checkedMembers.map((member) => {
-    const pct = pcts[member._id] || 0;
-    const normalizedPct = new Decimal(pct).div(checkedTotal);
-    const amount = total.mul(normalizedPct);
-    return { amount: amount.toString(), member };
+  const raw = checkedMembers.map((member) => {
+    const cents = ((pcts[member._id] || 0) / checkedTotal) * totalCents;
+    return { member, whole: Math.floor(cents), frac: cents - Math.floor(cents) };
   });
+
+  const assigned = raw.reduce((sum, r) => sum + r.whole, 0);
+  let rest = totalCents - assigned;
+
+  const byFrac = [...raw].sort((a, b) => b.frac - a.frac);
+  for (let k = 0; k < byFrac.length && rest > 0; k++, rest--) {
+    byFrac[k].whole += 1;
+  }
+
+  return raw.map((r) => ({
+    amount: (r.whole / 100).toFixed(2),
+    member: r.member,
+  }));
 }
 
 export function redistribute(others, remainingCents) {
