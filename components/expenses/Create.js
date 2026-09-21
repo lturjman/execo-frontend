@@ -15,6 +15,7 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
 
   const expense = {
     name: "",
+    category: "",
     amount: null,
     paymentDate: todayInputDate(),
     credits: [],
@@ -32,6 +33,7 @@ export default function CreateExpense({ groupId, onExpenseCreated }) {
         groupId,
         expense: {
           name: updatedExpense.name,
+          category: updatedExpense.category,
           amount: Decimal.mul(updatedExpense.amount, 100),
           paymentDate: updatedExpense.paymentDate,
           debts: updatedExpense.debts.map((debt) => ({

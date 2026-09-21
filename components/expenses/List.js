@@ -57,7 +57,14 @@ export default function ExpensesList() {
 
   const renderRow = (expense) => (
     <tr key={expense._id}>
-      <td className="p-2">{expense.name}</td>
+      <td className="p-2">
+        <div>{expense.name}</div>
+        {expense.category && (
+          <div className="text-xs text-zinc-400 uppercase tracking-wide">
+            {expense.category}
+          </div>
+        )}
+      </td>
 
       <td className="p-2">{formatDate(expense.paymentDate || expense.createdAt)}</td>
 
