@@ -203,18 +203,21 @@ export default function Statistics({ groupId }) {
                   <label htmlFor="month-select" className="sr-only">
                     Choisir le mois à afficher
                   </label>
-                  <select
-                    id="month-select"
-                    value={selectedMonth || ""}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                    className="w-full rounded-md bg-zinc-100 dark:bg-zinc-700 p-2 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-400"
-                  >
-                    {months.map((month) => (
-                      <option key={month.key} value={month.key}>
-                        {monthLabel(month.key)} — {amountToCurrency(month.total)}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      id="month-select"
+                      value={selectedMonth || ""}
+                      onChange={(e) => setSelectedMonth(e.target.value)}
+                      className="w-full appearance-none rounded-md bg-zinc-100 dark:bg-zinc-700 py-2 pl-3 pr-10 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-1 focus:ring-purple-400"
+                    >
+                      {months.map((month) => (
+                        <option key={month.key} value={month.key}>
+                          {monthLabel(month.key)} — {amountToCurrency(month.total)}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDownIcon className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-zinc-500 dark:text-zinc-400" />
+                  </div>
                 </div>
               )}
 
