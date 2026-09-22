@@ -49,11 +49,20 @@ export default function ExpensesList() {
 
   const sortedExpenses = expenses
     .slice()
-    .sort(
-      (a, b) =>
-        new Date(b.paymentDate || b.createdAt) -
-        new Date(a.paymentDate || a.createdAt),
-    );
+    .sort((a, b) => {
+      const dateA = new Date(a.paymentDate || a.createdAt);
+      const dateB = new Date(b.paymentDate || b.createdAt);
+
+      const dayA = dateA.setHours(0, 0, 0, 0);
+      const dayB = dateB.setHours(0, 0, 0, 0);
+
+      if (dayA !== dayB) return dayB - dayA;
+
+      return (
+        new Date(b.createdAt || b.paymentDate) -
+        new Date(a.createdAt || a.paymentDate)
+      );
+    });
 
   const renderMobileCard = (expense) => (
     <div

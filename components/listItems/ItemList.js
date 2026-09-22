@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/solid'
 import { useDispatch } from 'react-redux'
 import { DragDropProvider } from '@dnd-kit/react'
@@ -171,21 +171,25 @@ export default function ItemList ({
           onDragEnd={handleDragEnd}
         >
           {sortedItems.map((item, index) => (
-            <SortableItemRow
-              key={item._id}
-              groupId={groupId}
-              listId={listId}
-              item={item}
-              index={index}
-              colors={colors}
-              editingItemId={editingItemId}
-              editItemText={editItemText}
-              onEditItemTextChange={onEditItemTextChange}
-              onStartEditItem={onStartEditItem}
-              onCancelEditItem={onCancelEditItem}
-              selectedItemId={selectedItemId}
-              onToggleSelected={toggleSelected}
-            />
+            <Fragment key={item._id}>
+              {item.checked && index > 0 && !sortedItems[index - 1].checked && (
+                <div className='border-t border-zinc-200 dark:border-zinc-700' />
+              )}
+              <SortableItemRow
+                groupId={groupId}
+                listId={listId}
+                item={item}
+                index={index}
+                colors={colors}
+                editingItemId={editingItemId}
+                editItemText={editItemText}
+                onEditItemTextChange={onEditItemTextChange}
+                onStartEditItem={onStartEditItem}
+                onCancelEditItem={onCancelEditItem}
+                selectedItemId={selectedItemId}
+                onToggleSelected={toggleSelected}
+              />
+            </Fragment>
           ))}
         </DragDropProvider>
         <div ref={listEndRef} />
