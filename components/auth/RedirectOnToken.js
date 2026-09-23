@@ -11,7 +11,6 @@ export default function RedirectOnToken() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      router.replace("/auth/login");
       return;
     }
 
