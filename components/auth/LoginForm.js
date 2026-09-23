@@ -126,6 +126,15 @@ export default function LoginForm() {
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
           )}
+          <div className="text-right mt-1">
+            <button
+              type="button"
+              onClick={() => router.push("/auth/forgot-password")}
+              className="text-sm text-purple-600 hover:underline dark:text-purple-400"
+            >
+              Mot de passe oublié ?
+            </button>
+          </div>
         </div>
 
         <Button type="submit" loading={loading}>
