@@ -5,6 +5,8 @@ import Button from "@/components/Button";
 import InfoModal from "@/components/InfoModal";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { NumericFormat } from "react-number-format";
+import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
+import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -74,7 +76,7 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/register`, {
+      const res = await request(`${NEXT_PUBLIC_API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,6 +92,7 @@ export default function RegisterForm() {
       const data = await res.json();
 
       if (!res.ok) {
+        if (redirectOnServerError(res)) return;
         const newErrors = { ...EMPTY_ERRORS };
 
         if (data?.field === "email") {
@@ -109,13 +112,7 @@ export default function RegisterForm() {
 
       router.push("/groups");
     } catch {
-      setErrors({
-        username: "",
-        email: "Une erreur est survenue, veuillez réessayer",
-        password: "",
-        monthlyRevenues: "",
-        monthlyCharges: "",
-      });
+      redirectOnNetworkError();
     } finally {
       setLoading(false);
     }

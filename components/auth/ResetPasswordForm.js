@@ -4,6 +4,8 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/Button";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
+import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -52,7 +54,7 @@ function ResetPasswordForm() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/reset-password`, {
+      const res = await request(`${NEXT_PUBLIC_API_URL}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),
@@ -61,6 +63,7 @@ function ResetPasswordForm() {
       const data = await res.json();
 
       if (!res.ok) {
+        if (redirectOnServerError(res)) return;
         setErrors({
           password: "",
           confirm: "",
@@ -71,11 +74,7 @@ function ResetPasswordForm() {
 
       router.push("/auth/login");
     } catch {
-      setErrors({
-        password: "",
-        confirm: "",
-        token: "Une erreur est survenue, veuillez réessayer",
-      });
+      redirectOnNetworkError();
     } finally {
       setLoading(false);
     }

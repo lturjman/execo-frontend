@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
+import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
+import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -27,20 +29,21 @@ export default function ForgotPasswordForm() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/forgot-password`, {
+      const res = await request(`${NEXT_PUBLIC_API_URL}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
       if (!res.ok) {
+        if (redirectOnServerError(res)) return;
         setError("Une erreur est survenue, veuillez réessayer");
         return;
       }
 
       setSent(true);
     } catch {
-      setError("Une erreur est survenue, veuillez réessayer");
+      redirectOnNetworkError();
     } finally {
       setLoading(false);
     }

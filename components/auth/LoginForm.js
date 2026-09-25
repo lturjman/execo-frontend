@@ -4,6 +4,8 @@ import { useState } from "react";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
+import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -42,7 +44,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
+      const res = await request(`${NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,6 +55,7 @@ export default function LoginForm() {
       const data = await res.json();
 
       if (!res.ok) {
+        if (redirectOnServerError(res)) return;
         setErrors({
           email: "L'email n'est pas valide",
           password: "Le mot de passe n'est pas valide",
@@ -64,10 +67,7 @@ export default function LoginForm() {
 
       router.push("/groups");
     } catch {
-      setErrors({
-        email: "Une erreur est survenue, veuillez réessayer",
-        password: "",
-      });
+      redirectOnNetworkError();
     } finally {
       setLoading(false);
     }
