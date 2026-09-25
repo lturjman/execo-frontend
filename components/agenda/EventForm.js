@@ -6,6 +6,7 @@ import { EVENT_TYPES } from "@/utils/eventTypes";
 import Button from "@/components/Button";
 import FieldError from "./FieldError";
 import ScheduleFields from "./ScheduleFields";
+import RecurrenceFields from "./RecurrenceFields";
 import ParticipantsField from "./ParticipantsField";
 
 export default function EventForm({ form, members, heading, submitLabel, onBack }) {
@@ -73,6 +74,8 @@ export default function EventForm({ form, members, heading, submitLabel, onBack 
         <FieldError message={errors.schedule} />
 
         <ScheduleFields form={form} />
+
+        <RecurrenceFields form={form} />
 
         <div className="flex items-center gap-2">
           <input

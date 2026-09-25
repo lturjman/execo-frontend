@@ -20,6 +20,8 @@ function getInitialValues(event, dayKey, currentMember) {
       isMultiDay: false,
       startDate: dayKey,
       endDate: "",
+      recurrenceFrequency: "",
+      recurrenceEndDate: "",
       eventMembers: currentMember ? [currentMember._id] : [],
     };
   }
@@ -27,6 +29,7 @@ function getInitialValues(event, dayKey, currentMember) {
   const startDate = toDayKey(event.date) || dayKey;
   const endDate = event.endDate ? toDayKey(event.endDate) : "";
   const isMultiDay = Boolean(endDate && endDate > startDate);
+  const recurrenceFrequency = event.recurrenceFrequency || "";
 
   return {
     title: event.title,
@@ -38,6 +41,11 @@ function getInitialValues(event, dayKey, currentMember) {
     isMultiDay,
     startDate,
     endDate: isMultiDay ? endDate : "",
+    recurrenceFrequency,
+    recurrenceEndDate:
+      recurrenceFrequency && event.recurrenceEndDate
+        ? toDayKey(event.recurrenceEndDate)
+        : "",
     eventMembers:
       event.members && event.members.length ? [...event.members] : [event.member],
   };
@@ -48,6 +56,9 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
   const loading = useSelector((state) => state.agendas.loading);
   const [values, setValues] = useState(() =>
     getInitialValues(event, dayKey, currentMember),
+  );
+  const [recurrenceEndMode, setRecurrenceEndMode] = useState(() =>
+    event?.recurrenceEndDate ? "date" : "never",
   );
   const [errors, setErrors] = useState({});
 
@@ -93,8 +104,13 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
       ...prev,
       startDate,
       endDate: prev.endDate && startDate > prev.endDate ? startDate : prev.endDate,
+      recurrenceEndDate:
+        prev.recurrenceEndDate && startDate > prev.recurrenceEndDate
+          ? startDate
+          : prev.recurrenceEndDate,
     }));
     clearError("date");
+    clearError("recurrenceEndDate");
   }
 
   function changeEndDate(endDate) {
@@ -120,6 +136,28 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
     clearError("type");
   }
 
+  function changeRecurrenceFrequency(recurrenceFrequency) {
+    update({
+      recurrenceFrequency,
+      recurrenceEndDate: recurrenceFrequency
+        ? values.recurrenceEndDate
+        : "",
+    });
+    if (!recurrenceFrequency) setRecurrenceEndMode("never");
+    clearError("recurrenceEndDate");
+  }
+
+  function changeRecurrenceEndMode(mode) {
+    setRecurrenceEndMode(mode);
+    if (mode === "never") update({ recurrenceEndDate: "" });
+    clearError("recurrenceEndDate");
+  }
+
+  function changeRecurrenceEndDate(recurrenceEndDate) {
+    update({ recurrenceEndDate });
+    clearError("recurrenceEndDate");
+  }
+
   function toggleMember(memberId) {
     clearError("members");
     setValues((prev) => ({
@@ -136,11 +174,9 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
   }
 
   function buildPayload() {
-    const baseDate = values.isMultiDay
-      ? values.startDate || (event ? toDayKey(event.date) : dayKey)
-      : event
-        ? toDayKey(event.date)
-        : dayKey;
+    const baseDate =
+      values.startDate || (event ? toDayKey(event.date) : dayKey);
+    const recurrenceFrequency = values.recurrenceFrequency || null;
 
     return {
       title: values.title.trim(),
@@ -151,6 +187,10 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
         : event
           ? null
           : undefined,
+      recurrenceFrequency,
+      recurrenceEndDate: recurrenceFrequency
+        ? values.recurrenceEndDate || null
+        : null,
       startTime: values.isAllDay ? null : values.startTime || null,
       endTime: values.isAllDay ? null : values.endTime || null,
       location: values.location.trim() || null,
@@ -162,7 +202,10 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
     e.preventDefault();
     if (!dayKey || !currentMember) return;
 
-    const validationErrors = validateEventForm(values);
+    const validationErrors = validateEventForm({
+      ...values,
+      recurrenceEndMode,
+    });
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -183,6 +226,7 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
     values,
     errors,
     loading,
+    recurrenceEndMode,
     selectedType: getEventType(values.type),
     changeTitle,
     toggleAllDay,
@@ -193,6 +237,9 @@ export function useEventForm({ event, dayKey, currentMember, members, groupId, o
     changeEndTime: changeTime("endTime"),
     changeLocation,
     changeType,
+    changeRecurrenceFrequency,
+    changeRecurrenceEndMode,
+    changeRecurrenceEndDate,
     toggleMember,
     toggleAllMembers,
     submit,

@@ -7,7 +7,8 @@ const INPUT_CLASS =
 
 export default function ScheduleFields({ form }) {
   const { values, errors } = form;
-  const { isMultiDay, isAllDay, startDate, endDate, startTime, endTime } = values;
+  const { isMultiDay, isAllDay, startDate, endDate, startTime, endTime } =
+    values;
 
   if (isMultiDay) {
     return (
@@ -66,7 +67,7 @@ export default function ScheduleFields({ form }) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <span className="text-sm text-zinc-500 dark:text-zinc-400">De :</span>
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">De</span>
         <input
           type="time"
           value={startTime}
@@ -74,7 +75,7 @@ export default function ScheduleFields({ form }) {
           aria-label="Heure de début"
           className={`grow min-w-0 max-w-36 ${INPUT_CLASS}`}
         />
-        <span className="text-sm text-zinc-500 dark:text-zinc-400">à :</span>
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">à</span>
         <input
           type="time"
           value={endTime}

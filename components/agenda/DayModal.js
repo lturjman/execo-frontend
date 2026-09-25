@@ -34,7 +34,7 @@ export default function DayModal({
     >
       <DialogBackdrop className="fixed inset-0" />
       <div className="fixed p-4 w-full flex justify-center">
-        <DialogPanel className="bg-white dark:bg-zinc-700 rounded-2xl shadow-lg overflow-hidden p-6 max-w-sm w-full">
+          <DialogPanel className="bg-white dark:bg-zinc-700 rounded-2xl shadow-lg overflow-hidden p-6 max-w-sm max-h-[90vh] w-full overflow-y-auto">
           <div className="flex items-center justify-between gap-2 mb-3">
             <h2 className="font-bold text-lg capitalize">
               {capitalize(formatLongDate(dayKey))}
