@@ -14,7 +14,7 @@ import { fetchMembers } from "@/lib/store/slices/members";
 import { fetchMe } from "@/lib/store/slices/users";
 import { todayInputDate } from "@/utils/dateHelpers";
 import { getEventType } from "@/utils/eventTypes";
-import { eventDayKeysInYear } from "@/utils/eventDates";
+import { eventDayKeysInYear, parseDayKey, toDayKey } from "@/utils/eventDates";
 
 import DayModal from "./DayModal";
 import AgendaRemove from "./Remove";
@@ -100,11 +100,12 @@ export default function Agenda({ groupId }) {
       years.add(new Date().getFullYear() + offset);
     }
     for (const event of events) {
-      const startYear = new Date(event.date).getFullYear();
-      if (!Number.isNaN(startYear)) years.add(startYear);
-      if (event.endDate) {
-        const endYear = new Date(event.endDate).getFullYear();
-        if (!Number.isNaN(endYear)) years.add(endYear);
+      const dateKeys = [event.date, event.endDate, event.recurrenceEndDate].filter(
+        Boolean,
+      );
+      for (const dateValue of dateKeys) {
+        const eventYear = parseDayKey(toDayKey(dateValue)).year;
+        if (eventYear) years.add(eventYear);
       }
     }
     return [...years].sort((a, b) => a - b);

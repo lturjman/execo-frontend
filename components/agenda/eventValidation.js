@@ -1,3 +1,5 @@
+import { isRecurrenceFrequency } from "@/utils/eventRecurrence";
+
 export function validateEventForm(values) {
   const {
     title,
@@ -8,6 +10,9 @@ export function validateEventForm(values) {
     isAllDay,
     startTime,
     endTime,
+    recurrenceFrequency,
+    recurrenceEndDate,
+    recurrenceEndMode,
     eventMembers,
   } = values;
   const errors = {};
@@ -27,6 +32,19 @@ export function validateEventForm(values) {
   }
   if (!isAllDay && startTime && endTime && endTime < startTime) {
     errors.endTime = "L'heure de fin doit être après l'heure de début.";
+  }
+  if (recurrenceFrequency && !isRecurrenceFrequency(recurrenceFrequency)) {
+    errors.form = "Choisissez une fréquence de récurrence valide.";
+  }
+  if (recurrenceEndMode === "date") {
+    if (!recurrenceFrequency) {
+      errors.recurrenceEndDate = "Choisissez d'abord une fréquence de récurrence.";
+    } else if (!recurrenceEndDate) {
+      errors.recurrenceEndDate = "Indiquez la date de fin de la récurrence.";
+    } else if (startDate && recurrenceEndDate < startDate) {
+      errors.recurrenceEndDate =
+        "La fin de la récurrence ne peut pas être avant le début de l'événement.";
+    }
   }
   if (!type) {
     errors.type = "Choisissez une catégorie.";

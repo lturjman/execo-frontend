@@ -5,7 +5,11 @@ import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { getEventType } from "@/utils/eventTypes";
 import { eventCoversDayKey } from "@/utils/eventDates";
 import Button from "@/components/Button";
-import { formatEventRange, formatEventTime } from "./eventFormat";
+import {
+  formatEventRange,
+  formatEventTime,
+  formatRecurrence,
+} from "./eventFormat";
 
 function getParticipants(event, members) {
   const ids =
@@ -32,6 +36,7 @@ export default function EventList({ events, members, dayKey, onCreate, onEdit, o
             const eventType = getEventType(event.type);
             const participants = getParticipants(event, members);
             const range = formatEventRange(event);
+            const recurrence = formatRecurrence(event);
             return (
               <li
                 key={event._id}
@@ -52,6 +57,7 @@ export default function EventList({ events, members, dayKey, onCreate, onEdit, o
                         : "Toute la journée"}
                     </li>
                     {event.location && <li>{event.location}</li>}
+                    {recurrence && <li>{recurrence}</li>}
                     {participants.length > 0 && (
                       <li className="flex flex-wrap gap-1 pt-0.5">
                         {participants.map((member) => (
