@@ -4,7 +4,6 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/Button";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
 import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -60,21 +59,27 @@ function ResetPasswordForm() {
         body: JSON.stringify({ token, password }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        if (redirectOnServerError(res)) return;
+        // Un 5xx n'a pas de corps JSON exploitable : on ne tente pas de le lire.
+        const data = res.status >= 500 ? null : await res.json().catch(() => null);
         setErrors({
           password: "",
           confirm: "",
-          token: data?.msg || "Une erreur est survenue",
+          token:
+            res.status >= 500
+              ? "Le serveur est momentanément indisponible, veuillez réessayer"
+              : data?.msg || "Une erreur est survenue",
         });
         return;
       }
 
       router.push("/auth/login");
     } catch {
-      redirectOnNetworkError();
+      setErrors({
+        password: "",
+        confirm: "",
+        token: "Impossible de joindre nos serveurs. Vérifiez votre connexion.",
+      });
     } finally {
       setLoading(false);
     }

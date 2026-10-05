@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
-import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
 import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -36,14 +35,17 @@ export default function ForgotPasswordForm() {
       });
 
       if (!res.ok) {
-        if (redirectOnServerError(res)) return;
-        setError("Une erreur est survenue, veuillez réessayer");
+        setError(
+          res.status >= 500
+            ? "Le serveur est momentanément indisponible, veuillez réessayer"
+            : "Une erreur est survenue, veuillez réessayer"
+        );
         return;
       }
 
       setSent(true);
     } catch {
-      redirectOnNetworkError();
+      setError("Impossible de joindre nos serveurs. Vérifiez votre connexion.");
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono as GeistMono } from "next/font/google";
 import ReduxProvider from "../components/ReduxProvider";
+import ApiErrorBanner from "../components/ApiErrorBanner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,7 +27,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          {children}
+          <ApiErrorBanner />
+        </ReduxProvider>
       </body>
     </html>
   );

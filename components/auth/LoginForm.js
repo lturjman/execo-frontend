@@ -4,7 +4,6 @@ import { useState } from "react";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
 import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -52,22 +51,26 @@ export default function LoginForm() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (redirectOnServerError(res)) return;
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem("token", data.token);
+        router.push("/groups");
+      } else if (res.status >= 500) {
+        setErrors({
+          email: "Le serveur est momentanément indisponible",
+          password: "",
+        });
+      } else {
         setErrors({
           email: "L'email n'est pas valide",
           password: "Le mot de passe n'est pas valide",
         });
-        return;
       }
-
-      localStorage.setItem("token", data.token);
-
-      router.push("/groups");
     } catch {
-      redirectOnNetworkError();
+      setErrors({
+        email: "Impossible de joindre nos serveurs. Vérifiez votre connexion.",
+        password: "",
+      });
     } finally {
       setLoading(false);
     }

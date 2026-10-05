@@ -5,7 +5,6 @@ import Button from "@/components/Button";
 import InfoModal from "@/components/InfoModal";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { NumericFormat } from "react-number-format";
-import { redirectOnServerError, redirectOnNetworkError } from "@/utils/redirectOnServerError";
 import { request } from "@/utils/fetchWithRetry";
 
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -89,11 +88,18 @@ export default function RegisterForm() {
           monthlyCharges,
         }),
       });
-      const data = await res.json();
-
       if (!res.ok) {
-        if (redirectOnServerError(res)) return;
         const newErrors = { ...EMPTY_ERRORS };
+
+        if (res.status >= 500) {
+          setErrors({
+            ...newErrors,
+            email: "Le serveur est momentanément indisponible, veuillez réessayer",
+          });
+          return;
+        }
+
+        const data = await res.json().catch(() => null);
 
         if (data?.field === "email") {
           newErrors.email =
@@ -112,7 +118,10 @@ export default function RegisterForm() {
 
       router.push("/groups");
     } catch {
-      redirectOnNetworkError();
+      setErrors({
+        ...EMPTY_ERRORS,
+        email: "Impossible de joindre nos serveurs. Vérifiez votre connexion.",
+      });
     } finally {
       setLoading(false);
     }
