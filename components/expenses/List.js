@@ -8,8 +8,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useRouter } from "next/navigation";
 
 import Button from "@/components/Button";
+import ExportModal from "@/components/expenses/ExportModal";
 
 import { fetchExpenses } from "@/lib/store/slices/expenses";
+import { fetchPaybacks } from "@/lib/store/slices/paybacks";
+import { sortExpenses } from "@/utils/expenseStats";
 
 export default function ExpensesList() {
   const router = useRouter();
@@ -22,14 +25,17 @@ export default function ExpensesList() {
   );
 
   const expenses = useSelector((state) => state.expenses.items);
+  const paybacks = useSelector((state) => state.paybacks.items);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchExpenses({ groupId: id }));
+    dispatch(fetchPaybacks({ groupId: id }));
   }, [dispatch, id]);
 
   const [showHistory, setShowHistory] = useState(false);
+  const [showExport, setShowExport] = useState(false);
   const [closing, setClosing] = useState(false);
 
   useEffect(() => {
@@ -47,22 +53,7 @@ export default function ExpensesList() {
     }, 200);
   };
 
-  const sortedExpenses = expenses
-    .slice()
-    .sort((a, b) => {
-      const dateA = new Date(a.paymentDate || a.createdAt);
-      const dateB = new Date(b.paymentDate || b.createdAt);
-
-      const dayA = dateA.setHours(0, 0, 0, 0);
-      const dayB = dateB.setHours(0, 0, 0, 0);
-
-      if (dayA !== dayB) return dayB - dayA;
-
-      return (
-        new Date(b.createdAt || b.paymentDate) -
-        new Date(a.createdAt || a.paymentDate)
-      );
-    });
+  const sortedExpenses = sortExpenses(expenses);
 
   const renderMobileCard = (expense) => (
     <div
@@ -224,6 +215,16 @@ export default function ExpensesList() {
                 ×
               </button>
             </div>
+
+            <div className="mb-4">
+              <Button
+                onClick={() => setShowExport(true)}
+                className="w-auto px-4 bg-zinc-400 hover:bg-zinc-500 dark:bg-zinc-600"
+              >
+                Exporter les données
+              </Button>
+            </div>
+
             <div className="overflow-y-auto max-h-[70vh]">
               <div className="md:hidden divide-y">
                 {sortedExpenses.map(renderMobileCard)}
@@ -235,6 +236,14 @@ export default function ExpensesList() {
           </div>
         </div>
       )}
+
+      <ExportModal
+        open={showExport}
+        onClose={() => setShowExport(false)}
+        expenses={expenses}
+        paybacks={paybacks}
+        groupName={group?.name}
+      />
     </div>
   );
 }

@@ -7,52 +7,17 @@ import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import { fetchExpenses } from "@/lib/store/slices/expenses";
 import { amountToCurrency } from "@/utils/amountToCurrency";
 import { EXPENSE_CATEGORIES } from "@/utils/expenseCategories";
+import {
+  buildColorMap,
+  buildMonthlyBuckets,
+  buildSlices,
+  monthLabel,
+} from "@/utils/expenseStats";
 
-const PIE_COLORS = [
-  "#ba80f8",
-  "#e17c55",
-  "#e0bed3",
-  "#e9e577",
-  "#a7bada",
-  "#80ba9d",
-  "#a97e6e",
-  "#c4bef1",
-  "#e8b379",
-  "#62e8a5",
-];
-const UNCATEGORIZED_LABEL = "Sans catégorie";
-const UNCATEGORIZED_COLOR = "#a1a1aa";
 const SIZE = 220;
 const R = 80;
 const STROKE = 36;
 const GAP = 2;
-
-function expenseMonthKey(expense) {
-  const date = new Date(expense.paymentDate || expense.createdAt);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-}
-
-function monthLabel(monthKey) {
-  if (!monthKey) return "";
-  const [year, month] = monthKey.split("-").map(Number);
-  const label = new Date(year, month - 1, 1).toLocaleDateString("fr-FR", {
-    month: "long",
-    year: "numeric",
-  });
-  return label.charAt(0).toUpperCase() + label.slice(1);
-}
-
-function buildSlices(expenseList) {
-  const totals = new Map();
-  for (const expense of expenseList) {
-    const label = expense.category || UNCATEGORIZED_LABEL;
-    totals.set(label, (totals.get(label) || 0) + (expense.amount || 0));
-  }
-
-  return [...totals.entries()]
-    .map(([label, amount]) => ({ label, amount }))
-    .sort((a, b) => b.amount - a.amount);
-}
 
 export default function Statistics({ groupId }) {
   const dispatch = useDispatch();
@@ -71,21 +36,7 @@ export default function Statistics({ groupId }) {
     }
   }, [dispatch, groupId]);
 
-  const months = useMemo(() => {
-    const buckets = new Map();
-    for (const expense of expenses) {
-      const key = expenseMonthKey(expense);
-      const bucket = buckets.get(key) || { key, expenses: [] };
-      bucket.expenses.push(expense);
-      buckets.set(key, bucket);
-    }
-    return [...buckets.values()]
-      .map((bucket) => ({
-        ...bucket,
-        total: bucket.expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0),
-      }))
-      .sort((a, b) => b.key.localeCompare(a.key));
-  }, [expenses]);
+  const months = useMemo(() => buildMonthlyBuckets(expenses), [expenses]);
 
   useEffect(() => {
     if (view === "month" && !selectedMonth && months.length > 0) {
@@ -106,23 +57,10 @@ export default function Statistics({ groupId }) {
   const slices = view === "total" ? totalSlices : monthSlices;
   const total = slices.reduce((sum, slice) => sum + slice.amount, 0);
 
-  const colorMap = useMemo(() => {
-    const known = [...new Set(EXPENSE_CATEGORIES)].sort();
-    const extra = [...new Set(expenses.map((e) => e.category))]
-      .filter((category) => category && !known.includes(category))
-      .sort();
-    const labels = [...known, ...extra, UNCATEGORIZED_LABEL];
-
-    const map = { [UNCATEGORIZED_LABEL]: UNCATEGORIZED_COLOR };
-    let colorIndex = 0;
-    for (const label of labels) {
-      if (label !== UNCATEGORIZED_LABEL) {
-        map[label] = PIE_COLORS[colorIndex % PIE_COLORS.length];
-        colorIndex += 1;
-      }
-    }
-    return map;
-  }, [expenses]);
+  const colorMap = useMemo(
+    () => buildColorMap(expenses, EXPENSE_CATEGORIES),
+    [expenses],
+  );
 
   function computeArcs(arcSlices) {
     const circumference = 2 * Math.PI * R;
