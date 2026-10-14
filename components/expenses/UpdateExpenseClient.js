@@ -2,6 +2,7 @@
 
 import { useRouter, useParams } from 'next/navigation'
 import UpdateExpense from '@/components/expenses/Update'
+import UpdateRefund from '@/components/expenses/UpdateRefund'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import RemoveExpense from '@/components/expenses/Remove'
@@ -30,21 +31,43 @@ export default function UpdateExpenseClient ({ groupId }) {
     return null
   }
 
+  const isRefund = expense.kind === 'refund'
+
+  const handleUpdated = () => {
+    router.push(`/groups/${groupId}`)
+  }
+
   return (
     <>
-      <UpdateExpense
-        expense={expense}
-        groupId={groupId}
-        onExpenseUpdated={() => {
-          router.push(`/groups/${groupId}`)
-        }}
-        onShowRemove={() => setShowRemoveModal(true)}
-      />
+      {isRefund ? (
+        <UpdateRefund
+          expense={expense}
+          onExpenseUpdated={handleUpdated}
+          onShowRemove={() => setShowRemoveModal(true)}
+        />
+      ) : (
+        <UpdateExpense
+          expense={expense}
+          groupId={groupId}
+          onExpenseUpdated={handleUpdated}
+          onShowRemove={() => setShowRemoveModal(true)}
+        />
+      )}
       {showRemoveModal && (
         <RemoveExpense
           expense={expense}
           onClose={() => setShowRemoveModal(false)}
-          onExpenseDeleted={() => router.push(`/groups/${groupId}`)}
+          onExpenseDeleted={handleUpdated}
+          title={
+            isRefund
+              ? 'Êtes-vous sûr de vouloir supprimer le remboursement ?'
+              : undefined
+          }
+          description={
+            isRefund
+              ? 'Cette action est irréversible. Les soldes du groupe seront recalculés.'
+              : undefined
+          }
         />
       )}
     </>
