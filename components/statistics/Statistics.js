@@ -56,7 +56,11 @@ function buildSlices(expenseList) {
 
 export default function Statistics({ groupId }) {
   const dispatch = useDispatch();
-  const expenses = useSelector((state) => state.expenses.items);
+  const allExpenses = useSelector((state) => state.expenses.items);
+  const expenses = useMemo(
+    () => allExpenses.filter((expense) => expense.kind !== "refund"),
+    [allExpenses],
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState("total");
   const [selectedMonth, setSelectedMonth] = useState(null);

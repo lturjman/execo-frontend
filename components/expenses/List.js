@@ -71,10 +71,18 @@ export default function ExpensesList() {
     >
       <div className="min-w-0 flex-1 space-y-1">
         <div className="font-medium truncate">{expense.name}</div>
-        {expense.category && (
-          <div className="text-xs text-zinc-400 uppercase tracking-wide">
-            {expense.category}
+        {expense.kind === "refund" ? (
+          <div>
+            <span className="inline-block rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-600 dark:bg-purple-900/40 dark:text-purple-300">
+              Remboursement
+            </span>
           </div>
+        ) : (
+          expense.category && (
+            <div className="text-xs text-zinc-400 uppercase tracking-wide">
+              {expense.category}
+            </div>
+          )
         )}
         <div className="text-xs text-zinc-500 dark:text-zinc-400">
           {formatDate(expense.paymentDate || expense.createdAt)}
@@ -104,10 +112,18 @@ export default function ExpensesList() {
     <tr key={expense._id}>
       <td className="p-2">
         <div>{expense.name}</div>
-        {expense.category && (
-          <div className="text-xs text-zinc-400 uppercase tracking-wide">
-            {expense.category}
+        {expense.kind === "refund" ? (
+          <div>
+            <span className="inline-block rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-600 dark:bg-purple-900/40 dark:text-purple-300">
+              Remboursement
+            </span>
           </div>
+        ) : (
+          expense.category && (
+            <div className="text-xs text-zinc-400 uppercase tracking-wide">
+              {expense.category}
+            </div>
+          )
         )}
       </td>
 
