@@ -1,14 +1,53 @@
 "use client";
 
+import { useState } from "react";
 import { NumericFormat } from "react-number-format";
 import { toInputDate } from "@/utils/dateHelpers";
-import { EXPENSE_CATEGORIES } from "@/utils/expenseCategories";
+import {
+  EXPENSE_CATEGORIES,
+  CUSTOM_CATEGORY_VALUE,
+  buildCustomCategory,
+  isPresetCategory,
+  parseCustomCategory,
+} from "@/utils/expenseCategories";
+import EmojiPicker from "./EmojiPicker";
 
 function inputClass() {
   return "appearance-none w-full p-2 focus:border rounded-md bg-zinc-100 text-zinc-800 focus:outline-none focus:ring-1 focus:ring-purple-400 focus:border-purple-400 dark:bg-zinc-600 dark:text-zinc-200";
 }
 
 export default function ExpenseFields({ expense, onChange, errors }) {
+  const [isCustom, setIsCustom] = useState(
+    () => Boolean(expense.category) && !isPresetCategory(expense.category),
+  );
+  const [customDraft, setCustomDraft] = useState(() =>
+    parseCustomCategory(expense.category),
+  );
+
+  const handleCategoryChange = (event) => {
+    const value = event.target.value;
+
+    if (value === CUSTOM_CATEGORY_VALUE) {
+      setIsCustom(true);
+      onChange({
+        ...expense,
+        category: buildCustomCategory(customDraft.emoji, customDraft.label),
+      });
+      return;
+    }
+
+    setIsCustom(false);
+    onChange({ ...expense, category: value });
+  };
+
+  const updateCustomCategory = (nextDraft) => {
+    setCustomDraft(nextDraft);
+    onChange({
+      ...expense,
+      category: buildCustomCategory(nextDraft.emoji, nextDraft.label),
+    });
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -31,9 +70,9 @@ export default function ExpenseFields({ expense, onChange, errors }) {
           <label htmlFor="category">Catégorie :</label>
           <select
             name="category"
-            value={expense.category || ""}
+            value={isCustom ? CUSTOM_CATEGORY_VALUE : expense.category || ""}
             className={inputClass()}
-            onChange={(e) => onChange({ ...expense, category: e.target.value })}
+            onChange={handleCategoryChange}
           >
             <option value="" disabled>
               Choisir une catégorie
@@ -43,7 +82,27 @@ export default function ExpenseFields({ expense, onChange, errors }) {
                 {category}
               </option>
             ))}
+            <option value={CUSTOM_CATEGORY_VALUE}>✨ Personnalisée</option>
           </select>
+          {isCustom && (
+            <div className="mt-2 flex items-center gap-2">
+              <EmojiPicker
+                value={customDraft.emoji}
+                onSelect={(emoji) =>
+                  updateCustomCategory({ ...customDraft, emoji })
+                }
+              />
+              <input
+                type="text"
+                value={customDraft.label}
+                className={inputClass()}
+                placeholder="Nom de la catégorie"
+                onChange={(e) =>
+                  updateCustomCategory({ ...customDraft, label: e.target.value })
+                }
+              />
+            </div>
+          )}
           {errors.category && (
             <p className="text-red-500 text-sm mt-1">{errors.category}</p>
           )}
